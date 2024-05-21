@@ -3,7 +3,7 @@ import '../../assets/style/toggle.css'
 import '../../assets/style/table.css'
 
 
-function Detail() {
+function List_qc_month() {
     const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
     return (
         <Content header={'Incentive System'} header_sub={'รายละเอียด'}>
@@ -15,7 +15,7 @@ function Detail() {
                 <div className={'card-body'}>
                     <div className={'row d-flex justify-content-between'}>
                         <div>
-                            <p style={{fontSize: 18}} className={'text-bold'}>ปริมาณการ qc สินค้า ประจำเดือน 04/2024</p>
+                            <p style={{fontSize: 18}} className={'text-bold'}>ปริมาณการ QC สินค้า ประจำเดือน 04/2024</p>
                             <p>กำหนดจ่ายเดือน 05/2024</p>
                             <p>จำนวนวันทำงาน 22 วัน</p>
                         </div>
@@ -82,7 +82,7 @@ function Detail() {
                             ))}
 
                             </tbody>
-                            <tfoot style={{background: '#ead1ff'}}>
+                            <tfoot className={'text-bold'} style={{background: '#ead1ff'}}>
                             <tr>
                                 <td></td>
                                 <td></td>
@@ -112,4 +112,4 @@ function Detail() {
     );
 }
 
-export default Detail;
+export default List_qc_month;

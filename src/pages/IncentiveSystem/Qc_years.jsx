@@ -7,18 +7,22 @@ import {Link} from "react-router-dom";
 import {useEffect, useState} from "react";
 
 
-$(function () {
-    $('.select2').select2({
-        theme: 'bootstrap4'
-    });
-})
 const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 
 
-function Dashboard() {
+function Qc_years() {
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
     useEffect(() => {
+
+        // eslint-disable-next-line no-undef
+        $(function () {
+            // eslint-disable-next-line no-undef
+            $('.select2').select2({
+                theme: 'bootstrap4'
+            });
+        })
+
         const intervalId = setInterval(() => {
             setCurrentYear(new Date().getFullYear());
         }, 1000);
@@ -26,7 +30,7 @@ function Dashboard() {
         return () => clearInterval(intervalId);
     },[]);
     return (
-        <Content header={'Dashboard'} header_sub={'รายการ'}>
+        <Content header={'Qc_years'} header_sub={'รายการ'}>
             <div className={'card'}>
                 <div className="card-header">
                     <h3 className="card-title">Incentive System</h3>
@@ -71,7 +75,7 @@ function Dashboard() {
                                         <td>2022-04-25</td>
                                         <td>2022-04-25</td>
                                         <td>
-                                            <Link to={'/'}>
+                                            <Link to={'/incentive/qc_list_month/2024/1'}>
                                                 <i className="fa-solid fa-file-lines"></i>
                                             </Link>
                                         </td>
@@ -121,4 +125,4 @@ function Dashboard() {
     );
 }
 
-export default Dashboard;
+export default Qc_years;

@@ -27,27 +27,29 @@ function Sidebar() {
                 <nav className={'mt-2'}>
                     <ul className={'nav nav-pills nav-sidebar flex-column nav-child-indent'} data-widget="treeview" role="menu"
                         data-accordion="false">
-                        <li className="nav-item menu-open">
-                            <a href="#" className={`nav-link ${location.pathname.startsWith('/IncentiveSystem') ? 'active' : ''}`}>
-                                <i className="nav-icon fas fa-tachometer-alt"></i>
+                        <li className={`nav-item ${location.pathname.startsWith('/incentive') ? 'menu-open' : ''}`}>
+                            <a href="#" className={`nav-link ${location.pathname.startsWith('/incentive') ? 'active' : ''}`}>
+                                <i className="nav-icon fas fa-coins"></i>
                                 <p>Incentive System<i className="right fas fa-angle-left"></i></p>
                             </a>
                             <ul className="nav nav-treeview">
                                 <li className="nav-item">
-                                    <Link to={'/IncentiveSystem/dashboard'} className={`nav-link ${location.pathname === '/IncentiveSystem/dashboard' ? 'active' : ''}`}>
+                                    <Link to={'/incentive/qc_years'}
+                                          className={`nav-link ${location.pathname === '/incentive/qc_years' || location.pathname.startsWith('/incentive/qc_list_month') ? 'active' : ''}`}>
                                         <i className="far fa-circle nav-icon"></i>
-                                        <p>หน้าหลัก</p>
+                                        <p>QC สินค้า ประจำปี</p>
                                     </Link>
                                 </li>
-                                <li className="nav-item">
-                                    <Link to={'/IncentiveSystem/detail'} className={`nav-link ${location.pathname === '/IncentiveSystem/detail' ? 'active' : ''}`}>
+                                <li className={'nav-item'}>
+                                    <Link to={'/incentive/products/list_product_qc'}
+                                          className={`nav-link ${location.pathname.startsWith('/incentive/products') ? 'active' : ''}`}>
                                         <i className="far fa-circle nav-icon"></i>
-                                        <p>รายละเอียด</p>
+                                        <p>ข้อมูลสินค้า QC</p>
                                     </Link>
                                 </li>
-
                             </ul>
                         </li>
+
                     </ul>
                 </nav>
             </div>

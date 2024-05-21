@@ -1,0 +1,64 @@
+import Content from "../../layouts/Content.jsx";
+import {useEffect} from "react";
+import '../../assets/plugins/select2/css/select2.min.css';
+import '../../assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css';
+import '../../assets/plugins/select2/js/select2.full.min.js';
+
+
+function Add_product_qc() {
+    useEffect(() => {
+        $('.select2').select2({
+            theme: 'bootstrap4'
+        });
+    }, []);
+    return (
+        <>
+            <Content header={'ข้อมูลสินค้า QC'} header_sub={'รายการ'}>
+                <div className={'card'}>
+                    <div className={'card-body'}>
+                        <div className={'image preview'}>
+                            <h6 className={'text-bold'}>รูปสินค้า</h6>
+                            <img src="https://images.dcpumpkin.com/images/product/500/50175.jpg" alt="image" style={{maxWidth: 'calc(100% - 100px)'}} />
+                        </div>
+                        <div className={'row'}>
+                            <div className={'col-md-6 col-sm-12'}>
+                                <div className={'form-group'}>
+                                    <label htmlFor="product_code">รหัสสินค้า * </label>
+                                    <input type="text" readOnly={true} className={'form-control'} id={'product_code'}
+                                           value={'50175'} name={'product_code'}/>
+                                </div>
+                                <div className={'form-group'}>
+                                    <label htmlFor="product_level">ระดับความยาก * </label>
+                                    <select name="product_level" id="product_level" className={'form-control select2'}>
+                                        <option value="Very Easy">Very Easy</option>
+                                        <option value="Easy">Easy</option>
+                                        <option value="Middling">Middling</option>
+                                        <option value="Hard">Hard</option>
+                                        <option value="Very Hard">Very Hard</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className={'col-md-6 col-sm-12'}>
+                                <div className={'form-group'}>
+                                    <label htmlFor="product_code">ชื่อสินค้า * </label>
+                                    <input type="text" className={'form-control'} id={'product_code'}
+                                           value={'J-Series เจียรมือ4" J-G9612 (เครื่อง)'} name={'product_code'}/>
+                                </div>
+                                <div className={'form-group'}>
+                                    <label htmlFor="product_code">ระยะเวลามาตรฐาน (HH:MM:SS)</label>
+                                    <input type="text" className={'form-control'} id={'product_code'}
+                                           value={'00.04.00'} name={'product_code'}/>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={'d-flex justify-content-center w-100'} >
+                            <button className={'btn btn-primary'}>บันทึก</button>
+                        </div>
+                    </div>
+                </div>
+            </Content>
+        </>
+    );
+}
+
+export default Add_product_qc;
