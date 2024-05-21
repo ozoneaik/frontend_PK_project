@@ -66,7 +66,7 @@ function Qc_years() {
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>
-                                            <span className={'p-1 bg-primary rounded-pill'}>complete</span>
+                                            <span className={'py-1 px-2 bg-primary rounded-pill'}>complete</span>
                                         </td>
                                         <td>5</td>
                                         <td>15000</td>

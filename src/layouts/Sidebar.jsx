@@ -1,9 +1,11 @@
 import {Link, useLocation} from "react-router-dom";
 import Logo from "../assets/dist/img/background.jpeg"
 import UserImage from "../assets/dist/img/user2-160x160.jpg"
+import {useStateContext} from "../contexts/ContextProvider.jsx";
 
 function Sidebar() {
 
+    const {currentUser} = useStateContext();
     const location = useLocation();
 
     return (
@@ -20,7 +22,7 @@ function Sidebar() {
                         <img src={UserImage ? UserImage : '#'} alt="User Image" className={'img-circle elevation-2'}/>
                     </div>
                     <div className="info">
-                        <a href="#" className="d-block">Alexander Pierce</a>
+                        <a href="#" className="d-block">{currentUser.name}</a>
                     </div>
                 </div>
 

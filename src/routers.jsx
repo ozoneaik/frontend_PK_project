@@ -1,10 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
-import App from "./App.jsx";
 import Qc_years from "./pages/IncentiveSystem/Qc_years.jsx";
 import List_qc_month from "./pages/IncentiveSystem/List_qc_month.jsx";
 import List_product_qc from "./pages/IncentiveSystem/List_product_qc.jsx";
 import Add_product_qc from "./pages/IncentiveSystem/Add_product_qc.jsx";
 import Edit_product_qc from "./pages/IncentiveSystem/Edit_product_qc.jsx";
+import Login from "./pages/Login.jsx";
 
 const routers = createBrowserRouter([
     {
@@ -23,6 +23,7 @@ const routers = createBrowserRouter([
         ],
     },
     { path: '/', element: <Qc_years /> },
+    { path : '/login', element: <Login/>}
 ]);
 
 export default routers;
