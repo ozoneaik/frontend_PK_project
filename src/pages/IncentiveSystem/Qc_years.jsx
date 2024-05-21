@@ -5,16 +5,16 @@ import '../../assets/plugins/select2/js/select2.full.min.js';
 import '../../assets/style/table.css'
 import {Link} from "react-router-dom";
 import {useEffect, useState} from "react";
+import axiosClient from "../../axios.js";
 
-
-const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 
 
 function Qc_years() {
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+    const [dataSet, setDataSet] = useState({});
     useEffect(() => {
-
+        getQc_year('2024');
         // eslint-disable-next-line no-undef
         $(function () {
             // eslint-disable-next-line no-undef
@@ -22,13 +22,27 @@ function Qc_years() {
                 theme: 'bootstrap4'
             });
         })
-
         const intervalId = setInterval(() => {
             setCurrentYear(new Date().getFullYear());
         }, 1000);
-
         return () => clearInterval(intervalId);
     },[]);
+
+    const getQc_year = (year) => {
+        console.log(year)
+        axiosClient
+            .get(`/qc_year/${year ? year : '2024'}`, {})
+            .then(({data}) => {
+                setDataSet(data)
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    const handleClick = ()=>{
+        console.log(dataSet)
+    }
     return (
         <Content header={'Qc_years'} header_sub={'รายการ'}>
             <div className={'card'}>
@@ -37,11 +51,20 @@ function Qc_years() {
                 </div>
                 <div className="card-body text-center">
                     <div className={'text-center mb-3 d-flex justify-content-center'}>
-                        <select name="" className={'form-control select2'} id="" style={{maxWidth: 200}}>
+                        <select
+                            name="yearSelect"
+                            className="form-control select2"
+                            id="yearSelect"
+                            style={{maxWidth: 200}}
+                            defaultValue=""
+                            onChange={(event) => getQc_year(event.target.value)}
+                        >
+                            <option value="" disabled>Select a year</option>
                             <option value="2020">2020</option>
                             <option value="2021">2021</option>
                         </select>
-                        <button type="button" className="btn btn-primary ml-3" data-toggle="modal" data-target="#staticBackdrop">
+                        <button type="button" className="btn btn-primary ml-3" data-toggle="modal"
+                                data-target="#staticBackdrop">
                             + add year
                         </button>
                     </div>
@@ -61,27 +84,29 @@ function Qc_years() {
                             </tr>
                             </thead>
                             <tbody>
-                            {
-                                numbers.map((key, index) => (
-                                    <tr key={index}>
-                                        <td>{index + 1}</td>
-                                        <td>
-                                            <span className={'py-1 px-2 bg-primary rounded-pill'}>complete</span>
-                                        </td>
-                                        <td>5</td>
-                                        <td>15000</td>
-                                        <td>2022-04-25</td>
-                                        <td>2022-04-25</td>
-                                        <td>2022-04-25</td>
-                                        <td>2022-04-25</td>
-                                        <td>
-                                            <Link to={'/incentive/qc_list_month/2024/1'}>
-                                                <i className="fa-solid fa-file-lines"></i>
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                ))
-                            }
+                            {dataSet.length > 0 ? dataSet.map((data, index) => (
+                                <tr key={index}>
+                                    <td>{data.year}</td>
+                                    <td>
+                                        <span className={'py-1 px-2 bg-secondary rounded-pill'}>active</span>
+                                    </td>
+                                    <td>{data.user_count}</td>
+                                    <td>{data.day}</td>
+                                    <td>{data.job_count}</td>
+                                    <td> - </td>
+                                    <td> - </td>
+                                    <td> - </td>
+                                    <td>
+                                        <Link to={`/incentive/qc_list_month/2024/${index + 1}`}>
+                                            <i className="fa-solid fa-file-lines"></i>
+                                        </Link>
+                                    </td>
+                                </tr>
+                            )) : (
+                                <tr>
+                                    <td colSpan="9">กำลังโหลดข้อมูล</td>
+                                </tr>
+                            )}
 
                             </tbody>
                         </table>
@@ -118,6 +143,8 @@ function Qc_years() {
                     </div>
                 </div>
             </div>
+
+            <button onClick={()=>handleClick()}>Click</button>
 
         </Content>
 
