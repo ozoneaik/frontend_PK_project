@@ -6,6 +6,7 @@ import '../../assets/style/table.css'
 import {Link} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axiosClient from "../../axios.js";
+import Swal from "sweetalert2";
 
 
 
@@ -20,6 +21,9 @@ function Qc_years() {
             // eslint-disable-next-line no-undef
             $('.select2').select2({
                 theme: 'bootstrap4'
+            }).on('change', function (event) {
+                setDataSet({});
+                getQc_year(event.target.value);
             });
         })
         const intervalId = setInterval(() => {
@@ -37,6 +41,11 @@ function Qc_years() {
             })
             .catch((error) => {
                 console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Something went wrong',
+                    text: error.message
+                })
             });
     }
 
@@ -56,7 +65,6 @@ function Qc_years() {
                             className="form-control select2"
                             id="yearSelect"
                             style={{maxWidth: 200}}
-                            defaultValue=""
                             onChange={(event) => getQc_year(event.target.value)}
                         >
                             <option value="" disabled>Select a year</option>

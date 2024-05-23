@@ -3,30 +3,54 @@ import $ from 'jquery';
 import 'datatables.net';
 import 'datatables.net-bs4';
 import 'datatables.net-bs4/css/dataTables.bootstrap4.min.css';
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
+import axiosClient from "../../axios.js";
+import Swal from "sweetalert2";
 
 function List_product_qc() {
+
+    const [products, setProducts] = useState({});
     useEffect(() => {
-        // Ensure DataTables is initialized after the component is mounted
-        $(document).ready(function() {
-            $('#myTable').DataTable({
-                paging: true,
-                searching: true,
-                ordering: true,
-                columnDefs: [
-                    { className: "dt-center", targets: "_all" }
-                ]
-            });
-        });
+        getProducts();
     }, []);
+
+    const getProducts = () => {
+        axiosClient
+            .get(`/product`, {})
+            .then(({data}) => {
+                console.log(data);
+                setProducts(data);
+                // Initialize DataTables after data is fetched and products state is updated
+                $(document).ready(function () {
+                    $('#myTable').DataTable({
+                        paging: true,
+                        searching: true,
+                        ordering: true,
+                        columnDefs: [
+                            {className: "dt-center", targets: "_all"}
+                        ]
+                    });
+                });
+            })
+            .catch((error) => {
+                console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Something went wrong',
+                    text: error.message
+                });
+            });
+    }
+
 
     return (
         <Content header={'ข้อมูลสินค้า QC'} header_sub={'รายการ'}>
             <div className={'card'}>
                 <div className="card-body">
                     <div className={'d-flex justify-content-end mb-3'}>
-                        <Link to={'/incentive/products/add_product_qc'} className={'btn btn-primary'}> + เพิ่มสินค้า</Link>
+                        <Link to={'/incentive/products/add_product_qc'} className={'btn btn-primary'}> +
+                            เพิ่มสินค้า</Link>
                     </div>
                     <div className={'table-responsive'}>
                         <table className={'table table-bordered'} id={'myTable'}>
@@ -44,20 +68,46 @@ function List_product_qc() {
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td><span className={'px-3 py-1 text-sm rounded-pill bg-primary'}>Active</span></td>
-                                <td>50175</td>
-                                <td>สว่าน A</td>
-                                <td>เครื่อง</td>
-                                <td>00:04:00</td>
-                                <td><span className={'px-3 py-1 text-sm rounded-pill bg-primary'}>Very Easy</span></td>
-                                <td>QC</td>
-                                <td>
-                                    <Link to={'/incentive/products/edit_product_qc/1'}>
-                                        <i className="fa-solid fa-pen-to-square"></i>
-                                    </Link></td>
-                            </tr>
+                            {products.length > 0 ? products.map((product, index) => (
+                                <tr key={index}>
+                                    <td>{product.id}</td>
+                                    <td><span className={'px-3 py-1 text-sm rounded-pill bg-primary'}>Active</span></td>
+                                    <td>{product.pid}</td>
+                                    <td>{product.pname}</td>
+                                    <td>เครื่อง</td>
+                                    <td>{product.timeperpcs}</td>
+                                    <td>
+                                        {
+                                            product.le_id === 1 ?
+                                                <span
+                                                    className={'px-3 py-1 text-sm rounded-pill bg-primary'}>Very Easy</span> :
+                                                product.le_id === 2 ?
+                                                    <span
+                                                        className={'px-3 py-1 text-sm rounded-pill bg-primary'}>Easy</span> :
+                                                    product.le_id === 3 ?
+                                                        <span
+                                                            className={'px-3 py-1 text-sm rounded-pill bg-warning'}>Middling</span> :
+                                                        product.le_id === 4 ? <span
+                                                                className={'px-3 py-1 text-sm rounded-pill bg-danger'}>Very Hard</span> :
+                                                            product.le_id === 5 ? <span
+                                                                    className={'px-3 py-1 text-sm rounded-pill bg-danger'}>Hard</span> :
+                                                                <span
+                                                                    className={'px-3 py-1 text-sm rounded-pill bg-secondary'}>No QC</span>
+                                        }
+
+                                    </td>
+                                    <td>QC</td>
+                                    <td>
+                                        <Link to={`/incentive/products/edit_product_qc/${product.id}`}>
+                                            <i className="fa-solid fa-pen-to-square"></i>
+                                        </Link></td>
+                                </tr>
+                            )) : (
+                                <tr>
+                                    <td colSpan="9">กำลังโหลดข้อมูล</td>
+                                </tr>
+                            )}
+
                             </tbody>
                             <tfoot>
                             <tr>
@@ -76,11 +126,6 @@ function List_product_qc() {
                     </div>
                 </div>
             </div>
-
-            {/*<DataTable*/}
-            {/*    columns={columns}*/}
-            {/*    data={data}*/}
-            {/*/>*/}
         </Content>
     );
 }

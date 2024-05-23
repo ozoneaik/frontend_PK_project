@@ -1,6 +1,37 @@
 import Content from "../../layouts/Content.jsx";
+import {useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
+import axiosClient from "../../axios.js";
+import Swal from "sweetalert2";
 
 function Edit_product_qc() {
+
+
+    const params = useParams();
+    const [product, setProduct] = useState({});
+
+    useEffect(() => {
+        getProducts();
+    }, []);
+
+    const getProducts = () => {
+        axiosClient
+            .get(`/product/edit/${params.id}`)
+            .then(({data}) => {
+                console.log(data);
+                setProduct(data.product);
+            })
+            .catch((error) => {
+                console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Something went wrong',
+                    text: error.message
+                });
+            });
+    }
+
+
     return (
         <Content header={'ข้อมูลสินค้า QC'} header_sub={'แก้ไขสินค้า'}>
             <div className={'card'}>
@@ -13,7 +44,7 @@ function Edit_product_qc() {
                     <div className={'row'}>
                         <div className={'col-md-6 col-sm-12'}>
                             <div className={'form-group'}>
-                                <label htmlFor="product_code">รหัสสินค้า * </label>
+                                <label htmlFor="product_code">รหัสสินค้า *</label>
                                 <input type="text" readOnly={true} className={'form-control border-0 bg-light'}
                                        id={'product_code'}
                                        value={'50175'} name={'product_code'}/>
@@ -31,8 +62,8 @@ function Edit_product_qc() {
                             <div className={'form-group'}>
                                 <label htmlFor="">วันที่สร้างและเวลาสร้าง</label>
                                 <input type="text" readOnly={true} className={'form-control border-0 bg-light'}
-                                       id={'product_code'}
-                                       value={'02/05/2024 16:45:21'} name={'product_code'}/>
+                                       id={'product_date'}
+                                       value={'02/05/2024 16:45:21'} name={'product_date'}/>
                             </div>
                             <div className={'form-group'}>
                                 <label htmlFor="">วันที่-เวลา อัพเดท</label>
