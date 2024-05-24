@@ -104,7 +104,7 @@ function List_product_qc() {
                                 </tr>
                             )) : (
                                 <tr>
-                                    <td colSpan="9">กำลังโหลดข้อมูล</td>
+                                    <td colSpan="9" className={'text-center'}><span className="loader"></span></td>
                                 </tr>
                             )}
 

@@ -42,6 +42,13 @@ function Sidebar() {
                                         <p>QC สินค้า ประจำปี</p>
                                     </Link>
                                 </li>
+                                <li className={'nav nav-item'}>
+                                    <Link to={'/incentive/workday'}
+                                          className={`nav-link ${location.pathname === '/incentive/workday' || location.pathname.startsWith('/incentive/workday') ? 'active' : ''}`}>
+                                        <i className="far fa-circle nav-icon"></i>
+                                        <p>จัดการจำนวนวันทำงาน</p>
+                                    </Link>
+                                </li>
                                 <li className={'nav-item'}>
                                     <Link to={'/incentive/products/list_product_qc'}
                                           className={`nav-link ${location.pathname.startsWith('/incentive/products') ? 'active' : ''}`}>

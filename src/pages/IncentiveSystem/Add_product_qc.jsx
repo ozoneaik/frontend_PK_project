@@ -5,7 +5,6 @@ import '../../assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css
 import '../../assets/plugins/select2/js/select2.full.min.js';
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
-import {Thai} from "flatpickr/dist/l10n/th.js";
 import axiosClient from "../../axios.js";
 import Swal from "sweetalert2";
 
@@ -16,6 +15,8 @@ function Add_product_qc() {
     const [pname, setPname] = useState("");
     const [le_id, setLe_id] = useState("");
     const [timeperpcs, setTimeperpcs] = useState();
+
+    const [p_image, setP_image] = useState("https://images.dcpumpkin.com/images/product/500/");
 
 
     useEffect(() => {
@@ -76,6 +77,13 @@ function Add_product_qc() {
             });
     };
 
+
+    const ChagneImage = (e)=>{
+        let newPid = e.target.value;
+        setPid(newPid)
+        setP_image(`https://images.dcpumpkin.com/images/product/500/${newPid}.jpg`);
+    }
+
     return (
         <>
             <Content header={'ข้อมูลสินค้า QC'} header_sub={'รายการ'}>
@@ -83,27 +91,15 @@ function Add_product_qc() {
                     <div className={'card-body'}>
                         <div className={'image preview'}>
                             <h6 className={'text-bold'}>รูปสินค้า</h6>
-                            <img src="https://images.dcpumpkin.com/images/product/500/50175.jpg" alt="image" style={{maxWidth: 'calc(100% - 100px)'}} />
+                            <img src={p_image} alt="รูปจะแสดงเมื่อกรอกรหัสสินค้าที่ถูกต้อง" style={{maxWidth: 'calc(100% - 100px)'}} />
                         </div>
                         <form className="mt-8 space-y-6" onSubmit={onSubmit} method="POST">
                             <div className={'row'}>
-                                <div className={'col-12'}>
-                                    <div className="input-group mb-3">
-                                        <div className="input-group-prepend">
-                                            <span className="input-group-text">Upload</span>
-                                        </div>
-                                        <div className="custom-file">
-                                            <input type="file" className="custom-file-input" id="inputGroupFile01"/>
-                                            <label className="custom-file-label" htmlFor="inputGroupFile01">Choose
-                                                file</label>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div className={'col-md-6 col-sm-12'}>
                                     <div className={'form-group'}>
                                         <label htmlFor="product_code">รหัสสินค้า * </label>
                                         <input type="text" className={'form-control'} id={'product_code'}
-                                               name={'product_code'} onChange={(e) => setPid(e.target.value)}/>
+                                               name={'product_code'} onChange={(e) => ChagneImage(e)}/>
                                     </div>
                                     <div className={'form-group'}>
                                         <label htmlFor="product_level">ระดับความยาก * </label>

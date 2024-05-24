@@ -5,6 +5,7 @@ import List_product_qc from "./pages/IncentiveSystem/List_product_qc.jsx";
 import Add_product_qc from "./pages/IncentiveSystem/Add_product_qc.jsx";
 import Edit_product_qc from "./pages/IncentiveSystem/Edit_product_qc.jsx";
 import Login from "./pages/Login.jsx";
+import WorkDay from "./pages/IncentiveSystem/WorkDay.jsx";
 
 const routers = createBrowserRouter([
     {
@@ -18,7 +19,8 @@ const routers = createBrowserRouter([
                     { path: 'add_product_qc', element: <Add_product_qc /> },
                     { path: 'edit_product_qc/:id', element: <Edit_product_qc /> },
                 ]
-            }
+            },
+            { path: 'workday', element: <WorkDay/> },
 
         ],
     },

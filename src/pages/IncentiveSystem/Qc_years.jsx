@@ -112,7 +112,7 @@ function Qc_years() {
                                 </tr>
                             )) : (
                                 <tr>
-                                    <td colSpan="9">กำลังโหลดข้อมูล</td>
+                                    <td colSpan="9"><span className="loader"></span></td>
                                 </tr>
                             )}
 

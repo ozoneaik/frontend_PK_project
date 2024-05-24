@@ -1,10 +1,49 @@
 import Content from "../../layouts/Content.jsx";
 import '../../assets/style/toggle.css'
 import '../../assets/style/table.css'
+import {useEffect, useState} from "react";
+import axiosClient from "../../axios.js";
+import $ from "jquery";
+import Swal from "sweetalert2";
+import {Link} from "react-router-dom";
 
 
 function List_qc_month() {
-    const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const [toggle, setToggle] = useState(true);
+
+
+    const [datas,setDatas] = useState({});
+
+
+    const ChangeStatus = (e)=>{
+        setToggle(!toggle)
+    }
+    const numbers = [1, 2, 3, 4];
+
+    useEffect(() => {
+        getQcLog();
+    }, []);
+
+
+    const getQcLog = () => {
+        axiosClient
+            .get(`/incentive/index`, {})
+            .then(({data}) => {
+                console.log(data);
+                setDatas(data);
+            })
+            .catch((error) => {
+                console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Something went wrong',
+                    text: error.message
+                });
+            });
+    }
+
+
+
     return (
         <Content header={'Incentive System'} header_sub={'รายละเอียด'}>
             <div className={'calculate mb-3 d-flex justify-content-end'}>
@@ -35,6 +74,7 @@ function List_qc_month() {
                                 <th rowSpan={2}>ปริมาณรวม</th>
                                 <th rowSpan={2}>H:M / เดือน</th>
                                 <th rowSpan={2}>H:M / วัน</th>
+                                <th rowSpan={2}>เกรด</th>
                                 <th colSpan={5}>ปริมาณ</th>
                                 <th rowSpan={2}>ยอดรับบุคคล</th>
                                 <th rowSpan={2}>ยอดรับทีม</th>
@@ -49,37 +89,44 @@ function List_qc_month() {
                             </tr>
                             </thead>
                             <tbody>
-                            {numbers.map((key, index) => (
+                            {datas.length > 0 ? datas.map((data, index) => (
                                 <tr key={index}>
                                     <td>
                                         <label className="switch">
-                                            <input type="checkbox"/>
+                                            <input type="checkbox" checked={toggle === true ? true : false}
+                                                   onChange={(e) => ChangeStatus(e)}/>
                                             <span className="slider round"></span>
                                         </label>
                                     </td>
-                                    <td>1</td>
-                                    <td>E001</td>
-                                    <td>นายกิตติภัทร</td>
-                                    <td>10000</td>
-                                    <td>1280</td>
-                                    <td>07:09</td>
+                                    <td>{index+1}</td>
+                                    <td>{data.empqc}</td>
+                                    <td>{data.emp_name}</td>
+                                    <td>{data.empqc_count}</td>
+                                    <td>{data.HM}</td>
+                                    <td>{data.HD}</td>
                                     <td>
                                         {index === 2 ? (
-                                            <span className={'px-3 py-1 text-sm rounded-pill bg-primary'}>A+</span>) :
-                                            index === 3 ? (<span className={'px-3 py-1 text-sm rounded-pill bg-danger'}>F</span>) :
-                                            (<span className={'px-3 py-1 text-sm rounded-pill bg-warning'}>B</span>)
+                                                <span className={'px-3 py-1 text-sm rounded-pill bg-primary'}>A+</span>) :
+                                            index === 3 ? (
+                                                    <span className={'px-3 py-1 text-sm rounded-pill bg-danger'}>F</span>) :
+                                                (<span className={'px-3 py-1 text-sm rounded-pill bg-warning'}>B</span>)
                                         }
 
                                     </td>
-                                    <td>2,531 (0.1250)</td>
-                                    <td>2,531 (0.1250)</td>
-                                    <td>2,531 (0.1250)</td>
-                                    <td>2,531 (0.1250)</td>
-                                    <td>2,531 (0.1250)</td>
-                                    <td>2,531 (0.1250)</td>
-                                    <td>2,531 (0.1250)</td>
+                                    <td>{data.level_very_easy}</td>
+                                    <td>{data.level_easy}</td>
+                                    <td>{data.level_middling}</td>
+                                    <td>{data.level_hard}</td>
+                                    <td>{data.level_very_hard}</td>
+                                    <td>200</td>
+                                    <td>213443</td>
+                                    <td>213443</td>
                                 </tr>
-                            ))}
+                            )) : (
+                                <tr>
+                                    <td colSpan="9"><span className="loader"></span></td>
+                                </tr>
+                            )}
 
                             </tbody>
                             <tfoot className={'text-bold'} style={{background: '#ead1ff'}}>
@@ -97,6 +144,7 @@ function List_qc_month() {
                                 <td>31,890</td>
                                 <td>31,890</td>
                                 <td>31,890</td>
+                                <td>33,332</td>
                                 <td>33,332</td>
                                 <td>4,532</td>
                             </tr>

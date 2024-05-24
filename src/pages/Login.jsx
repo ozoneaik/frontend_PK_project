@@ -70,11 +70,8 @@ function Login() {
                                 </div>
                             </div>
                             <div className="row">
-                                <div className="w-100 mb-3">
+                                <div className="w-100">
                                     <button type="submit" className="btn btn-primary btn-block">เข้าสู่ระบบ</button>
-                                </div>
-                                <div className={'w-100'}>
-                                    <Link to={'/register'} className={'btn btn-outline-primary w-100'}>ลงทะเบียน</Link>
                                 </div>
                             </div>
                         </form>
