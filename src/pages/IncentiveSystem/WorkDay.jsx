@@ -88,17 +88,17 @@ function WorkDay() {
                             <form className="mt-8 space-y-6" onSubmit={onSubmit} method="POST">
                                 <div className={'form-group'}>
                                     <label htmlFor="">ปี ( year )</label>
-                                    <input type="number" className={'form-control'}
+                                    <input type="number" className={'form-control'} min={2000}
                                            onChange={(e) => setWoYear(e.target.value)}/>
                                 </div>
                                 <div className={'form-group'}>
                                     <label htmlFor="">เดือน ( month )</label>
-                                    <input type="number" className={'form-control'}
+                                    <input type="number" className={'form-control'} min={1} max={12}
                                            onChange={(e) => setWoMonth(e.target.value)}/>
                                 </div>
                                 <div className={'form-group'}>
                                     <label htmlFor="">วันทำงาน ( WorkDay )</label>
-                                    <input type="number" className={'form-control'}
+                                    <input type="number" className={'form-control'} min={0} max={31}
                                            onChange={(e) => setWorkday(e.target.value)}/>
                                 </div>
                                 <div className={'row'}>

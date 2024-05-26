@@ -105,11 +105,15 @@ function List_qc_month() {
                                     <td>{data.HM}</td>
                                     <td>{data.HD}</td>
                                     <td>
-                                        {index === 2 ? (
+                                        {data.grade === 'A+' ? (
                                                 <span className={'px-3 py-1 text-sm rounded-pill bg-primary'}>A+</span>) :
-                                            index === 3 ? (
-                                                    <span className={'px-3 py-1 text-sm rounded-pill bg-danger'}>F</span>) :
-                                                (<span className={'px-3 py-1 text-sm rounded-pill bg-warning'}>B</span>)
+                                            data.grade === 'A' ? (
+                                                    <span className={'px-3 py-1 text-sm rounded-pill bg-warning'}>A</span>) :
+                                                data.grade === 'B' ? (
+                                                    <span className={'px-3 py-1 text-sm rounded-pill bg-success'}>B</span>) :
+                                                    data.grade === 'C' ? (
+                                                        <span className={'px-3 py-1 text-sm rounded-pill bg-info'}>C</span>) :
+                                                        <span className={'px-3 py-1 text-sm rounded-pill bg-danger'}>ไม่ผ่าน</span>
                                         }
 
                                     </td>
