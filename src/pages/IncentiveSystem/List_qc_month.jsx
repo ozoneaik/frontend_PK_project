@@ -100,7 +100,7 @@ function List_qc_month() {
                                     <td>{index+1}</td>
                                     <td>{data.empqc}</td>
                                     <td>{data.emp_name}</td>
-                                    <td>{data.empqc_count}</td>
+                                    <td>{data.empqc_count.toLocaleString()}</td>
                                     <td>{data.HM}</td>
                                     <td>{data.HD}</td>
                                     <td>
@@ -116,14 +116,15 @@ function List_qc_month() {
                                         }
 
                                     </td>
-                                    <td>{data.level_very_easy} <span className={'text-bold'}>({data.rateVeryEasy})</span> </td>
-                                    <td>{data.level_easy} <span className={'text-bold'}>({data.rateEasy})</span> </td>
-                                    <td>{data.level_middling} <span className={'text-bold'}>({data.rateMiddling})</span> </td>
-                                    <td>{data.level_hard} <span className={'text-bold'}>({data.rateHard})</span> </td>
-                                    <td>{data.level_very_hard} <span className={'text-bold'}>({data.rateVeryHard})</span> </td>
-                                    <td>{data.total_person_received}</td>
+                                    <td>{parseFloat(data.level_very_easy).toLocaleString()} <span
+                                        className={'text-bold'}>({data.rateVeryEasy})</span></td>
+                                    <td>{parseFloat(data.level_easy).toLocaleString()} <span className={'text-bold'}>({data.rateEasy})</span> </td>
+                                    <td>{parseFloat(data.level_middling).toLocaleString()} <span className={'text-bold'}>({data.rateMiddling})</span> </td>
+                                    <td>{parseFloat(data.level_hard).toLocaleString()} <span className={'text-bold'}>({data.rateHard})</span> </td>
+                                    <td>{parseFloat(data.level_very_hard).toLocaleString()} <span className={'text-bold'}>({data.rateVeryHard})</span> </td>
+                                    <td>{data.total_person_received.toLocaleString()}</td>
                                     <td>{data_team.total_received_team}</td>
-                                    <td>{data.total_received}</td>
+                                    <td>{parseFloat(data.total_received).toLocaleString()}</td>
                                 </tr>
                             )) : (
                                 <tr>
@@ -138,7 +139,7 @@ function List_qc_month() {
                                 <td></td>
                                 <td>Total</td>
                                 <td></td>
-                                <td>{data_team.total_empqc_teams}</td>
+                                <td>{parseFloat(data_team.total_empqc_teams).toLocaleString()}</td>
                                 <td>{data_team.average_time_HM}</td>
                                 <td>{data_team.average_time_HD}</td>
 
@@ -158,14 +159,14 @@ function List_qc_month() {
                                     }
 
                                 </td>
-                                <td>{data_team.totalVeryEasy}</td>
-                                <td>{data_team.totalEasy}</td>
-                                <td>{data_team.totalMiddling}</td>
-                                <td>{data_team.totalHard}</td>
-                                <td>{data_team.totalVeryHard}</td>
-                                <td>{data_team.totalPersonReceived}</td>
+                                <td>{parseFloat(data_team.totalVeryEasy).toLocaleString()}</td>
+                                <td>{parseFloat(data_team.totalEasy).toLocaleString()}</td>
+                                <td>{parseFloat(data_team.totalMiddling).toLocaleString()}</td>
+                                <td>{parseFloat(data_team.totalHard).toLocaleString()}</td>
+                                <td>{parseFloat(data_team.totalVeryHard).toLocaleString()}</td>
+                                <td>{parseFloat(data_team.totalPersonReceived).toLocaleString()}</td>
                                 <td> </td>
-                                <td>{data_team.total_receiveds}</td>
+                                <td>{parseFloat(data_team.total_receiveds).toLocaleString()}</td>
                             </tr>
                             </tfoot>
                         </table>
