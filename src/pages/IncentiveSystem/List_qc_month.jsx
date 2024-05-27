@@ -3,9 +3,7 @@ import '../../assets/style/toggle.css'
 import '../../assets/style/table.css'
 import {useEffect, useState} from "react";
 import axiosClient from "../../axios.js";
-import $ from "jquery";
 import Swal from "sweetalert2";
-import {Link} from "react-router-dom";
 
 
 function List_qc_month() {
@@ -13,12 +11,12 @@ function List_qc_month() {
 
 
     const [datas,setDatas] = useState({});
+    const [data_team, setData_team] = useState({});
 
 
     const ChangeStatus = (e)=>{
         setToggle(!toggle)
     }
-    const numbers = [1, 2, 3, 4];
 
     useEffect(() => {
         getQcLog();
@@ -30,7 +28,8 @@ function List_qc_month() {
             .get(`/incentive/index`, {})
             .then(({data}) => {
                 console.log(data);
-                setDatas(data);
+                setDatas(data.amount_qc_users);
+                setData_team(data.data_teams);
             })
             .catch((error) => {
                 console.error(error);
@@ -117,14 +116,14 @@ function List_qc_month() {
                                         }
 
                                     </td>
-                                    <td>{data.level_very_easy}</td>
-                                    <td>{data.level_easy}</td>
-                                    <td>{data.level_middling}</td>
-                                    <td>{data.level_hard}</td>
-                                    <td>{data.level_very_hard}</td>
-                                    <td>200</td>
-                                    <td>213443</td>
-                                    <td>213443</td>
+                                    <td>{data.level_very_easy} <span className={'text-bold'}>({data.rateVeryEasy})</span> </td>
+                                    <td>{data.level_easy} <span className={'text-bold'}>({data.rateEasy})</span> </td>
+                                    <td>{data.level_middling} <span className={'text-bold'}>({data.rateMiddling})</span> </td>
+                                    <td>{data.level_hard} <span className={'text-bold'}>({data.rateHard})</span> </td>
+                                    <td>{data.level_very_hard} <span className={'text-bold'}>({data.rateVeryHard})</span> </td>
+                                    <td>{data.total_person_received}</td>
+                                    <td>{data_team.total_received_team}</td>
+                                    <td>{data.total_received}</td>
                                 </tr>
                             )) : (
                                 <tr>
@@ -139,24 +138,40 @@ function List_qc_month() {
                                 <td></td>
                                 <td>Total</td>
                                 <td></td>
-                                <td>21,071</td>
-                                <td>1158:24</td>
-                                <td>08:46(Avg.)</td>
-                                <td><span className={'px-3 py-1 text-sm rounded-pill bg-primary'}>A+</span></td>
-                                <td>31,890</td>
-                                <td>31,890</td>
-                                <td>31,890</td>
-                                <td>31,890</td>
-                                <td>31,890</td>
-                                <td>33,332</td>
-                                <td>33,332</td>
-                                <td>4,532</td>
+                                <td>{data_team.total_empqc_teams}</td>
+                                <td>{data_team.average_time_HM}</td>
+                                <td>{data_team.average_time_HD}</td>
+
+                                <td>
+                                    {data_team.average_grade === 'A+' ? (
+                                            <span className={'px-3 py-1 text-sm rounded-pill bg-primary'}>A+</span>) :
+                                        data_team.average_grade === 'A' ? (
+                                                <span className={'px-3 py-1 text-sm rounded-pill bg-warning'}>A</span>) :
+                                            data_team.average_grade === 'B' ? (
+                                                    <span
+                                                        className={'px-3 py-1 text-sm rounded-pill bg-success'}>B</span>) :
+                                                data_team.average_grade === 'C' ? (
+                                                        <span
+                                                            className={'px-3 py-1 text-sm rounded-pill bg-info'}>C</span>) :
+                                                    <span
+                                                        className={'px-3 py-1 text-sm rounded-pill bg-danger'}>ไม่ผ่าน</span>
+                                    }
+
+                                </td>
+                                <td>{data_team.totalVeryEasy}</td>
+                                <td>{data_team.totalEasy}</td>
+                                <td>{data_team.totalMiddling}</td>
+                                <td>{data_team.totalHard}</td>
+                                <td>{data_team.totalVeryHard}</td>
+                                <td>{data_team.totalPersonReceived}</td>
+                                <td> </td>
+                                <td>{data_team.total_receiveds}</td>
                             </tr>
                             </tfoot>
                         </table>
                     </div>
                     <div className={'d-flex justify-content-center mt-3'}>
-                    <button className={'btn btn-primary'} style={{minWidth: 200}}>บันทึก</button>
+                        <button className={'btn btn-primary'} style={{minWidth: 200}}>บันทึก</button>
                     </div>
                 </div>
             </div>
