@@ -7,7 +7,6 @@ import {Link} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axiosClient from "../../axios.js";
 import Swal from "sweetalert2";
-import error from "eslint-plugin-react/lib/util/error.js";
 
 
 function Qc_years() {
@@ -34,7 +33,6 @@ function Qc_years() {
     const getListYears = () => {
         axiosClient.get('/incentive/list-year', {})
             .then(({data}) => {
-                console.log(data);
                 setListYears(data);
                 setYear(parseInt(data[0]) + 1)
                 getQc_year(data[0]);
@@ -188,7 +186,6 @@ function Qc_years() {
 
                 </div>
             </div>
-
 
             <div className="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabIndex="-1"
                  aria-labelledby="staticBackdropLabel" aria-hidden="true">

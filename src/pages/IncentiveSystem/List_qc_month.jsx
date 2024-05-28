@@ -11,20 +11,11 @@ function List_qc_month() {
 
 
     const {year, month} = useParams();
-
-
-    const [toggle, setToggle] = useState(true);
     const [datas,setDatas] = useState({});
     const [data_team, setData_team] = useState({});
 
 
-
-    const ChangeStatus = (e)=>{
-        setToggle(!toggle)
-    }
-
     useEffect(() => {
-        console.log(year,month)
         getQcLog(year,month);
     }, []);
 
@@ -33,18 +24,59 @@ function List_qc_month() {
         axiosClient
             .get(`/incentive/qc_month/${year}/${month}`, {})
             .then(({data}) => {
-                console.log(data);
+                console.log(data)
                 setDatas(data.amount_qc_users);
                 setData_team(data.data_teams);
             })
             .catch((error) => {
-                console.error(error);
                 Swal.fire({
                     icon: 'error',
                     title: 'Something went wrong',
                     text: error.message
                 });
             });
+    }
+
+
+    const onSubmit = ()=>{
+        const NewData_team = {
+            ...data_team,
+            'year': year,
+            'month': month,
+            'status' : 'active'
+        }
+
+        const updatedDatas = datas.map(data => ({
+            ...data,
+            'status': document.getElementById(`checkbox_${data.empqc}`).checked ? 'yes' : 'no'
+        }));
+        axiosClient.post('/incentive/qc_month/store',{
+            datas : updatedDatas,
+            NewData_team
+        }).then(({data,status}) => {
+
+            if (status === 200){
+                Swal.fire({
+                    icon: 'success',
+                    title: data.msg,
+                })
+            }
+            console.log(data,status)
+        }).catch((error) => {
+            if (error.response) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Something went wrong',
+                    text: error.response.data.msg
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Something went wrong',
+                    text: 'An unexpected error occurred. Please try again later.'
+                });
+            }
+        })
     }
 
 
@@ -100,7 +132,7 @@ function List_qc_month() {
                                 <tr key={index}>
                                     <td>
                                         <label className="switch">
-                                            <input type="checkbox" checked={data.grade !== 'ไม่ผ่าน'}/>
+                                            <input id={`checkbox_${data.empqc}`} type="checkbox" defaultChecked={data.grade !== 'ไม่ผ่าน'} />
                                             <span className="slider round"></span>
                                         </label>
                                     </td>
@@ -179,7 +211,7 @@ function List_qc_month() {
                         </table>
                     </div>
                     <div className={'d-flex justify-content-center mt-3'}>
-                        <button className={'btn btn-primary'} style={{minWidth: 200}}>บันทึก</button>
+                        <button onClick={()=>onSubmit()} className={'btn btn-primary'} style={{minWidth: 200}}>บันทึก</button>
                     </div>
                 </div>
             </div>
