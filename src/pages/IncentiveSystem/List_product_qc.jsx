@@ -18,20 +18,28 @@ function List_product_qc() {
     const getProducts = () => {
         axiosClient
             .get(`/product`, {})
-            .then(({data}) => {
+            .then(({data,status}) => {
                 console.log(data);
-                setProducts(data);
-                // Initialize DataTables after data is fetched and products state is updated
-                $(document).ready(function () {
-                    $('#myTable').DataTable({
-                        paging: true,
-                        searching: true,
-                        ordering: true,
-                        columnDefs: [
-                            {className: "dt-center", targets: "_all"}
-                        ]
+                if (status === 200){
+                    setProducts(data.products);
+                    $(document).ready(function () {
+                        $('#myTable').DataTable({
+                            paging: true,
+                            searching: true,
+                            ordering: true,
+                            columnDefs: [
+                                {className: "dt-center", targets: "_all"}
+                            ]
+                        });
+                    }); 
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Something went wrong',
+                        text: data.msg
                     });
-                });
+                }
+                // Initialize DataTables after data is fetched and products state is updated
             })
             .catch((error) => {
                 console.error(error);
@@ -78,18 +86,18 @@ function List_product_qc() {
                                     <td>{product.timeperpcs}</td>
                                     <td>
                                         {
-                                            product.le_id === 1 ?
+                                            product.levelid === 'L001' ?
                                                 <span
                                                     className={'px-3 py-1 text-sm rounded-pill bg-primary'}>Very Easy</span> :
-                                                product.le_id === 2 ?
+                                                product.levelid === 'L002' ?
                                                     <span
                                                         className={'px-3 py-1 text-sm rounded-pill bg-primary'}>Easy</span> :
-                                                    product.le_id === 3 ?
+                                                    product.levelid === 'L003' ?
                                                         <span
                                                             className={'px-3 py-1 text-sm rounded-pill bg-warning'}>Middling</span> :
-                                                        product.le_id === 4 ? <span
-                                                                className={'px-3 py-1 text-sm rounded-pill bg-danger'}>Very Hard</span> :
-                                                            product.le_id === 5 ? <span
+                                                        product.levelid === 'L004' ? <span
+                                                                className={'px-3 py-1    text-sm rounded-pill bg-danger'}>Very Hard</span> :
+                                                            product.levelid === 'L005' ? <span
                                                                     className={'px-3 py-1 text-sm rounded-pill bg-danger'}>Hard</span> :
                                                                 <span
                                                                     className={'px-3 py-1 text-sm rounded-pill bg-secondary'}>No QC</span>

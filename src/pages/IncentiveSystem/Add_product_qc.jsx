@@ -26,13 +26,12 @@ function Add_product_qc() {
             setLe_id(event.target.value);
         });
         flatpickr('#product_rate',{
-
             enableTime: true,
             noCalendar: true,
             dateFormat: "H:i:ss",
             time_24hr: true,
             confirmText: "OK ",
-            onChange: function (selectedDates, dateString, instance) {
+            onChange: function (selectedDates, dateString) {
                 setTimeperpcs(dateString)
             }
         });

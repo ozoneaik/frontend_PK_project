@@ -4,14 +4,19 @@ import '../../assets/style/table.css'
 import {useEffect, useState} from "react";
 import axiosClient from "../../axios.js";
 import Swal from "sweetalert2";
+import {useParams} from "react-router-dom";
 
 
 function List_qc_month() {
+
+
+    const {year, month} = useParams();
+
+
     const [toggle, setToggle] = useState(true);
-
-
     const [datas,setDatas] = useState({});
     const [data_team, setData_team] = useState({});
+
 
 
     const ChangeStatus = (e)=>{
@@ -19,13 +24,14 @@ function List_qc_month() {
     }
 
     useEffect(() => {
-        getQcLog();
+        console.log(year,month)
+        getQcLog(year,month);
     }, []);
 
 
-    const getQcLog = () => {
+    const getQcLog = (year,month) => {
         axiosClient
-            .get(`/incentive/index`, {})
+            .get(`/incentive/qc_month/${year}/${month}`, {})
             .then(({data}) => {
                 console.log(data);
                 setDatas(data.amount_qc_users);
@@ -51,14 +57,16 @@ function List_qc_month() {
 
             <div className={'card'}>
                 <div className={'card-body'}>
-                    <div className={'row d-flex justify-content-between'}>
-                        <div>
-                            <p style={{fontSize: 18}} className={'text-bold'}>ปริมาณการ QC สินค้า ประจำเดือน 04/2024</p>
-                            <p>กำหนดจ่ายเดือน 05/2024</p>
-                            <p>จำนวนวันทำงาน 22 วัน</p>
-                        </div>
-                        <div>
-                            <p>เรียกข้อมูล ณ วันที่ 25/04/2024</p>
+                    <div className={'row'}>
+                        <div className={'col-12 d-flex justify-content-between'}>
+                            <div>
+                                <p style={{fontSize: 18}} className={'text-bold'}>ปริมาณการ QC สินค้า ประจำเดือน {month}/{year}</p>
+                                <p>กำหนดจ่ายเดือน {month === '12' ? '1' : parseInt(month)+1}/{month === '12' ? parseInt(year)+1 : year}</p>
+                                <p>จำนวนวันทำงาน 22 วัน</p>
+                            </div>
+                            <div>
+                                <p>เรียกข้อมูล ณ วันที่ 25/04/2024</p>
+                            </div>
                         </div>
                     </div>
 
@@ -92,8 +100,7 @@ function List_qc_month() {
                                 <tr key={index}>
                                     <td>
                                         <label className="switch">
-                                            <input type="checkbox" checked={toggle === true ? true : false}
-                                                   onChange={(e) => ChangeStatus(e)}/>
+                                            <input type="checkbox" checked={data.grade !== 'ไม่ผ่าน'}/>
                                             <span className="slider round"></span>
                                         </label>
                                     </td>

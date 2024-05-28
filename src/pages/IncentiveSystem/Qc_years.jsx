@@ -7,15 +7,16 @@ import {Link} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axiosClient from "../../axios.js";
 import Swal from "sweetalert2";
-
-
+import error from "eslint-plugin-react/lib/util/error.js";
 
 
 function Qc_years() {
-    const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+    const [listYears, setListYears] = useState([]);
+    const [year, setYear] = useState(2000);
     const [dataSet, setDataSet] = useState({});
+
     useEffect(() => {
-        getQc_year('2024');
+        getListYears();
         // eslint-disable-next-line no-undef
         $(function () {
             // eslint-disable-next-line no-undef
@@ -26,32 +27,95 @@ function Qc_years() {
                 getQc_year(event.target.value);
             });
         })
-        const intervalId = setInterval(() => {
-            setCurrentYear(new Date().getFullYear());
-        }, 1000);
-        return () => clearInterval(intervalId);
-    },[]);
+
+    }, []);
+
+
+    const getListYears = () => {
+        axiosClient.get('/incentive/list-year', {})
+            .then(({data}) => {
+                console.log(data);
+                setListYears(data);
+                setYear(parseInt(data[0]) + 1)
+                getQc_year(data[0]);
+            }).catch((error) => {
+            console.error(error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Something went wrong',
+                text: error.message
+            })
+        })
+    }
 
     const getQc_year = (year) => {
         console.log(year)
         axiosClient
-            .get(`/qc_year/${year ? year : '2024'}`, {})
-            .then(({data}) => {
-                setDataSet(data)
+            .get(`/incentive/qc_year/${year}`, {})
+            .then(({data,status}) => {
+                console.log(data)
+                if (status === 200){
+                    setDataSet(data.results)
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Something went wrong',
+                        text: data.msg
+                    })
+
+
+                }
             })
             .catch((error) => {
                 console.error(error);
                 Swal.fire({
                     icon: 'error',
                     title: 'Something went wrong',
-                    text: error.message
+                    text: error.response.data.msg
                 })
             });
     }
 
-    const handleClick = ()=>{
-        console.log(dataSet)
-    }
+    const onSubmit = (ev) => {
+        ev.preventDefault();
+        axiosClient
+            .post("/incentive/add-year", {year})
+            .then(({data, status}) => {
+                if (status === 200) {
+                    Swal.fire({
+                        icon: 'success',
+                        text: data.msg // นำข้อความผิดพลาดจาก API มาแสดงในข้อความ
+                    });
+                    getListYears()
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Something went wrong',
+                        text: data.msg
+                    })
+                }
+
+            })
+            .catch((error) => {
+                if (error.response) {
+                    // ในกรณีที่มีข้อผิดพลาดจาก API
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Something went wrong',
+                        text: error.response.data.message // นำข้อความผิดพลาดจาก API มาแสดงในข้อความ
+                    });
+                } else {
+                    // ในกรณีที่มีข้อผิดพลาดอื่นๆ เช่นการเชื่อมต่อเครือข่าย
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Something went wrong',
+                        text: 'An unexpected error occurred. Please try again later.'
+                    });
+                }
+                console.error(error);
+            });
+    };
+
     return (
         <Content header={'Qc_years'} header_sub={'รายการ'}>
             <div className={'card'}>
@@ -65,11 +129,13 @@ function Qc_years() {
                             className="form-control select2"
                             id="yearSelect"
                             style={{maxWidth: 200}}
-                            onChange={(event) => getQc_year(event.target.value)}
-                        >
+                            onChange={(event) => getQc_year(event.target.value)}>
                             <option value="" disabled>Select a year</option>
-                            <option value="2020">2020</option>
-                            <option value="2021">2021</option>
+                            {listYears.length > 0 ? listYears.map((year, i) => (
+                                <option key={i} value={year}>{year}</option>
+                            )) : (
+                                <></>
+                            )}
                         </select>
                         <button type="button" className="btn btn-primary ml-3" data-toggle="modal"
                                 data-target="#staticBackdrop">
@@ -101,11 +167,11 @@ function Qc_years() {
                                     <td>{data.user_count}</td>
                                     <td>{data.day}</td>
                                     <td>{data.job_count}</td>
-                                    <td> - </td>
-                                    <td> - </td>
-                                    <td> - </td>
+                                    <td> -</td>
+                                    <td> -</td>
+                                    <td> -</td>
                                     <td>
-                                        <Link to={`/incentive/qc_list_month/2024/${index + 1}`}>
+                                        <Link to={`/incentive/qc_list_month/${data.year.split('-')[0]}/${index + 1}`}>
                                             <i className="fa-solid fa-file-lines"></i>
                                         </Link>
                                     </td>
@@ -126,33 +192,34 @@ function Qc_years() {
 
             <div className="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabIndex="-1"
                  aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div className="modal-dialog">
+                <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel">Modal title</h5>
+                            <h5 className="modal-title" id="staticBackdropLabel">เพิ่มปี</h5>
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div className="modal-body">
-                            <form action="">
+                        <form onSubmit={onSubmit} method="POST">
+                            <div className="modal-body">
                                 <div className={'form-group'}>
-                                    <label htmlFor="addYear">เพิ่มปี</label>
-                                    <input type="text" id={'addYear'} name={'addYear'}
-                                           onChange={(e) => setCurrentYear(e.target.value)} value={currentYear}
+                                    <label htmlFor="addYear">ปี ( ค.ศ. )</label>
+                                    <input type="number" id={'addYear'} name={'addYear'}
+                                           onChange={(e) => setYear(e.target.value)}
+                                           value={year ? year : ''}
                                            className={'form-control'}/>
                                 </div>
-                            </form>
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-dismiss="modal">ปิด</button>
-                            <button type="button" className="btn btn-primary">เพิ่ม</button>
-                        </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button type={'button'} className="btn btn-secondary" data-dismiss="modal">ปิด</button>
+                                <button type={'submit'} className="btn btn-primary">เพิ่ม</button>
+                            </div>
+                        </form>
+
                     </div>
                 </div>
             </div>
 
-            <button onClick={()=>handleClick()}>Click</button>
 
         </Content>
 
