@@ -50,11 +50,11 @@ function Qc_years() {
         console.log(year)
         axiosClient
             .get(`/incentive/qc_year/${year}`, {})
-            .then(({data,status}) => {
+            .then(({data, status}) => {
                 console.log(data)
-                if (status === 200){
+                if (status === 200) {
                     setDataSet(data.results)
-                }else{
+                } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Something went wrong',
@@ -82,10 +82,10 @@ function Qc_years() {
                 if (status === 200) {
                     Swal.fire({
                         icon: 'success',
-                        text: data.msg // นำข้อความผิดพลาดจาก API มาแสดงในข้อความ
+                        text: data.msg
                     });
                     getListYears()
-                }else{
+                } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Something went wrong',
@@ -96,14 +96,12 @@ function Qc_years() {
             })
             .catch((error) => {
                 if (error.response) {
-                    // ในกรณีที่มีข้อผิดพลาดจาก API
                     Swal.fire({
                         icon: 'error',
                         title: 'Something went wrong',
-                        text: error.response.data.message // นำข้อความผิดพลาดจาก API มาแสดงในข้อความ
+                        text: error.response.data.message
                     });
                 } else {
-                    // ในกรณีที่มีข้อผิดพลาดอื่นๆ เช่นการเชื่อมต่อเครือข่าย
                     Swal.fire({
                         icon: 'error',
                         title: 'Something went wrong',
@@ -120,7 +118,7 @@ function Qc_years() {
                 <div className="card-header">
                     <h3 className="card-title">Incentive System</h3>
                 </div>
-                <div className="card-body text-center">
+                <div className="card-body text-center" >
                     <div className={'text-center mb-3 d-flex justify-content-center'}>
                         <select
                             name="yearSelect"
@@ -137,7 +135,7 @@ function Qc_years() {
                         </select>
                         <button type="button" className="btn btn-primary ml-3" data-toggle="modal"
                                 data-target="#staticBackdrop">
-                            + add year
+                            + เพิ่มปี
                         </button>
                     </div>
                     <div className={'table-responsive'}>
@@ -160,16 +158,16 @@ function Qc_years() {
                                 <tr key={index}>
                                     <td>{data.year}</td>
                                     <td>
-                                        <span className={'py-1 px-2 bg-secondary rounded-pill'}>active</span>
+                                        <span className={`py-1 px-2 rounded-pill ${data.status === 'active' ? 'bg-secondary' : data.status === 'wait' ? 'bg-warning' : data.status === 'approve' ? 'bg-success' : data.status === 'complete' ? 'bg-primary' : data.status = '-'}`}>{data.status}</span>
                                     </td>
                                     <td>{data.user_count}</td>
                                     <td>{data.day}</td>
-                                    <td>{data.job_count}</td>
+                                    <td>{parseFloat(data.job_count).toLocaleString()}</td>
+                                    {data.updated_at ? (<td>{new Date(data.updated_at).toLocaleString()}</td>) : (<td>-</td>)}
                                     <td> -</td>
-                                    <td> -</td>
-                                    <td> -</td>
+                                    <td>-</td>
                                     <td>
-                                        <Link to={`/incentive/qc_list_month/${data.year.split('-')[0]}/${index + 1}`}>
+                                        <Link to={`/incentive/qc_list_month/${data.year.split('-')[0]}/${index + 1}/${data.status   !== '-' ? data.status : '-'}`}>
                                             <i className="fa-solid fa-file-lines"></i>
                                         </Link>
                                     </td>

@@ -14,7 +14,7 @@ const routers = createBrowserRouter([
         path: '/incentive',
         children: [
             {path: 'qc_years', element: <Qc_years/>}, //id = years
-            {path: 'qc_list_month/:year/:month', element: <List_qc_month/>}, //id = month
+            {path: 'qc_list_month/:year/:month/:status', element: <List_qc_month/>}, //id = month
             {
                 path: 'products', children: [
                     {path: 'list_product_qc', element: <List_product_qc/>},

@@ -10,7 +10,7 @@ import {useParams} from "react-router-dom";
 function List_qc_month() {
 
 
-    const {year, month} = useParams();
+    const {year, month,status} = useParams();
     const [datas,setDatas] = useState({});
     const [data_team, setData_team] = useState({});
 
@@ -21,20 +21,23 @@ function List_qc_month() {
 
 
     const getQcLog = (year,month) => {
-        axiosClient
-            .get(`/incentive/qc_month/${year}/${month}`, {})
-            .then(({data}) => {
-                console.log(data)
-                setDatas(data.amount_qc_users);
-                setData_team(data.data_teams);
-            })
-            .catch((error) => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Something went wrong',
-                    text: error.message
+
+            axiosClient
+                .get(`/incentive/qc_month/${year}/${month}/${status}`, {})
+                .then(({data}) => {
+                    console.log(data)
+                    setDatas(data.amount_qc_users);
+                    setData_team(data.data_teams);
+                })
+                .catch((error) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Something went wrong',
+                        text: error.message
+                    });
                 });
-            });
+
+
     }
 
 
