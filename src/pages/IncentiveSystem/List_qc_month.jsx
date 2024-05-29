@@ -4,7 +4,7 @@ import '../../assets/style/table.css'
 import {useEffect, useState} from "react";
 import axiosClient from "../../axios.js";
 import Swal from "sweetalert2";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 
 function List_qc_month() {
@@ -82,6 +82,10 @@ function List_qc_month() {
         })
     }
 
+    const navigate = useNavigate();
+    const handleBack =  ()=>{
+        navigate(-1)
+    }
 
 
     return (
@@ -93,6 +97,7 @@ function List_qc_month() {
             <div className={'card'}>
                 <div className={'card-body'}>
                     <div className={'row'}>
+                        <button onClick={handleBack}>Back</button>
                         <div className={'col-12 d-flex justify-content-between'}>
                             <div>
                                 <p style={{fontSize: 18}} className={'text-bold'}>ปริมาณการ QC สินค้า ประจำเดือน {month}/{year}</p>

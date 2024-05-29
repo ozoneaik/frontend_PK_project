@@ -112,6 +112,18 @@ function Qc_years() {
             });
     };
 
+    const changeColorStatus = (dataStatus) => {
+        const statusClasses = {
+            active: 'bg-secondary',
+            wait: 'bg-warning',
+            approve: 'bg-success',
+            complete: 'bg-primary'
+        };
+        const statusClass = statusClasses[dataStatus] || '';
+        return <span className={`py-1 px-2 rounded-pill ${statusClass}`}>{dataStatus}</span>;
+    };
+
+
     return (
         <Content header={'Qc_years'} header_sub={'รายการ'}>
             <div className={'card'}>
@@ -158,7 +170,7 @@ function Qc_years() {
                                 <tr key={index}>
                                     <td>{data.year}</td>
                                     <td>
-                                        <span className={`py-1 px-2 rounded-pill ${data.status === 'active' ? 'bg-secondary' : data.status === 'wait' ? 'bg-warning' : data.status === 'approve' ? 'bg-success' : data.status === 'complete' ? 'bg-primary' : data.status = '-'}`}>{data.status}</span>
+                                        {changeColorStatus(data.status)}
                                     </td>
                                     <td>{data.user_count}</td>
                                     <td>{data.day}</td>
