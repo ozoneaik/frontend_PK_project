@@ -4,104 +4,196 @@ import '../../assets/style/table.css'
 import {useEffect, useState} from "react";
 import axiosClient from "../../axios.js";
 import Swal from "sweetalert2";
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 
 
 function List_qc_month() {
 
 
-    const {year, month,status} = useParams();
-    const [datas,setDatas] = useState({});
+    const {year, month, status} = useParams();
+    const [datas, setDatas] = useState({});
     const [data_team, setData_team] = useState({});
+
+    const navigate = useNavigate();
 
 
     useEffect(() => {
-        getQcLog(year,month);
+        getQcLog(year, month);
     }, []);
 
 
-    const getQcLog = (year,month) => {
+    const getQcLog = (year, month) => {
 
-            axiosClient
-                .get(`/incentive/qc_month/${year}/${month}/${status}`, {})
-                .then(({data}) => {
-                    console.log(data)
-                    setDatas(data.amount_qc_users);
-                    setData_team(data.data_teams);
-                })
-                .catch((error) => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Something went wrong',
-                        text: error.message
-                    });
+        axiosClient
+            .get(`/incentive/qc_month/${year}/${month}/${status}`, {})
+            .then(({data}) => {
+                console.log(data)
+                setDatas(data.amount_qc_users);
+                setData_team(data.data_teams);
+            })
+            .catch((error) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Something went wrong',
+                    text: error.message
                 });
+            });
 
 
     }
 
+    const handleCheckboxChange = (index) => {
+        const updated = [...datas];
+        updated[index].paystatus = document.getElementById(`checkbox_${index}`).checked ? 'yes' : 'no';
+        setDatas(updated);
+    };
 
-    const onSubmit = ()=>{
+
+    const onSubmit = () => {
+
+
+        document.getElementById('BtnSubmit').disabled = true;
+        document.getElementById('Loading').style.display = 'inline-block';
+
         const NewData_team = {
             ...data_team,
             'year': year,
             'month': month,
-            'status' : 'active'
+            'status': 'active'
         }
 
-        const updatedDatas = datas.map(data => ({
+        const updatedDatas = datas.map((data, index) => ({
             ...data,
-            'status': document.getElementById(`checkbox_${data.empqc}`).checked ? 'yes' : 'no'
+            paystatus: document.getElementById(`checkbox_${index}`).checked ? 'yes' : 'no',
         }));
-        axiosClient.post('/incentive/qc_month/store',{
-            datas : updatedDatas,
-            NewData_team
-        }).then(({data,status}) => {
 
-            if (status === 200){
-                Swal.fire({
-                    icon: 'success',
-                    title: data.msg,
+
+        axiosClient.get(`/incentive/checkIncHd/${year}/${month}`, {})
+            .then(({data, status}) => {
+                if (status === 200) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: `เคยบันทึกข้อมูล ${year}/${month} แล้ว`,
+                        text: data.msg,
+                        confirmButtonText: 'ตกลง',
+                        showCancelButton: true,
+                        cancelButtonText: 'ยกเลิก',
+                        allowOutsideClick: false,
+
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // อิพเดทข้อมูลที่นี่
+
+                        }
+                        document.getElementById('BtnSubmit').disabled = false;
+                        document.getElementById('Loading').style.display = 'none';
+                    }).catch((error) => {
+
+                        if (error.response) {
+                            console.error(error.response.data.msg)
+                        }
+                        document.getElementById('BtnSubmit').disabled = false;
+                        document.getElementById('Loading').style.display = 'none';
+                    })
+                } else if (status === 400) {
+                    alert('hello');
+                }
+                console.log(data);
+            }).catch((error) => {
+            if (error.response.status === 400) {
+                axiosClient.post('/incentive/qc_month/store', {
+                    datas: updatedDatas,
+                    NewData_team
+                }).then(({data, status}) => {
+                    if (status === 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.msg,
+                            confirmButtonText: "ตกลง",
+                            allowOutsideClick: false
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                navigate('/incentive/qc_years');
+                            }
+                        })
+                        document.getElementById('BtnSubmit').disabled = false;
+                        document.getElementById('Loading').style.display = 'none';
+                        // return <Navigate to="/incentive/qc_years" />;
+                    }
+                    console.log(data, status)
+                }).catch((error) => {
+                    if (error.response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Something went wrong',
+                            text: error.response.data.msg,
+                            confirmButtonText: "ตกลง",
+                            allowOutsideClick: false
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Something went wrong',
+                            text: 'An unexpected error occurred. Please try again later.',
+                            confirmButtonText: "ตกลง",
+                            allowOutsideClick: false
+                        });
+                    }
+                    document.getElementById('BtnSubmit').disabled = false;
+                    document.getElementById('Loading').style.display = 'none';
                 })
             }
-            console.log(data,status)
-        }).catch((error) => {
-            if (error.response) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Something went wrong',
-                    text: error.response.data.msg
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Something went wrong',
-                    text: 'An unexpected error occurred. Please try again later.'
-                });
-            }
         })
+
+
     }
 
-    const navigate = useNavigate();
-    const handleBack =  ()=>{
-        navigate(-1)
+
+    const RedirectToEdit = () => {
+        navigate(`qc_list_month/${year}/${month}/-`, {replace: true})
+    }
+
+
+    const test = () => {
+
     }
 
 
     return (
         <Content header={'Incentive System'} header_sub={'รายละเอียด'}>
             <div className={'calculate mb-3 d-flex justify-content-end'}>
-                <button className={'text-end btn btn-warning'}><i className="fa-solid fa-calculator mr-2"></i>คำนวณ</button>
+                {
+                    status === '-' ?
+                        (
+                            <Link to={'#'} className={'text-end btn btn-warning'}>
+                                <i className="fa-solid fa-calculator mr-2"></i>
+                                <span>คำนวณ</span>
+                            </Link>
+                        ) : (
+                            <>
+                                <Link to={`incentive/qc_list_month/${year}/${month}/-`} onClick={RedirectToEdit}
+                                      className={'text-end btn btn-primary mr-3'}>
+                                    <span>แก้ไข</span>
+                                </Link>
+                                <button className={'text-end btn mr-3 text-white'} style={{backgroundColor: '#4c85f7'}}>
+                                    <span>ส่งอนุมัติ</span>
+                                </button>
+                                <button className={'text-end btn btn-success'}>
+                                    <span>พิมพ์</span>
+                                </button>
+                            </>
+                        )
+                }
             </div>
 
             <div className={'card'}>
                 <div className={'card-body'}>
                     <div className={'row'}>
-                        <button onClick={handleBack}>Back</button>
                         <div className={'col-12 d-flex justify-content-between'}>
                             <div>
-                                <p style={{fontSize: 18}} className={'text-bold'}>ปริมาณการ QC สินค้า ประจำเดือน {month}/{year}</p>
-                                <p>กำหนดจ่ายเดือน {month === '12' ? '1' : parseInt(month)+1}/{month === '12' ? parseInt(year)+1 : year}</p>
+                                <p style={{fontSize: 18}} className={'text-bold'}>ปริมาณการ QC สินค้า
+                                    ประจำเดือน {month}/{year}</p>
+                                <p>กำหนดจ่ายเดือน {month === '12' ? '1' : parseInt(month) + 1}/{month === '12' ? parseInt(year) + 1 : year}</p>
                                 <p>จำนวนวันทำงาน 22 วัน</p>
                             </div>
                             <div>
@@ -128,7 +220,7 @@ function List_qc_month() {
                                 <th rowSpan={2}>ยอดรับสุทธิ</th>
                             </tr>
                             <tr>
-                                <td>Very Easy </td>
+                                <td>Very Easy</td>
                                 <td>Easy</td>
                                 <td>Middling</td>
                                 <td>Hard</td>
@@ -139,12 +231,27 @@ function List_qc_month() {
                             {datas.length > 0 ? datas.map((data, index) => (
                                 <tr key={index}>
                                     <td>
-                                        <label className="switch">
-                                            <input id={`checkbox_${data.empqc}`} type="checkbox" defaultChecked={data.grade !== 'ไม่ผ่าน'} />
-                                            <span className="slider round"></span>
-                                        </label>
+                                        {status === '-' ? (
+                                                <label className={'switch'}>
+                                                    <input
+                                                        id={`checkbox_${index}`}
+                                                        type="checkbox"
+                                                        defaultChecked={data.paystatus === 'yes'}
+                                                        onChange={() => handleCheckboxChange(index)}
+                                                    />
+                                                    <span className="slider round"></span>
+                                                </label>
+                                            ) :
+                                            (
+                                                <span
+                                                    className={`px-3 py-1 text-sm rounded-pill ${data.paystatus === 'yes' ? 'bg-primary' : 'bg-danger'}`}>
+                                                    {data.paystatus}
+                                                </span>
+                                            )
+                                        }
+
                                     </td>
-                                    <td>{index+1}</td>
+                                    <td>{index + 1}</td>
                                     <td>{data.empqc}</td>
                                     <td>{data.emp_name}</td>
                                     <td>{data.empqc_count.toLocaleString()}</td>
@@ -154,21 +261,29 @@ function List_qc_month() {
                                         {data.grade === 'A+' ? (
                                                 <span className={'px-3 py-1 text-sm rounded-pill bg-primary'}>A+</span>) :
                                             data.grade === 'A' ? (
-                                                    <span className={'px-3 py-1 text-sm rounded-pill bg-warning'}>A</span>) :
+                                                    <span
+                                                        className={'px-3 py-1 text-sm rounded-pill bg-warning'}>A</span>) :
                                                 data.grade === 'B' ? (
-                                                    <span className={'px-3 py-1 text-sm rounded-pill bg-success'}>B</span>) :
+                                                        <span
+                                                            className={'px-3 py-1 text-sm rounded-pill bg-success'}>B</span>) :
                                                     data.grade === 'C' ? (
-                                                        <span className={'px-3 py-1 text-sm rounded-pill bg-info'}>C</span>) :
-                                                        <span className={'px-3 py-1 text-sm rounded-pill bg-danger'}>ไม่ผ่าน</span>
+                                                            <span
+                                                                className={'px-3 py-1 text-sm rounded-pill bg-info'}>C</span>) :
+                                                        <span
+                                                            className={'px-3 py-1 text-sm rounded-pill bg-danger'}>ไม่ผ่าน</span>
                                         }
 
                                     </td>
                                     <td>{parseFloat(data.level_very_easy).toLocaleString()} <span
                                         className={'text-bold'}>({data.rateVeryEasy})</span></td>
-                                    <td>{parseFloat(data.level_easy).toLocaleString()} <span className={'text-bold'}>({data.rateEasy})</span> </td>
-                                    <td>{parseFloat(data.level_middling).toLocaleString()} <span className={'text-bold'}>({data.rateMiddling})</span> </td>
-                                    <td>{parseFloat(data.level_hard).toLocaleString()} <span className={'text-bold'}>({data.rateHard})</span> </td>
-                                    <td>{parseFloat(data.level_very_hard).toLocaleString()} <span className={'text-bold'}>({data.rateVeryHard})</span> </td>
+                                    <td>{parseFloat(data.level_easy).toLocaleString()} <span
+                                        className={'text-bold'}>({data.rateEasy})</span></td>
+                                    <td>{parseFloat(data.level_middling).toLocaleString()} <span
+                                        className={'text-bold'}>({data.rateMiddling})</span></td>
+                                    <td>{parseFloat(data.level_hard).toLocaleString()} <span
+                                        className={'text-bold'}>({data.rateHard})</span></td>
+                                    <td>{parseFloat(data.level_very_hard).toLocaleString()} <span
+                                        className={'text-bold'}>({data.rateVeryHard})</span></td>
                                     <td>{data.total_person_received.toLocaleString()}</td>
                                     <td>{data_team.total_received_team}</td>
                                     <td>{parseFloat(data.total_received).toLocaleString()}</td>
@@ -212,15 +327,26 @@ function List_qc_month() {
                                 <td>{parseFloat(data_team.totalHard).toLocaleString()}</td>
                                 <td>{parseFloat(data_team.totalVeryHard).toLocaleString()}</td>
                                 <td>{parseFloat(data_team.totalPersonReceived).toLocaleString()}</td>
-                                <td> </td>
+                                <td></td>
                                 <td>{parseFloat(data_team.total_receiveds).toLocaleString()}</td>
                             </tr>
                             </tfoot>
                         </table>
                     </div>
-                    <div className={'d-flex justify-content-center mt-3'}>
-                        <button onClick={()=>onSubmit()} className={'btn btn-primary'} style={{minWidth: 200}}>บันทึก</button>
-                    </div>
+                    {
+                        status === '-' ? (
+                            <div className={'d-flex justify-content-center mt-3'}>
+
+                                <button onClick={() => onSubmit()} className={'btn btn-primary'} id={'BtnSubmit'}
+                                        style={{minWidth: 200, alignContent: "center"}}>
+                                    <span id={'Loading'} className="loader mr-1"
+                                          style={{height: 20, width: 20, marginBottom: -4, display: "none"}}></span>
+                                    <span>บันทึก</span>
+                                </button>
+                            </div>
+                        ) : <></>
+                    }
+                    <button onClick={test} className={'btn btn-primary'}>Test</button>
                 </div>
             </div>
         </Content>

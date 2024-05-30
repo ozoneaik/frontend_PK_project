@@ -8,6 +8,7 @@ import Login from "./pages/Login.jsx";
 import WorkDay from "./pages/IncentiveSystem/WorkDay.jsx";
 import QCTimes from "./pages/IncentiveSystem/Qc_times.jsx";
 import Qc_calculate_grade from "./pages/IncentiveSystem/Qc_calculate_grade.jsx";
+import NotFound from "./pages/NotFound.jsx";
 
 const routers = createBrowserRouter([
     {
@@ -25,11 +26,11 @@ const routers = createBrowserRouter([
             {path: 'workday', element: <WorkDay/>},
             {path: 'qc_time', element: <QCTimes/>},
             {path: 'calculate_grade', element: <Qc_calculate_grade/>}
-
         ],
     },
     {path: '/', element: <Qc_years/>},
-    {path: '/login', element: <Login/>}
+    {path: '/login', element: <Login/>},
+    {path: '*', element: <NotFound/>}
 ]);
 
 export default routers;
