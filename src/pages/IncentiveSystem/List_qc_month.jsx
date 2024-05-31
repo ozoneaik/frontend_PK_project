@@ -5,68 +5,84 @@ import {useEffect, useState} from "react";
 import axiosClient from "../../axios.js";
 import Swal from "sweetalert2";
 import {Link, useNavigate, useParams} from "react-router-dom";
+import {AlertError} from "../../Dialogs/alertNotQuestions.js";
+import {useStateContext} from "../../contexts/ContextProvider.jsx";
 
 
 function List_qc_month() {
 
 
+    const {currentUser} = useStateContext();
     const {year, month, status} = useParams();
     const [datas, setDatas] = useState({});
     const [data_team, setData_team] = useState({});
+    const [inc_id, setInc_id] = useState();
 
     const navigate = useNavigate();
 
 
+    //ดึงข้อมูลมาจาก .30 จากฟังก์ชั่น getQcLog()
     useEffect(() => {
         getQcLog(year, month);
     }, []);
 
-
+    //ฟังก์ชั่น ดึงข้อมูลมาแสดง
     const getQcLog = (year, month) => {
-
         axiosClient
             .get(`/incentive/qc_month/${year}/${month}/${status}`, {})
-            .then(({data}) => {
+            .then(({data, status}) => {
                 console.log(data)
-                setDatas(data.amount_qc_users);
-                setData_team(data.data_teams);
+                if (status === 200) {
+                    setDatas(data.amount_qc_users);
+                    setData_team(data.data_teams);
+                    setInc_id(data.inc_id);
+                }
             })
             .catch((error) => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Something went wrong',
-                    text: error.message
-                });
+                if (error.response.status === 400) {
+                    AlertError('Eror 400', error.response.data.msg);
+                } else {
+                    AlertError(error.response.status, error.message);
+                }
             });
-
-
     }
 
+    //ฟังก์ชั่นเปลี่ยนสถานะการจ่ายให้กับพนักงาน
     const handleCheckboxChange = (index) => {
         const updated = [...datas];
         updated[index].paystatus = document.getElementById(`checkbox_${index}`).checked ? 'yes' : 'no';
         setDatas(updated);
     };
 
-
-    const onSubmit = () => {
-
-
-        document.getElementById('BtnSubmit').disabled = true;
-        document.getElementById('Loading').style.display = 'inline-block';
-
-        const NewData_team = {
-            ...data_team,
-            'year': year,
-            'month': month,
-            'status': 'active'
+    //ซ่อนหรือแสดง กำลังโหลด
+    const showLodingAndDisable = (Bool) => {
+        if (Bool) {
+            document.getElementById('BtnSubmit').disabled = true;
+            document.getElementById('Loading').style.display = 'inline-block';
+        } else {
+            document.getElementById('BtnSubmit').disabled = false;
+            document.getElementById('Loading').style.display = 'none';
         }
+    }
 
+    //ฟังก์ชั่นเปลี่ยนไปแก้ไขข้อมูล
+    const RedirectToEdit = () => {
+        navigate(`qc_list_month/${year}/${month}/-`, {replace: true})
+    }
+
+    //ฟังก์ชั่นพิมพ์
+    const PrintData = () => {
+        navigate(`/incentive/printData/${year}/${month}/active`, {replace: true});
+    }
+
+    //ฟังก์ชั่นการกดส่ง
+    const onSubmit = () => {
+        showLodingAndDisable(true)
+        const NewData_team = {...data_team, 'year': year, 'month': month, 'status': 'active'}
         const updatedDatas = datas.map((data, index) => ({
             ...data,
             paystatus: document.getElementById(`checkbox_${index}`).checked ? 'yes' : 'no',
         }));
-
 
         axiosClient.get(`/incentive/checkIncHd/${year}/${month}`, {})
             .then(({data, status}) => {
@@ -82,18 +98,45 @@ function List_qc_month() {
 
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            // อิพเดทข้อมูลที่นี่
+
+                            // อัพเดทข้อมูลที่นี่
+                            console.log('อัพเดทข้อมูลที่นี่',inc_id);
+                            axiosClient.post(`/incentive/qc_month/update`, {
+                                inc_id,
+                                datas : updatedDatas,
+                                data_team
+                            }).then(({data,status}) => {
+
+                                if (status === 200) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title : 'อัพเดทข้อมูลสำเร็จ',
+                                        text: data.msg,
+                                        confirmButtonText : 'ตกลง',
+                                        allowOutsideClick: false,
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            navigate('/incentive/qc_years');
+                                        }
+                                    })
+                                }
+                            }).catch((error)=>{
+                                if (error.response.status === 400) {
+                                    AlertError('เกิดข้อผิดพลาด',error.response.data.msg);
+                                }else{
+                                    AlertError('เกิดข้อผิดพลาด',`${error.response.status} ${error.response.data.msg}`);
+                                }
+
+                                console.log(error.response.status)
+                            })
 
                         }
-                        document.getElementById('BtnSubmit').disabled = false;
-                        document.getElementById('Loading').style.display = 'none';
+                        showLodingAndDisable(false);
                     }).catch((error) => {
-
                         if (error.response) {
                             console.error(error.response.data.msg)
                         }
-                        document.getElementById('BtnSubmit').disabled = false;
-                        document.getElementById('Loading').style.display = 'none';
+                        showLodingAndDisable(false);
                     })
                 } else if (status === 400) {
                     alert('hello');
@@ -116,31 +159,16 @@ function List_qc_month() {
                                 navigate('/incentive/qc_years');
                             }
                         })
-                        document.getElementById('BtnSubmit').disabled = false;
-                        document.getElementById('Loading').style.display = 'none';
-                        // return <Navigate to="/incentive/qc_years" />;
+                        showLodingAndDisable(false)
                     }
                     console.log(data, status)
                 }).catch((error) => {
                     if (error.response) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Something went wrong',
-                            text: error.response.data.msg,
-                            confirmButtonText: "ตกลง",
-                            allowOutsideClick: false
-                        });
+                        AlertError('เกิดข้อผิดพลาด',error.response.data.msg)
                     } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Something went wrong',
-                            text: 'An unexpected error occurred. Please try again later.',
-                            confirmButtonText: "ตกลง",
-                            allowOutsideClick: false
-                        });
+                        AlertError('เกิดข้อผิดพลาด','An unexpected error occurred. Please try again later.')
                     }
-                    document.getElementById('BtnSubmit').disabled = false;
-                    document.getElementById('Loading').style.display = 'none';
+                    showLodingAndDisable(false)
                 })
             }
         })
@@ -148,14 +176,85 @@ function List_qc_month() {
 
     }
 
-
-    const RedirectToEdit = () => {
-        navigate(`qc_list_month/${year}/${month}/-`, {replace: true})
+    //ฟังก์ชั่น approve ของ QC
+    const onApproveQC = () => {
+        axiosClient.post(`/incentive/qc_month/qc/update`, {
+            approve : 'approved',
+            inc_id : inc_id
+        }).then(({data, status}) => {
+            console.log('approved by QC' ,data.msg,data.status)
+            if (status === 200) {
+                Swal.fire({
+                    icon: 'success',
+                    confirmButtonText : 'ตกลง',
+                    allowOutsideClick: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate('/incentive/qc_years');
+                    }
+                })
+            }
+        }).catch((error) =>{
+            if (error.response.status === 400){
+                AlertError(`เกิดข้อผิดพลาด ${error.response.status}` ,error.response.data.msg)
+            }else{
+                AlertError(`เกิดข้อผิดพลาด ${error.response.status}`, error.message);
+            }
+        })
     }
 
+    //ฟังก์ชั่น approve ของ HR
+    const onApproveHR = () => {
+        axiosClient.post(`/incentive/qc_month/hr/update`, {
+            approve : 'approved',
+            inc_id : inc_id
+        }).then(({data, status}) => {
+            console.log('approved by QC' ,data.msg,data.status)
+            if (status === 200) {
+                Swal.fire({
+                    icon: 'success',
+                    confirmButtonText : 'ตกลง',
+                    allowOutsideClick: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate('/incentive/qc_years');
+                    }
+                })
+            }
+        }).catch((error) =>{
+            if (error.response.status === 400){
+                AlertError(`เกิดข้อผิดพลาด ${error.response.status}` ,error.response.data.msg)
+            }else{
+                AlertError(`เกิดข้อผิดพลาด ${error.response.status}`, error.message);
+            }
+        })
+    }
 
-    const test = () => {
-
+    //ฟังก์ชั่น ยืนยันการจ่าย ของ HR
+    const onConfirmPayDate = () => {
+        axiosClient.post(`/incentive/qc_month/hr/confirmpaydate`, {
+            approve : 'approved',
+            inc_id : inc_id
+        }).then(({data, status}) => {
+            console.log('approved by QC' ,data.msg,data.status)
+            if (status === 200) {
+                Swal.fire({
+                    icon: 'success',
+                    confirmButtonText : 'ตกลง',
+                    allowOutsideClick: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate('/incentive/qc_years');
+                    }
+                })
+            }
+        }).catch((error) =>{
+            if (error.response.status === 400){
+                AlertError(`เกิดข้อผิดพลาด ${error.response.status}` ,error.response.data.msg)
+            }else{
+                AlertError(`เกิดข้อผิดพลาด ${error.response.status}`, error.message);
+            }
+        })
     }
 
 
@@ -163,22 +262,58 @@ function List_qc_month() {
         <Content header={'Incentive System'} header_sub={'รายละเอียด'}>
             <div className={'calculate mb-3 d-flex justify-content-end'}>
                 {
-                    status === '-' ?
+                    status === '-' || data_team.status === 'complete' ?
                         (
-                            <Link to={'#'} className={'text-end btn btn-warning'}>
-                                <i className="fa-solid fa-calculator mr-2"></i>
-                                <span>คำนวณ</span>
-                            </Link>
+                            <>
+                                {
+                                data_team.status === 'complete' ? (
+                                    <></>
+                                )  : (
+                                    <Link to={'#'} className={'text-end btn btn-warning'}>
+                                        <i className="fa-solid fa-calculator mr-2"></i>
+                                        <span>คำนวณ</span>
+                                    </Link>
+                                )
+                                }
+                            </>
                         ) : (
                             <>
                                 <Link to={`incentive/qc_list_month/${year}/${month}/-`} onClick={RedirectToEdit}
                                       className={'text-end btn btn-primary mr-3'}>
+                                    <i className="fa-solid fa-pen-to-square mr-1"></i>
                                     <span>แก้ไข</span>
                                 </Link>
-                                <button className={'text-end btn mr-3 text-white'} style={{backgroundColor: '#4c85f7'}}>
-                                    <span>ส่งอนุมัติ</span>
-                                </button>
-                                <button className={'text-end btn btn-success'}>
+
+                                {currentUser.emp_role === 'QC' ? (
+                                    <button onClick={onApproveQC} className={'text-end btn mr-3 text-white bg-info'}>
+                                        <i className="fa-solid fa-paper-plane mr-1"></i>
+                                        <span>ส่งอนุมัติ</span>
+                                    </button>
+                                ) : (
+                                    <>
+                                        {
+                                            data_team.status === 'approve' ? (
+                                                <button onClick={onConfirmPayDate}
+                                                        className={'text-end btn mr-3 text-white bg-info'}>
+                                                    <i className="fa-solid fa-paper-plane mr-1"></i>
+                                                    <span>ยืนยันการจ่าย</span>
+                                                </button>
+                                            ) : (
+                                                <button onClick={onApproveHR}
+                                                        className={'text-end btn mr-3 text-white bg-info'}>
+                                                    <i className="fa-solid fa-paper-plane mr-1"></i>
+                                                    <span>อนุมัติ</span>
+                                                </button>
+                                            )
+                                        }
+
+                                    </>
+
+                                )}
+
+
+                                <button onClick={() => PrintData()} className={'text-end btn btn-success'}>
+                                    <i className="fa-solid fa-print mr-1"></i>
                                     <span>พิมพ์</span>
                                 </button>
                             </>
@@ -334,7 +469,7 @@ function List_qc_month() {
                         </table>
                     </div>
                     {
-                        status === '-' ? (
+                        status === '-' && currentUser.emp_role === 'QC' ? (
                             <div className={'d-flex justify-content-center mt-3'}>
 
                                 <button onClick={() => onSubmit()} className={'btn btn-primary'} id={'BtnSubmit'}
@@ -346,7 +481,6 @@ function List_qc_month() {
                             </div>
                         ) : <></>
                     }
-                    <button onClick={test} className={'btn btn-primary'}>Test</button>
                 </div>
             </div>
         </Content>

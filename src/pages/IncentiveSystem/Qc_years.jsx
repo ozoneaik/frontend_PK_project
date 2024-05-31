@@ -175,9 +175,9 @@ function Qc_years() {
                                     <td>{data.user_count}</td>
                                     <td>{data.day}</td>
                                     <td>{parseFloat(data.job_count).toLocaleString()}</td>
-                                    {data.updated_at ? (<td>{new Date(data.updated_at).toLocaleString()}</td>) : (<td>-</td>)}
-                                    <td> -</td>
-                                    <td>-</td>
+                                    {data.caldate ? (<td>{new Date(data.caldate).toLocaleString()}</td>) : (<td>-</td>)}
+                                    {data.confirmdate ? (<td>{new Date(data.confirmdate).toLocaleString()}</td>) : (<td>-</td>)}
+                                    {data.confirmpaydate ? (<td>{new Date(data.confirmpaydate).toLocaleString()}</td>) : (<td>-</td>)}
                                     <td>
                                         <Link to={`/incentive/qc_list_month/${data.year.split('-')[0]}/${index + 1}/${data.status   !== '-' ? data.status : '-'}`}>
                                             <i className="fa-solid fa-file-lines"></i>

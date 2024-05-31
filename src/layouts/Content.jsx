@@ -15,7 +15,6 @@ function Content({children,header,header_sub}) {
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
-
         axiosClient.get('/me')
             .then(({ data }) => {
                 setCurrentUser(data)

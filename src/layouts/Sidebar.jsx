@@ -17,12 +17,12 @@ function Sidebar() {
             </Link>
 
             <div className={'sidebar mt-3'}>
-                <div className={'user-panel pb-3 mb-3 d-flex'}>
+                <div className={'user-panel pb-3 mb-3 d-flex align-items-center'}>
                     <div className={'image'}>
                         <img src={UserImage ? UserImage : '#'} alt="User Image" className={'img-circle elevation-2'}/>
                     </div>
                     <div className="info">
-                        <a href="#" className="d-block">{currentUser.name}</a>
+                        <a href="#" className="d-block">{currentUser.name} <br/> ( {currentUser.emp_role} )</a>
                     </div>
                 </div>
 
@@ -44,13 +44,6 @@ function Sidebar() {
                                         <p>QC สินค้า ประจำปี</p>
                                     </Link>
                                 </li>
-                                <li className={'nav nav-item'}>
-                                    <Link to={'/incentive/workday'}
-                                          className={`nav-link ${location.pathname === '/incentive/workday' || location.pathname.startsWith('/incentive/workday') ? 'active' : ''}`}>
-                                        <i className="far fa-circle nav-icon"></i>
-                                        <p>จัดการจำนวนวันทำงาน</p>
-                                    </Link>
-                                </li>
                                 <li className={'nav-item'}>
                                     <Link to={'/incentive/products/list_product_qc'}
                                           className={`nav-link ${location.pathname.startsWith('/incentive/products') ? 'active' : ''}`}>
@@ -70,6 +63,12 @@ function Sidebar() {
                                           className={`nav-link ${location.pathname.startsWith('/incentive/calculate_grade') ? 'active' : ''}`}>
                                         <i className="far fa-circle nav-icon"></i>
                                         <p>จัดการการคำนวณเกรด</p>
+                                    </Link>
+                                </li>
+                                <li className={'nav-item'}>
+                                    <Link to={'/incentive/usermanage/user-list'} className={`nav-link ${location.pathname.startsWith('/incentive/usermanage') ? 'active' : ''}`}>
+                                        <i className={'far fa-circle nav-icon'}></i>
+                                        <p>จัดการผู้ใช้งาน</p>
                                     </Link>
                                 </li>
                             </ul>

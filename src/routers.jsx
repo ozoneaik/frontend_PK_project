@@ -5,10 +5,13 @@ import List_product_qc from "./pages/IncentiveSystem/List_product_qc.jsx";
 import Add_product_qc from "./pages/IncentiveSystem/Add_product_qc.jsx";
 import Edit_product_qc from "./pages/IncentiveSystem/Edit_product_qc.jsx";
 import Login from "./pages/Login.jsx";
-import WorkDay from "./pages/IncentiveSystem/WorkDay.jsx";
 import QCTimes from "./pages/IncentiveSystem/Qc_times.jsx";
 import Qc_calculate_grade from "./pages/IncentiveSystem/Qc_calculate_grade.jsx";
 import NotFound from "./pages/NotFound.jsx";
+import PrintData from "./pages/IncentiveSystem/PrintData.jsx";
+import Signup from "./pages/Signup.jsx";
+import UserManage from "./pages/users/UserManage.jsx";
+import AddUser from "./pages/users/AddUser.jsx";
 
 const routers = createBrowserRouter([
     {
@@ -23,13 +26,20 @@ const routers = createBrowserRouter([
                     {path: 'edit_product_qc/:id', element: <Edit_product_qc/>},
                 ]
             },
-            {path: 'workday', element: <WorkDay/>},
             {path: 'qc_time', element: <QCTimes/>},
-            {path: 'calculate_grade', element: <Qc_calculate_grade/>}
+            {path: 'calculate_grade', element: <Qc_calculate_grade/>},
+            {path: 'printData/:year/:month/active', element: <PrintData/>},
+            {
+                path: 'usermanage', children: [
+                    {path: 'user-list', element: <UserManage/>},
+                    {path: 'add-user',element: <AddUser/>},
+                ]
+            },
         ],
     },
     {path: '/', element: <Qc_years/>},
     {path: '/login', element: <Login/>},
+    {path: '/signup', element: <Signup/>},
     {path: '*', element: <NotFound/>}
 ]);
 
