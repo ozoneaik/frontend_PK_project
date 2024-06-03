@@ -1,5 +1,7 @@
 import Content from "../../layouts/Content.jsx";
 import {useState} from "react";
+import axiosClient from "../../axios.js";
+import {AlertError, AlertSuccess} from "../../Dialogs/alertNotQuestions.js";
 
 function AddUser() {
     const [Name, setName] = useState("");
@@ -13,7 +15,28 @@ function AddUser() {
     const handleAuthcodeChange = (ev) => {
         console.log(ev)
         setAuthcode(ev);
+        setEmail('');
         setEmail(ev+'@gmail.com');
+    }
+
+    const onSubmit = (ev) => {
+        ev.preventDefault();
+        axiosClient.post('/incentive/user-store',{
+            email : Email,
+            name : Name,
+            password : Password,
+            emp_role : Emp_role,
+            authcode : Authcode,
+            emp_status : Status,
+            incentive : 'incentive'
+        }).then(({data, status}) => {
+            console.log(data)
+            if (status === 200) {
+                AlertSuccess(data.msg,'')
+            }
+        }).catch((error) => {
+            AlertError('เกิดข้อผิดพลาด',error.response.data.message)
+        })
     }
 
 
@@ -22,7 +45,7 @@ function AddUser() {
             <div className={'row'}>
                 <div className={'col-md-12'}>
                     <div className={'card'}>
-                        <form action="">
+                        <form method={'POST'} onSubmit={(ev) => {onSubmit(ev)}}>
                             <div className={'card-body'}>
                                 <div className={'card'}>
                                     <div className={'card-header'}>
@@ -55,12 +78,11 @@ function AddUser() {
                                         </div>
                                         <div className={'from-group'}>
                                             <label htmlFor="">สถานะการเข้าใช้งาน</label>
-                                            <div className={'custom-control custom-radio d-flex align-items-center align-content-center '}>
-                                                <input type="radio" name={'form-radio'} id={'online'}/>
-                                                <label htmlFor="online">ออนไลน์</label>
-                                                <input type="radio" name={'form-radio'} id={'offline'}/>
-                                                <label htmlFor="offline">ออฟไลน์</label>
-                                            </div>
+                                            <select name="" id="" onChange={(e) => setStatus(e.target.value)} className={'custom-select'}>
+                                                <option value="" disabled={true}>เลือก...</option>
+                                                <option value="offline">ออฟไลน์</option>
+                                                <option value="online">ออนไลน์🟢</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>

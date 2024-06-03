@@ -61,7 +61,7 @@ function UserManage() {
                                             <td>{user.emp_role}</td>
                                             <td>{user.name}</td>
                                             <td>
-                                                <Link to={'#'} className={`btn btn-sm btn-primary mr-2 ${currentUser.authcode === user.authcode ? 'disabled' : ''}`}>
+                                                <Link to={`/incentive/usermanage/edit-user/${user.authcode}`} className={`btn btn-sm btn-primary mr-2 ${currentUser.authcode === user.authcode ? 'disabled' : ''}`}>
                                                     <i className="fa-solid fa-pen-to-square mr-1"></i>
                                                     <span>แก้ไข</span>
                                                 </Link>

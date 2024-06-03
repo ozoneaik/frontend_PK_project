@@ -12,6 +12,7 @@ import PrintData from "./pages/IncentiveSystem/PrintData.jsx";
 import Signup from "./pages/Signup.jsx";
 import UserManage from "./pages/users/UserManage.jsx";
 import AddUser from "./pages/users/AddUser.jsx";
+import EditUser from "./pages/users/EditUser.jsx";
 
 const routers = createBrowserRouter([
     {
@@ -33,6 +34,7 @@ const routers = createBrowserRouter([
                 path: 'usermanage', children: [
                     {path: 'user-list', element: <UserManage/>},
                     {path: 'add-user',element: <AddUser/>},
+                    {path: 'edit-user/:id', element: <EditUser/>},
                 ]
             },
         ],
