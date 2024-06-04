@@ -265,7 +265,6 @@ function List_qc_month() {
             <div className={'calculate mb-3 d-flex justify-content-end'}>
                 <>
                     {
-
                         status === '-' || data_team.status === 'complete' ?
                             (
                                 <>
@@ -318,8 +317,6 @@ function List_qc_month() {
 
                                 </>
                             )
-
-
                     }
                     <button onClick={() => PrintData()} className={'text-end btn btn-success'}>
                         <i className="fa-solid fa-print mr-1"></i>
@@ -339,7 +336,11 @@ function List_qc_month() {
                                 <p>จำนวนวันทำงาน {data_team.workday} วัน</p>
                             </div>
                             <div>
-                                <p>เรียกข้อมูล ณ วันที่ 25/04/2024</p>
+                                <p>เรียกข้อมูล ณ วันที่ {new Date().toLocaleDateString('th-TH', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric'
+                                })}</p>
                             </div>
                         </div>
                     </div>

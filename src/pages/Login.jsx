@@ -18,7 +18,7 @@ function Login() {
 
         axiosClient
             .post("/login", {
-                email,
+                email : email+'@gmail.com',
                 password,
             })
             .then(({data}) => {
@@ -54,7 +54,7 @@ function Login() {
 
                         <form onSubmit={onSubmit} className="mt-8 space-y-6" action="#" method="POST">
                             <div className="input-group mb-3">
-                                <input type="email" className="form-control" placeholder="Email" name="email" onChange={(e) => setEmail(e.target.value)}/>
+                                <input type="text" className="form-control" placeholder="username" name="email" onChange={(e) => setEmail(e.target.value)}/>
                                 <div className="input-group-append">
                                     <div className="input-group-text">
                                         <span className="fas fa-envelope"></span>

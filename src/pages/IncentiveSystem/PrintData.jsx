@@ -19,7 +19,11 @@ function PrintData() {
                     setDatas(data.amount_qc_users);
                     setData_team(data.data_teams);
                     // Trigger print once data is set
-                    setTimeout(() => window.print(), 1000);
+                    const afterPrint = () => {
+                        closeTab();
+                    };
+                    window.addEventListener('afterprint', afterPrint);
+                    setTimeout(() => window.print(), 0);
 
                 }
             })
@@ -32,6 +36,10 @@ function PrintData() {
             });
     }, [year, month]);
 
+    const closeTab = () => {
+        window.open('', '_self', '');
+        window.close();
+    };
 
     if (!datas || !data_team) {
         return <div>Loading...</div>; // Show a loading message while data is being fetched

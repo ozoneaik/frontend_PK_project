@@ -1,16 +1,22 @@
 import Content from "../../layouts/Content.jsx";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 import axiosClient from "../../axios.js";
-import Swal from "sweetalert2";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import {AlertError} from "../../Dialogs/alertNotQuestions.js";
 
 function QCTimes() {
     const [times, setTimes] = useState([]);
 
+    const originalTimes = [
+        '09:00:00',
+        '08:00:00',
+        '07:31:00',
+        '07:00:00',
+    ]
     useEffect(() => {
         getTimesData();
-    }, []);
+    }, [])
 
     useEffect(() => {
         if (times.length > 0) {
@@ -21,7 +27,7 @@ function QCTimes() {
                     dateFormat: "H:i:ss",
                     time_24hr: true,
                     confirmText: "OK",
-                    enableSeconds : true
+                    enableSeconds: true
                 });
             });
         }
@@ -31,76 +37,95 @@ function QCTimes() {
         axiosClient
             .get("/incentive/manage/qc_time", {})
             .then(({data, status}) => {
+                console.log(data)
                 if (status === 200) {
                     setTimes(data.times);
                 } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Something went wrong',
-                        text: data.msg
-                    });
+                    AlertError('error', 'Something went wrong');
                 }
             })
             .catch((error) => {
                 const errorMessage = error.response ? error.response.data.message : 'An unexpected error occurred. Please try again later.';
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Something went wrong',
-                    text: errorMessage
-                });
+                AlertError('error', errorMessage)
                 console.error(error);
             });
     };
+
+    const onSubmit = () => {
+
+        const updatedTimes = times.map((item,index) => ({
+            grade: item.grade,
+            time: document.getElementById(`time-input-${index}`).value // อัปเดตเวลาจาก DOM
+        }));
+
+        console.log(updatedTimes)
+        axiosClient.post("/incentive/manage/qc_time_update", {
+            updatedTimes
+        }).then(({data, status}) => {
+            console.log(data)
+            if (status === 200) {
+                console.log('status 200')
+            }
+        }).catch((error) => {
+            console.log(error.response)
+        })
+    }
 
     return (
         <Content header={'Qc_rate'} header_sub={'Qc_rate'}>
             <div className={'row'}>
                 <div className={'col-md-6'}>
-                    <div className={'card'}>
-                        <div className={'card-body'}>
-                            <div className={'row'}>
-                                <div className={'col-12'}>
-                                    <table className={'table table-bordered text-center'}>
-                                        <thead>
-                                        <tr>
-                                            <th>เกรด</th>
-                                            <th>เวลา</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        {times.length > 0 ? times.map((item, index) => (
-                                            <tr key={index}>
-                                                <td>{item.grade}</td>
-                                                <td>
-                                                    <input
-                                                        type="time"
-                                                        step="2"
-                                                        className={'form-control product_rate'}
-                                                        style={{background: '#fff'}}
-                                                        name={'product_rate'}
-                                                        id={`time-input-${index}`}
-                                                        defaultValue={item.time || ''}
-                                                    />
-                                                </td>
-                                            </tr>
-                                        )) : (
+                        <div className={'card'}>
+                            <div className={'card-body'}>
+                                <div className={'row'}>
+                                    <div className={'col-12'}>
+
+                                        <table className={'table table-bordered text-center'}>
+                                            <thead>
                                             <tr>
-                                                <td colSpan="2" className={'text-center'}><span
-                                                    className="loader"></span></td>
+                                                <th>เกรด</th>
+                                                <th>เวลา</th>
+                                                <th>ดั้งเดิม</th>
                                             </tr>
-                                        )}
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div className={'col-12'}>
-                                    <div className={'d-flex justify-content-end'}>
-                                        <button className={'btn btn-secondary mr-3'}>ยกเลิก</button>
-                                        <button className={'btn btn-primary'}>บันทึก / อัพเดท</button>
+                                            </thead>
+                                            <tbody>
+                                            {times.length > 0 ? times.map((item, index) => (
+                                                <tr key={index}>
+                                                    <td>{item.grade}</td>
+                                                    <td>
+                                                        <input
+                                                            type="time"
+                                                            step="2"
+                                                            className={'form-control product_rate'}
+                                                            style={{background: '#fff'}}
+                                                            name={'product_rate'}
+                                                            id={`time-input-${index}`}
+                                                            defaultValue={item.time || ''}
+                                                            onChange={(e) => handleTimeChange(index, e.target.value)}
+                                                        />
+                                                    </td>
+                                                    <td>{originalTimes[index]}</td>
+                                                </tr>
+                                            )) : (
+                                                <tr>
+                                                    <td colSpan="2" className={'text-center'}><span
+                                                        className="loader"></span></td>
+                                                </tr>
+                                            )}
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                    <div className={'col-12'}>
+                                        <div className={'d-flex justify-content-end'}>
+                                            <button type={"button"} className={'btn btn-secondary mr-3'}>ยกเลิก</button>
+                                            <button type={"button"} onClick={onSubmit} className={'btn btn-primary'}>บันทึก / อัพเดท
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                 </div>
             </div>
 
