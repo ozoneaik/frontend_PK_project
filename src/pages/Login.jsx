@@ -1,7 +1,7 @@
 import {useStateContext} from "../contexts/ContextProvider.jsx";
 import axiosClient from "../axios.js";
 import {useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import LoginImage from "../assets/dist/img/Login.webp";
 
 function Login() {

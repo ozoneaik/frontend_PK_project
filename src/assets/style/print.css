@@ -24,7 +24,21 @@ th,td{
     border: 1px solid black;
 }
 
+td{
+    padding-left : 1rem;
+    padding-right : 1rem;
+}
+
 /*th,tfoot{*/
 /*    background-color: #efefef;*/
 /*}*/
+.PRINT * {
+    margin-top: 1rem;
+    font-size: 14px;
+}
+
+.table-print *{
+    font-size: 12px !important;
+}
+
 

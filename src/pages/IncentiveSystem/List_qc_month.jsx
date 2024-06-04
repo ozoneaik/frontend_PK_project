@@ -72,7 +72,9 @@ function List_qc_month() {
 
     //ฟังก์ชั่นพิมพ์
     const PrintData = () => {
-        navigate(`/incentive/printData/${year}/${month}/active`, {replace: true});
+        // navigate(`/incentive/printData/${year}/${month}/active`, '_blank');
+        window.open(`/incentive/printData/${year}/${month}/active`, '_blank');
+
     }
 
     //ฟังก์ชั่นการกดส่ง
@@ -261,64 +263,69 @@ function List_qc_month() {
     return (
         <Content header={'Incentive System'} header_sub={'รายละเอียด'}>
             <div className={'calculate mb-3 d-flex justify-content-end'}>
-                {
-                    status === '-' || data_team.status === 'complete' ?
-                        (
-                            <>
-                                {
-                                data_team.status === 'complete' ? (
-                                    <></>
-                                )  : (
-                                    <Link to={'#'} className={'text-end btn btn-warning'}>
-                                        <i className="fa-solid fa-calculator mr-2"></i>
-                                        <span>คำนวณ</span>
+                <>
+                    {
+
+                        status === '-' || data_team.status === 'complete' ?
+                            (
+                                <>
+                                    {
+                                        data_team.status === 'complete' ? (
+                                            <></>
+                                        ) : (
+                                            <Link to={'#'} className={'text-end btn btn-warning'}>
+                                                <i className="fa-solid fa-calculator mr-2"></i>
+                                                <span>คำนวณ</span>
+                                            </Link>
+                                        )
+                                    }
+                                </>
+                            ) : (
+                                <>
+                                    <Link to={`incentive/qc_list_month/${year}/${month}/-`} onClick={RedirectToEdit}
+                                          className={'text-end btn btn-primary mr-3'}>
+                                        <i className="fa-solid fa-pen-to-square mr-1"></i>
+                                        <span>แก้ไข</span>
                                     </Link>
-                                )
-                                }
-                            </>
-                        ) : (
-                            <>
-                                <Link to={`incentive/qc_list_month/${year}/${month}/-`} onClick={RedirectToEdit}
-                                      className={'text-end btn btn-primary mr-3'}>
-                                    <i className="fa-solid fa-pen-to-square mr-1"></i>
-                                    <span>แก้ไข</span>
-                                </Link>
 
-                                {currentUser.emp_role === 'QC' ? (
-                                    <button onClick={onApproveQC} className={'text-end btn mr-3 text-white bg-info'}>
-                                        <i className="fa-solid fa-paper-plane mr-1"></i>
-                                        <span>ส่งอนุมัติ</span>
-                                    </button>
-                                ) : (
-                                    <>
-                                        {
-                                            data_team.status === 'approve' ? (
-                                                <button onClick={onConfirmPayDate}
-                                                        className={'text-end btn mr-3 text-white bg-info'}>
-                                                    <i className="fa-solid fa-paper-plane mr-1"></i>
-                                                    <span>ยืนยันการจ่าย</span>
-                                                </button>
-                                            ) : (
-                                                <button onClick={onApproveHR}
-                                                        className={'text-end btn mr-3 text-white bg-info'}>
-                                                    <i className="fa-solid fa-paper-plane mr-1"></i>
-                                                    <span>อนุมัติ</span>
-                                                </button>
-                                            )
-                                        }
+                                    {currentUser.emp_role === 'QC' ? (
+                                        <button onClick={onApproveQC} className={'text-end btn mr-3 text-white bg-info'}>
+                                            <i className="fa-solid fa-paper-plane mr-1"></i>
+                                            <span>ส่งอนุมัติ</span>
+                                        </button>
+                                    ) : (
+                                        <>
+                                            {
+                                                data_team.status === 'approve' ? (
+                                                    <button onClick={onConfirmPayDate}
+                                                            className={'text-end btn mr-3 text-white bg-info'}>
+                                                        <i className="fa-solid fa-paper-plane mr-1"></i>
+                                                        <span>ยืนยันการจ่าย</span>
+                                                    </button>
+                                                ) : (
+                                                    <button onClick={onApproveHR}
+                                                            className={'text-end btn mr-3 text-white bg-info'}>
+                                                        <i className="fa-solid fa-paper-plane mr-1"></i>
+                                                        <span>อนุมัติ</span>
+                                                    </button>
+                                                )
+                                            }
 
-                                    </>
+                                        </>
 
-                                )}
+                                    )}
 
 
-                                <button onClick={() => PrintData()} className={'text-end btn btn-success'}>
-                                    <i className="fa-solid fa-print mr-1"></i>
-                                    <span>พิมพ์</span>
-                                </button>
-                            </>
-                        )
-                }
+                                </>
+                            )
+
+
+                    }
+                    <button onClick={() => PrintData()} className={'text-end btn btn-success'}>
+                        <i className="fa-solid fa-print mr-1"></i>
+                        <span>พิมพ์</span>
+                    </button>
+                </>
             </div>
 
             <div className={'card'}>
@@ -329,7 +336,7 @@ function List_qc_month() {
                                 <p style={{fontSize: 18}} className={'text-bold'}>ปริมาณการ QC สินค้า
                                     ประจำเดือน {month}/{year}</p>
                                 <p>กำหนดจ่ายเดือน {month === '12' ? '1' : parseInt(month) + 1}/{month === '12' ? parseInt(year) + 1 : year}</p>
-                                <p>จำนวนวันทำงาน 22 วัน</p>
+                                <p>จำนวนวันทำงาน {data_team.workday} วัน</p>
                             </div>
                             <div>
                                 <p>เรียกข้อมูล ณ วันที่ 25/04/2024</p>

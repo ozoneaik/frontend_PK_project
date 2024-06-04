@@ -55,7 +55,7 @@ function QCTimes() {
     return (
         <Content header={'Qc_rate'} header_sub={'Qc_rate'}>
             <div className={'row'}>
-                <div className={'col-md-6 col-lg-2'}>
+                <div className={'col-md-6'}>
                     <div className={'card'}>
                         <div className={'card-body'}>
                             <div className={'row'}>
@@ -92,7 +92,7 @@ function QCTimes() {
                                         </tbody>
                                     </table>
                                 </div>
-                                <div className={'col-md-12'}>
+                                <div className={'col-12'}>
                                     <div className={'d-flex justify-content-end'}>
                                         <button className={'btn btn-secondary mr-3'}>ยกเลิก</button>
                                         <button className={'btn btn-primary'}>บันทึก / อัพเดท</button>
