@@ -3,6 +3,7 @@ import axiosClient from "../axios.js";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import LoginImage from "../assets/dist/img/Login.webp";
+import {AlertError} from "../Dialogs/alertNotQuestions.js";
 
 function Login() {
 
@@ -31,6 +32,7 @@ function Login() {
             })
             .catch((error) => {
                 if (error.response) {
+                    AlertError('เกิดข้อผิดพลาด','ชื่อผู้ใช้หรือรหัสผ่านผิด')
                     const finalErrors = Object.values(error.response.data.errors).reduce(
                         (accum, next) => [...accum, ...next],
                         []

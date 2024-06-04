@@ -396,7 +396,11 @@ function List_qc_month() {
                                     </td>
                                     <td>{index + 1}</td>
                                     <td>{data.empqc}</td>
-                                    <td>{data.emp_name}</td>
+                                    <td>
+                                        {data.emp_name}
+                                        <br/>
+                                        <span className={'text-secondary'} style={{fontSize: 12}}>{data.payremark}</span>
+                                    </td>
                                     <td>{data.empqc_count.toLocaleString()}</td>
                                     <td>{data.HM}</td>
                                     <td>{data.HD}</td>
