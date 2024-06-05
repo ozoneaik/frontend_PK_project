@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import axiosClient from "../../axios.js";
 import Swal from "sweetalert2";
 import {Link, useNavigate, useParams} from "react-router-dom";
-import {AlertError} from "../../Dialogs/alertNotQuestions.js";
+import {AlertError, AlertSuccess} from "../../Dialogs/alertNotQuestions.js";
 import {useStateContext} from "../../contexts/ContextProvider.jsx";
 
 
@@ -54,7 +54,7 @@ function List_qc_month() {
         setDatas(updated);
     };
 
-    const handlePayRemarkChange = (index,val) => {
+    const handlePayRemarkChange = (index, val) => {
         const updated = [...datas];
         updated[index].payremark = val;
         setDatas(updated);
@@ -185,6 +185,26 @@ function List_qc_month() {
 
     }
 
+    const handleCalculate = () => {
+        axiosClient
+            .get(`/incentive/qc_month/${year}/${month}/-`, {})
+            .then(({data, status}) => {
+                console.log(data)
+                if (status === 200) {
+                    AlertSuccess('สำเร็จ', 'คำนวณสำเร็จ')
+                    setDatas(data.amount_qc_users);
+                    setData_team(data.data_teams);
+                }
+            })
+            .catch((error) => {
+                if (error.response.status === 400) {
+                    AlertError('Error 400', error.response.data.msg);
+                } else {
+                    AlertError(error.response.status, error.message);
+                }
+            });
+    }
+
     //ฟังก์ชั่น approve ของ QC
     const onApproveQC = () => {
         axiosClient.post(`/incentive/qc_month/qc/update`, {
@@ -269,6 +289,7 @@ function List_qc_month() {
 
     return (
         <Content header={'Incentive System'} header_sub={'รายละเอียด'}>
+            <h1> inc id {inc_id}</h1>
             <div className={'calculate mb-3 d-flex justify-content-end'}>
                 <>
                     {
@@ -279,10 +300,10 @@ function List_qc_month() {
                                         data_team.status === 'complete' ? (
                                             <></>
                                         ) : (
-                                            <Link to={'#'} className={'text-end btn btn-warning'}>
+                                            <button onClick={handleCalculate} className={'text-end btn btn-warning'}>
                                                 <i className="fa-solid fa-calculator mr-2"></i>
                                                 <span>คำนวณ</span>
-                                            </Link>
+                                            </button>
                                         )
                                     }
                                 </>
@@ -294,12 +315,7 @@ function List_qc_month() {
                                         <span>แก้ไข</span>
                                     </Link>
 
-                                    {currentUser.emp_role === 'QC' ? (
-                                        <button onClick={onApproveQC} className={'text-end btn mr-3 text-white bg-info'}>
-                                            <i className="fa-solid fa-paper-plane mr-1"></i>
-                                            <span>ส่งอนุมัติ</span>
-                                        </button>
-                                    ) : (
+                                    {currentUser.emp_role === 'HR' ? (
                                         <>
                                             {
                                                 data_team.status === 'approve' ? (
@@ -309,19 +325,22 @@ function List_qc_month() {
                                                         <span>ยืนยันการจ่าย</span>
                                                     </button>
                                                 ) : (
-                                                    <button onClick={onApproveHR}
+                                                    <button onClick={onApproveQC}
                                                             className={'text-end btn mr-3 text-white bg-info'}>
                                                         <i className="fa-solid fa-paper-plane mr-1"></i>
-                                                        <span>อนุมัติ</span>
+                                                        <span>ส่งอนุมัติ</span>
                                                     </button>
                                                 )
                                             }
-
                                         </>
 
+                                    ) : (
+                                        <button onClick={onApproveHR}
+                                                className={'text-end btn mr-3 text-white bg-info'}>
+                                            <i className="fa-solid fa-paper-plane mr-1"></i>
+                                            <span>อนุมัติ</span>
+                                        </button>
                                     )}
-
-
                                 </>
                             )
                     }
@@ -451,7 +470,7 @@ function List_qc_month() {
                                                    placeholder={'ไม่บังคับกรอก'}
                                                    style={{width: 150}} id={`payremark_${index}`}
                                                    defaultValue={data.payremark ? data.payremark : ''}
-                                                   onChange={(e) => handlePayRemarkChange(index,e.target.value)}
+                                                   onChange={(e) => handlePayRemarkChange(index, e.target.value)}
                                             />
                                         </td>
                                     ) : (
@@ -509,7 +528,7 @@ function List_qc_month() {
                         </table>
                     </div>
                     {
-                        status === '-' && currentUser.emp_role === 'QC' ? (
+                        status === '-' && currentUser.emp_role === 'HR' ? (
                             <div className={'d-flex justify-content-center mt-3'}>
 
                                 <button onClick={() => onSubmit()} className={'btn btn-primary'} id={'BtnSubmit'}
