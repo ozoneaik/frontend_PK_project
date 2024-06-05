@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import axiosClient from "../../axios.js";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
-import {AlertError} from "../../Dialogs/alertNotQuestions.js";
+import {AlertError, AlertSuccess} from "../../Dialogs/alertNotQuestions.js";
 
 function QCTimes() {
     const [times, setTimes] = useState([]);
@@ -64,10 +64,10 @@ function QCTimes() {
         }).then(({data, status}) => {
             console.log(data)
             if (status === 200) {
-                console.log('status 200')
+                AlertSuccess('อัพเดทข้อมูลสำเร็จ' , data.msg)
             }
         }).catch((error) => {
-            console.log(error.response)
+            AlertError(error.response.status,error.response.data.msg)
         })
     }
 
@@ -101,7 +101,6 @@ function QCTimes() {
                                                             name={'product_rate'}
                                                             id={`time-input-${index}`}
                                                             defaultValue={item.time || ''}
-                                                            onChange={(e) => handleTimeChange(index, e.target.value)}
                                                         />
                                                     </td>
                                                     <td>{originalTimes[index]}</td>

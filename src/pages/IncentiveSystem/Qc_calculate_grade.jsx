@@ -1,6 +1,7 @@
 import Content from "../../layouts/Content.jsx";
 import { useEffect, useState } from "react";
 import axiosClient from "../../axios.js";
+import {AlertError, AlertSuccess} from "../../Dialogs/alertNotQuestions.js";
 
 function QC_CalculateGrades() {
     const [rates, setRates] = useState([]);
@@ -30,16 +31,25 @@ function QC_CalculateGrades() {
     };
 
     const saveRates = () => {
-        axiosClient.post(`/incentive/manage/update_rates`, { rates })
-            .then(({ status }) => {
+        console.log(rates);
+        axiosClient.post(`/incentive/manage/qc_rate_update`, { rates })
+            .then(({data, status }) => {
                 if (status === 200) {
-                    alert('Rates updated successfully!');
+                    AlertSuccess('อัพเดทข้อมูลสำเร็จ',data.msg)
+                    setRates([])
+                    getRates()
                 }
             })
             .catch((error) => {
-                console.error(error);
+                AlertError(error.response.status,error.response.statusText)
+                console.log(error)
             });
     };
+
+    const ResetRates = () => {
+        setRates([])
+        getRates();
+    }
 
     return (
         <Content header={'calculate grade'} header_sub={'calculate grade'}>
@@ -84,7 +94,7 @@ function QC_CalculateGrades() {
                                     </table>
                                 </div>
                                 <div className={'col-12 d-flex justify-content-end'}>
-                                    <button type={'button'} className={'btn btn-secondary mr-3'}>ยกเลิก</button>
+                                    <button type={'button'} onClick={ResetRates} className={'btn btn-secondary mr-3'}>ยกเลิก</button>
                                     <button type={'button'} className={'btn btn-primary'} onClick={saveRates}>บันทึก / อัพเดท</button>
                                 </div>
                             </div>

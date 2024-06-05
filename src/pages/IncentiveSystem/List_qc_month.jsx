@@ -368,7 +368,7 @@ function List_qc_month() {
                                 <th rowSpan={2}>ยอดรับบุคคล</th>
                                 <th rowSpan={2}>ยอดรับทีม</th>
                                 <th rowSpan={2}>ยอดรับสุทธิ</th>
-                                {status == '-' ? (
+                                {status === '-' ? (
                                     <td rowSpan={2}>หมายเหตุ</td>
                                 ) : <></>}
                             </tr>
@@ -500,7 +500,7 @@ function List_qc_month() {
                                 <td>{parseFloat(data_team.totalPersonReceived).toLocaleString()}</td>
                                 <td></td>
                                 <td>{parseFloat(data_team.total_receiveds).toLocaleString()}</td>
-                                {status == '-' ? (
+                                {status === '-' ? (
                                     <td>หมายเหตุ</td>
                                 ) : <></>}
 
