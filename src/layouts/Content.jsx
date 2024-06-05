@@ -9,7 +9,6 @@ import axiosClient from "../axios.js";
 function Content({children,header,header_sub}) {
     const {userToken, setCurrentUser} = useStateContext();
     if (!userToken){
-        console.log(userToken)
         return <Navigate to="/login" />;
     }
 

@@ -6,7 +6,6 @@ function Navbar() {
 
 
     const logout = (ev) => {
-        console.log('hello world')
         ev.preventDefault();
         axiosClient.post("/logout").then((res) => {
             setCurrentUser({});

@@ -1,8 +1,5 @@
 import Content from "../../layouts/Content.jsx";
 import {useEffect, useState} from "react";
-import '../../assets/plugins/select2/css/select2.min.css';
-import '../../assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css';
-import '../../assets/plugins/select2/js/select2.full.min.js';
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import axiosClient from "../../axios.js";
@@ -20,11 +17,6 @@ function Add_product_qc() {
 
 
     useEffect(() => {
-        $('.select2').select2({
-            theme: 'bootstrap4'
-        }).on('change', function (event) {
-            setLe_id(event.target.value);
-        });
         flatpickr('#product_rate',{
             enableTime: true,
             noCalendar: true,
@@ -133,8 +125,6 @@ function Add_product_qc() {
                                 <button type={"submit"} className={'btn btn-primary'}>บันทึก</button>
                             </div>
                         </form>
-
-
                     </div>
                 </div>
             </Content>
