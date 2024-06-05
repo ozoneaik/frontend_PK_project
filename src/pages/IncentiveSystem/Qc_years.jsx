@@ -1,7 +1,4 @@
 import Content from "../../layouts/Content.jsx";
-import '../../assets/plugins/select2/css/select2.min.css';
-import '../../assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css';
-import '../../assets/plugins/select2/js/select2.full.min.js';
 import '../../assets/style/table.css'
 import {Link} from "react-router-dom";
 import {useEffect, useState} from "react";

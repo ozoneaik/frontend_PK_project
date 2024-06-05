@@ -68,14 +68,6 @@ function AddUser() {
                                                 <option value="HR">เอชอาร์ (HR)</option>
                                             </select>
                                         </div>
-                                        <div className={'form-group'}>
-                                            <label htmlFor="">สิทธิ์การเข้าใช้งาน</label>
-                                            <select name="" id="" className={'custom-select'}
-                                                    onChange={(e) => setEmp_role(e.target.value)}>
-                                                <option value="QC">ตรวจทาน (QC)</option>
-                                                <option value="HR">เอชอาร์ (HR)</option>
-                                            </select>
-                                        </div>
                                         <div className={'from-group'}>
                                             <label htmlFor="">สถานะการเข้าใช้งาน</label>
                                             <select name="" id="" onChange={(e) => setStatus(e.target.value)} className={'custom-select'}>
