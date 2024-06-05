@@ -41,4 +41,11 @@ td{
     font-size: 12px !important;
 }
 
+.table-print span{
+    font-size: 10px !important;
+}
+.table-print .emp_name{
+    text-align: left !important;
+}
+
 

@@ -23,7 +23,7 @@ function PrintData() {
                         closeTab();
                     };
                     window.addEventListener('afterprint', afterPrint);
-                    setTimeout(() => window.print(), 0);
+                    setTimeout(() => window.print(), 500);
 
                 }
             })
@@ -105,7 +105,11 @@ function PrintData() {
                             <td>{data.paystatus}</td>
                             <td>{index + 1}</td>
                             <td>{data.empqc}</td>
-                            <td>{data.emp_name}</td>
+                            <td className={'emp_name'}>
+                                {data.emp_name}
+                                <br/>
+                                <span style={{fontSize:4}}>หมายเหตุ : {data.payremark}</span>
+                            </td>
                             <td>{data.empqc_count.toLocaleString()}</td>
                             <td>{data.HM}</td>
                             <td>{data.HD}</td>
@@ -164,9 +168,9 @@ function PrintData() {
                 <div className={'d-flex justify-content-between mt-3'}>
                     <div style={{border: 'solid 1px black',padding: 30}} className={'text-center'}>
                         <span className={'text-bold'}>ลงมือชื่อ</span>
-                        <span>......................................................</span>
+                        <span>..................{data_team.createbycode}....................................</span>
                         <br/>
-                        <span className={'text-bold'}>( ผู้จัดทำ (IT) )</span>
+                        <span className={'text-bold'}>( ผู้จัดทำ (HR) )</span>
                     </div>
                     <div style={{border: 'solid 1px black',padding: 30}} className={'text-center'}>
                         <span className={'text-bold'}>ลงมือชื่อ</span>
