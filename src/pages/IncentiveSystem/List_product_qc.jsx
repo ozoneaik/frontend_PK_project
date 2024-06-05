@@ -18,9 +18,9 @@ function List_product_qc() {
     const getProducts = () => {
         axiosClient
             .get(`/product`, {})
-            .then(({data,status}) => {
+            .then(({data, status}) => {
                 console.log(data);
-                if (status === 200){
+                if (status === 200) {
                     setProducts(data.products);
                     $(document).ready(function () {
                         $('#myTable').DataTable({
@@ -31,8 +31,8 @@ function List_product_qc() {
                                 {className: "dt-center", targets: "_all"}
                             ]
                         });
-                    }); 
-                }else{
+                    });
+                } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Something went wrong',
@@ -69,9 +69,9 @@ function List_product_qc() {
                                 <th>รหัสสินค้า</th>
                                 <th>ชื่อสินค้า</th>
                                 <th>หน่วย</th>
-                                <th>Std Time QC</th>
-                                <th>Level QC</th>
-                                <th>QC Status</th>
+                                <th>เวลา QC มาตรฐาน</th>
+                                <th>ระดับ QC</th>
+                                <th>สถานะ QC</th>
                                 <th>#</th>
                             </tr>
                             </thead>
@@ -81,7 +81,7 @@ function List_product_qc() {
                                     <td>{product.id}</td>
                                     <td><span className={'px-3 py-1 text-sm rounded-pill bg-primary'}>Active</span></td>
                                     <td>{product.pid}</td>
-                                    <td>{product.pname}</td>
+                                    <td className={'text-left'}>{product.pname}</td>
                                     <td>เครื่อง</td>
                                     <td>{product.timeperpcs}</td>
                                     <td>
@@ -124,9 +124,9 @@ function List_product_qc() {
                                 <th>รหัสสินค้า</th>
                                 <th>ชื่อสินค้า</th>
                                 <th>หน่วย</th>
-                                <th>Std Time QC</th>
-                                <th>Level QC</th>
-                                <th>QC Status</th>
+                                <th>เวลา QC มาตรฐาน</th>
+                                <th>ระดับ QC</th>
+                                <th>สถานะ QC</th>
                                 <th>#</th>
                             </tr>
                             </tfoot>

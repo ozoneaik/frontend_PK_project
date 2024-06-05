@@ -84,7 +84,7 @@ function QCTimes() {
                                             <thead>
                                             <tr>
                                                 <th>เกรด</th>
-                                                <th>เวลา</th>
+                                                <th>เวลา ( Avg./วัน )</th>
                                                 <th>ดั้งเดิม</th>
                                             </tr>
                                             </thead>

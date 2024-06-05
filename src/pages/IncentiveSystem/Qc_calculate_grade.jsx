@@ -12,6 +12,7 @@ function QC_CalculateGrades() {
     const getRates = () => {
         axiosClient.get(`/incentive/manage/calculate_grade`, {})
             .then(({ data, status }) => {
+                console.log(data);
                 if (status === 200) {
                     setRates(data.rates);
                 }
@@ -51,9 +52,10 @@ function QC_CalculateGrades() {
                                     <table className={'table table-bordered text-center'}>
                                         <thead>
                                         <tr>
-                                            <th>le id</th>
-                                            <th>grade</th>
-                                            <th>rate</th>
+                                            <th>รหัสระดับ QC </th>
+                                            <th>ระดับ QC</th>
+                                            <th>เกรด</th>
+                                            <th>เรทคำนวณ</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -61,6 +63,7 @@ function QC_CalculateGrades() {
                                             rates.length > 0 ? rates.map((data, index) => (
                                                 <tr key={index}>
                                                     <td>{data.le_code}</td>
+                                                    <td>{data.le_name}</td>
                                                     <td>{data.grade}</td>
                                                     <td>
                                                         <input

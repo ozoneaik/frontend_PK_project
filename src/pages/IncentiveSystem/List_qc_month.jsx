@@ -54,6 +54,13 @@ function List_qc_month() {
         setDatas(updated);
     };
 
+    const handlePayRemarkChange = (index,val) => {
+        const updated = [...datas];
+        updated[index].payremark = val;
+        setDatas(updated);
+        console.log(datas);
+    }
+
     //ซ่อนหรือแสดง กำลังโหลด
     const showLodingAndDisable = (Bool) => {
         if (Bool) {
@@ -102,19 +109,19 @@ function List_qc_month() {
                         if (result.isConfirmed) {
 
                             // อัพเดทข้อมูลที่นี่
-                            console.log('อัพเดทข้อมูลที่นี่',inc_id);
+                            console.log('อัพเดทข้อมูลที่นี่', inc_id);
                             axiosClient.post(`/incentive/qc_month/update`, {
                                 inc_id,
-                                datas : updatedDatas,
+                                datas: updatedDatas,
                                 data_team
-                            }).then(({data,status}) => {
+                            }).then(({data, status}) => {
 
                                 if (status === 200) {
                                     Swal.fire({
                                         icon: 'success',
-                                        title : 'อัพเดทข้อมูลสำเร็จ',
+                                        title: 'อัพเดทข้อมูลสำเร็จ',
                                         text: data.msg,
-                                        confirmButtonText : 'ตกลง',
+                                        confirmButtonText: 'ตกลง',
                                         allowOutsideClick: false,
                                     }).then((result) => {
                                         if (result.isConfirmed) {
@@ -122,11 +129,11 @@ function List_qc_month() {
                                         }
                                     })
                                 }
-                            }).catch((error)=>{
+                            }).catch((error) => {
                                 if (error.response.status === 400) {
-                                    AlertError('เกิดข้อผิดพลาด',error.response.data.msg);
-                                }else{
-                                    AlertError('เกิดข้อผิดพลาด',`${error.response.status} ${error.response.data.msg}`);
+                                    AlertError('เกิดข้อผิดพลาด', error.response.data.msg);
+                                } else {
+                                    AlertError('เกิดข้อผิดพลาด', `${error.response.status} ${error.response.data.msg}`);
                                 }
 
                                 console.log(error.response.status)
@@ -166,9 +173,9 @@ function List_qc_month() {
                     console.log(data, status)
                 }).catch((error) => {
                     if (error.response) {
-                        AlertError('เกิดข้อผิดพลาด',error.response.data.msg)
+                        AlertError('เกิดข้อผิดพลาด', error.response.data.msg)
                     } else {
-                        AlertError('เกิดข้อผิดพลาด','An unexpected error occurred. Please try again later.')
+                        AlertError('เกิดข้อผิดพลาด', 'An unexpected error occurred. Please try again later.')
                     }
                     showLodingAndDisable(false)
                 })
@@ -181,14 +188,14 @@ function List_qc_month() {
     //ฟังก์ชั่น approve ของ QC
     const onApproveQC = () => {
         axiosClient.post(`/incentive/qc_month/qc/update`, {
-            approve : 'approved',
-            inc_id : inc_id
+            approve: 'approved',
+            inc_id: inc_id
         }).then(({data, status}) => {
-            console.log('approved by QC' ,data.msg,data.status)
+            console.log('approved by QC', data.msg, data.status)
             if (status === 200) {
                 Swal.fire({
                     icon: 'success',
-                    confirmButtonText : 'ตกลง',
+                    confirmButtonText: 'ตกลง',
                     allowOutsideClick: false
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -196,10 +203,10 @@ function List_qc_month() {
                     }
                 })
             }
-        }).catch((error) =>{
-            if (error.response.status === 400){
-                AlertError(`เกิดข้อผิดพลาด ${error.response.status}` ,error.response.data.msg)
-            }else{
+        }).catch((error) => {
+            if (error.response.status === 400) {
+                AlertError(`เกิดข้อผิดพลาด ${error.response.status}`, error.response.data.msg)
+            } else {
                 AlertError(`เกิดข้อผิดพลาด ${error.response.status}`, error.message);
             }
         })
@@ -208,14 +215,14 @@ function List_qc_month() {
     //ฟังก์ชั่น approve ของ HR
     const onApproveHR = () => {
         axiosClient.post(`/incentive/qc_month/hr/update`, {
-            approve : 'approved',
-            inc_id : inc_id
+            approve: 'approved',
+            inc_id: inc_id
         }).then(({data, status}) => {
-            console.log('approved by QC' ,data.msg,data.status)
+            console.log('approved by QC', data.msg, data.status)
             if (status === 200) {
                 Swal.fire({
                     icon: 'success',
-                    confirmButtonText : 'ตกลง',
+                    confirmButtonText: 'ตกลง',
                     allowOutsideClick: false
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -223,10 +230,10 @@ function List_qc_month() {
                     }
                 })
             }
-        }).catch((error) =>{
-            if (error.response.status === 400){
-                AlertError(`เกิดข้อผิดพลาด ${error.response.status}` ,error.response.data.msg)
-            }else{
+        }).catch((error) => {
+            if (error.response.status === 400) {
+                AlertError(`เกิดข้อผิดพลาด ${error.response.status}`, error.response.data.msg)
+            } else {
                 AlertError(`เกิดข้อผิดพลาด ${error.response.status}`, error.message);
             }
         })
@@ -235,14 +242,14 @@ function List_qc_month() {
     //ฟังก์ชั่น ยืนยันการจ่าย ของ HR
     const onConfirmPayDate = () => {
         axiosClient.post(`/incentive/qc_month/hr/confirmpaydate`, {
-            approve : 'approved',
-            inc_id : inc_id
+            approve: 'approved',
+            inc_id: inc_id
         }).then(({data, status}) => {
-            console.log('approved by QC' ,data.msg,data.status)
+            console.log('approved by QC', data.msg, data.status)
             if (status === 200) {
                 Swal.fire({
                     icon: 'success',
-                    confirmButtonText : 'ตกลง',
+                    confirmButtonText: 'ตกลง',
                     allowOutsideClick: false
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -250,10 +257,10 @@ function List_qc_month() {
                     }
                 })
             }
-        }).catch((error) =>{
-            if (error.response.status === 400){
-                AlertError(`เกิดข้อผิดพลาด ${error.response.status}` ,error.response.data.msg)
-            }else{
+        }).catch((error) => {
+            if (error.response.status === 400) {
+                AlertError(`เกิดข้อผิดพลาด ${error.response.status}`, error.response.data.msg)
+            } else {
                 AlertError(`เกิดข้อผิดพลาด ${error.response.status}`, error.message);
             }
         })
@@ -361,6 +368,9 @@ function List_qc_month() {
                                 <th rowSpan={2}>ยอดรับบุคคล</th>
                                 <th rowSpan={2}>ยอดรับทีม</th>
                                 <th rowSpan={2}>ยอดรับสุทธิ</th>
+                                {status == '-' ? (
+                                    <td rowSpan={2}>หมายเหตุ</td>
+                                ) : <></>}
                             </tr>
                             <tr>
                                 <td>Very Easy</td>
@@ -399,7 +409,8 @@ function List_qc_month() {
                                     <td>
                                         {data.emp_name}
                                         <br/>
-                                        <span className={'text-secondary'} style={{fontSize: 12}}>{data.payremark}</span>
+                                        <span className={'text-secondary'}
+                                              style={{fontSize: 12}}>{data.payremark}</span>
                                     </td>
                                     <td>{data.empqc_count.toLocaleString()}</td>
                                     <td>{data.HM}</td>
@@ -434,6 +445,19 @@ function List_qc_month() {
                                     <td>{data.total_person_received.toLocaleString()}</td>
                                     <td>{data_team.total_received_team}</td>
                                     <td>{parseFloat(data.total_received).toLocaleString()}</td>
+                                    {status === '-' ? (
+                                        <td>
+                                            <input type="text" className={'form-control'}
+                                                   placeholder={'ไม่บังคับกรอก'}
+                                                   style={{width: 150}} id={`payremark_${index}`}
+                                                   defaultValue={data.payremark ? data.payremark : ''}
+                                                   onChange={(e) => handlePayRemarkChange(index,e.target.value)}
+                                            />
+                                        </td>
+                                    ) : (
+                                        <></>
+                                    )}
+
                                 </tr>
                             )) : (
                                 <tr>
@@ -476,6 +500,10 @@ function List_qc_month() {
                                 <td>{parseFloat(data_team.totalPersonReceived).toLocaleString()}</td>
                                 <td></td>
                                 <td>{parseFloat(data_team.total_receiveds).toLocaleString()}</td>
+                                {status == '-' ? (
+                                    <td>หมายเหตุ</td>
+                                ) : <></>}
+
                             </tr>
                             </tfoot>
                         </table>
