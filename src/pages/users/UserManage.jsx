@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import axiosClient from "../../axios.js";
 import Swal from "sweetalert2";
 import {Link} from "react-router-dom";
+import {AlertError, AlertSuccess} from "../../Dialogs/alertNotQuestions.js";
 
 function UserManage() {
 
@@ -11,10 +12,15 @@ function UserManage() {
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
+        getUserList()
+    }, []);
+
+
+    const getUserList =()=>{
         axiosClient.get(`/incentive/user-list`, {})
-            .then(({data,status}) => {
+            .then(({data, status}) => {
                 console.log(data);
-                if (status === 200){
+                if (status === 200) {
                     setUsers(data.users);
                 }
             }).catch((error) => {
@@ -26,8 +32,34 @@ function UserManage() {
                 });
             }
         })
-    }, []);
+    }
 
+
+    const handleDelete = (authcode) => {
+        console.log(authcode)
+        Swal.fire({
+            icon: "info",
+            title: `ยืนยันการลบผู้ใช้  ${authcode} หรือไม่`,
+            showCancelButton: true,
+            confirmButtonText: "ยืนยัน",
+            allowOutsideClick: false
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                axiosClient.post(`/incentive/user-delete/${authcode}`, {})
+                    .then(({data, status}) => {
+                        if (status === 200) {
+                            AlertSuccess('ลบผู้ใช้สำเร็จ', data.msg)
+                            setUsers([])
+                            getUserList()
+                        }
+                    })
+                    .catch((error) => {
+                        AlertError('ลบผู้ใช้ไม่สำเ็จ', error.response.data.message)
+                    })
+            }
+        });
+    }
 
 
     return (
@@ -56,19 +88,22 @@ function UserManage() {
                                     </thead>
                                     <tbody>
                                     {users.length > 0 ? users.map((user, index) => (
-                                        <tr key={index}  className={`${currentUser.authcode === user.authcode ? 'bg-info' : ''}`}>
+                                        <tr key={index}
+                                            className={`${currentUser.authcode === user.authcode ? 'bg-info' : ''}`}>
                                             <td>{user.authcode}</td>
                                             <td>{user.emp_role}</td>
                                             <td>{user.name}</td>
                                             <td>
-                                                <Link to={`/incentive/usermanage/edit-user/${user.authcode}`} className={`btn btn-sm btn-primary mr-2 ${currentUser.authcode === user.authcode ? 'disabled' : ''}`}>
+                                                <Link to={`/incentive/usermanage/edit-user/${user.authcode}`}
+                                                      className={`btn btn-sm btn-primary mr-2 ${currentUser.authcode === user.authcode ? 'disabled' : ''}`}>
                                                     <i className="fa-solid fa-pen-to-square mr-1"></i>
                                                     <span>แก้ไข</span>
                                                 </Link>
-                                                <Link to={'#'} className={`btn btn-sm btn-danger ${currentUser.authcode === user.authcode ? 'disabled' : ''}`}>
+                                                <button onClick={() => handleDelete(user.authcode)}
+                                                        className={`btn btn-sm btn-danger ${currentUser.authcode === user.authcode ? 'disabled' : ''}`}>
                                                     <i className="fa-solid fa-trash mr-1"></i>
                                                     <span>ลบ</span>
-                                                </Link>
+                                                </button>
                                             </td>
                                         </tr>
                                     )) : (

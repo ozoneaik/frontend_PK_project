@@ -72,8 +72,8 @@ function AddUser() {
                                             <label htmlFor="">สถานะการเข้าใช้งาน</label>
                                             <select name="" id="" onChange={(e) => setStatus(e.target.value)} className={'custom-select'}>
                                                 <option value="" disabled={true}>เลือก...</option>
+                                                <option value="active">ออนไลน์🟢</option>
                                                 <option value="offline">ออฟไลน์</option>
-                                                <option value="online">ออนไลน์🟢</option>
                                             </select>
                                         </div>
                                     </div>
