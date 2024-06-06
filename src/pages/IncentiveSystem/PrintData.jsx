@@ -71,7 +71,7 @@ function PrintData() {
                         day: '2-digit',
                         month: '2-digit',
                         year: 'numeric'
-                    })}</p>
+                    }).replace(/(\d{4})/, (match) => parseInt(match) - 543)}</p>
                 </div>
             </div>
             <div className={'dataTable'}>
@@ -168,15 +168,15 @@ function PrintData() {
                 <div className={'d-flex justify-content-between mt-3'}>
                     <div style={{border: 'solid 1px black',padding: 30}} className={'text-center'}>
                         <span className={'text-bold'}>ลงมือชื่อ</span>
-                        <span>..................{data_team.createbycode}....................................</span>
+                        <span>..................{data_team.confirmpaydatebycode}..................</span>
                         <br/>
-                        <span className={'text-bold'}>( ผู้จัดทำ (HR) )</span>
+                        <p className={'text-bold mb-0 mt-2'}>( ผู้จัดทำ (HR) )</p>
                     </div>
                     <div style={{border: 'solid 1px black',padding: 30}} className={'text-center'}>
                         <span className={'text-bold'}>ลงมือชื่อ</span>
-                        <span>......................................................</span>
+                        <span>..................{data_team.confirmapprovebycode}..................</span>
                         <br/>
-                        <span className={'text-bold'}>( หัวหน้าแผนก (QC) )</span>
+                        <p className={'text-bold mb-0 mt-2'}>( หัวหน้าแผนก (QC) )</p>
                     </div>
 
                 </div>

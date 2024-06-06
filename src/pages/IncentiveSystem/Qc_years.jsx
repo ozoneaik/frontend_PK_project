@@ -173,7 +173,14 @@ function Qc_years() {
                                     <td>{data.day}</td>
                                     <td>{parseFloat(data.job_count).toLocaleString()}</td>
                                     {data.caldate ? (<td>{new Date(data.caldate).toLocaleString()}</td>) : (<td>-</td>)}
-                                    {data.confirmdate ? (<td>{new Date(data.confirmdate).toLocaleString()}</td>) : (<td>-</td>)}
+                                    {data.confirmdate ? (
+                                        <td className={'text-left'}>
+                                            <p className={'p-0 m-0 mb-2 text-sm text-secondary'}><span className={'text-bold'}>HR ส่งคำขออนุมัติเมื่อ</span> {new Date(data.confirmdate).toLocaleString()}</p>
+                                            <p className={'p-0 m-0 text-sm text-secondary'}><span className={'text-bold'}>QC อนุมัติเมื่อ</span> {data.confirmapprove ? new Date(data.confirmapprove).toLocaleString() : 'กำลังดำเนินการ'}</p>
+                                        </td>
+                                    ) : (
+                                        <td>-</td>
+                                    )}
                                     {data.confirmpaydate ? (<td>{new Date(data.confirmpaydate).toLocaleString()}</td>) : (<td>-</td>)}
                                     <td>
                                         <Link to={`/incentive/qc_list_month/${data.year.split('-')[0]}/${index + 1}/${data.status   !== '-' ? data.status : '-'}`}>
