@@ -289,7 +289,6 @@ function List_qc_month() {
 
     return (
         <Content header={'Incentive System'} header_sub={'รายละเอียด'}>
-            <h1> inc id {inc_id}</h1>
             <div className={'calculate mb-3 d-flex justify-content-end'}>
                 <>
                     {
