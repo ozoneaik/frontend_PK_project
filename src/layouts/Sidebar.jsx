@@ -10,7 +10,7 @@ function Sidebar() {
 
     return (
         // sidebar-dark-primary
-        <aside className={'main-sidebar elevation-4 sidebar-dark-orange'}>
+        <aside className={'main-sidebar elevation-4 sidebar-dark-orange'} style={{backgroundColor: "#252525"}}>
             <Link to={'#'} className={'p-0'} style={{background: '#000'}}>
                 <img src={Logo ? Logo : '#'} alt={'adminLte Logo'} className={'brand-image elevation-3'} style={{width: '100%'}}/>
                 {/*<span className={'brand-text font-weight-bold'}>Pumpkin</span>*/}

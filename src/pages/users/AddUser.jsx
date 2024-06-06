@@ -41,7 +41,7 @@ function AddUser() {
 
 
     return (
-        <Content header={'add-user'} header_sub={'add-user'}>
+        <Content header={'จัดการผู้ใช้งาน'} header_sub={'เพิ่มผู้ใช้งาน'}>
             <div className={'row'}>
                 <div className={'col-md-12'}>
                     <div className={'card'}>

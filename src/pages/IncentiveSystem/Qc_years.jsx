@@ -122,11 +122,11 @@ function Qc_years() {
 
 
     return (
-        <Content header={'Qc_years'} header_sub={'รายการ'}>
+        <Content header={'QC สินค้าประจำปี'} header_sub={'รายการ'}>
             <div className={'card'}>
-                <div className="card-header">
-                    <h3 className="card-title">Incentive System</h3>
-                </div>
+                {/*<div className="card-header">*/}
+                {/*    <h3 className="card-title">Incentive System</h3>*/}
+                {/*</div>*/}
                 <div className="card-body text-center" >
                     <div className={'text-center mb-3 d-flex justify-content-center'}>
                         <select

@@ -52,7 +52,7 @@ function QC_CalculateGrades() {
     }
 
     return (
-        <Content header={'calculate grade'} header_sub={'calculate grade'}>
+        <Content header={'จัดการการคำนวณเกรด'} header_sub={'รายการ'}>
             <div className={'row'}>
                 <div className={'col-md-6'}>
                     <div className={'card'}>

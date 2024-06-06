@@ -54,6 +54,7 @@ function List_qc_month() {
         setDatas(updated);
     };
 
+    //ฟังก์ชั่นการเพิ่มหมายเหตุ
     const handlePayRemarkChange = (index, val) => {
         const updated = [...datas];
         updated[index].payremark = val;
@@ -185,6 +186,7 @@ function List_qc_month() {
 
     }
 
+    //ฟังก์ชั่นการคำนวนแล้วดึงข้อมูลจาก .30
     const handleCalculate = () => {
         axiosClient
             .get(`/incentive/qc_month/${year}/${month}/-`, {})
@@ -215,6 +217,7 @@ function List_qc_month() {
             if (status === 200) {
                 Swal.fire({
                     icon: 'success',
+                    text: data.msg,
                     confirmButtonText: 'ตกลง',
                     allowOutsideClick: false
                 }).then((result) => {
@@ -242,6 +245,7 @@ function List_qc_month() {
             if (status === 200) {
                 Swal.fire({
                     icon: 'success',
+                    text: data.msg,
                     confirmButtonText: 'ตกลง',
                     allowOutsideClick: false
                 }).then((result) => {
@@ -288,7 +292,7 @@ function List_qc_month() {
 
 
     return (
-        <Content header={'Incentive System'} header_sub={'รายละเอียด'}>
+        <Content header={'QC สินค้าประจำปี'} header_sub={`รายละเอียด QC ประจำเดือน ${month}/${year}`}>
             <div className={'calculate mb-3 d-flex justify-content-end'}>
                 <>
                     {
@@ -299,7 +303,7 @@ function List_qc_month() {
                                         data_team.status === 'complete' ? (
                                             <></>
                                         ) : (
-                                            <button onClick={handleCalculate} className={'text-end btn btn-warning'}>
+                                            <button onClick={handleCalculate} className={'text-end btn btn-warning mr-3'}>
                                                 <i className="fa-solid fa-calculator mr-2"></i>
                                                 <span>คำนวณ</span>
                                             </button>

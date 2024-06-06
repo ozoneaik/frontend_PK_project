@@ -24,7 +24,7 @@ function QCTimes() {
                 flatpickr(document.querySelector(`#time-input-${index}`), {
                     enableTime: true,
                     noCalendar: true,
-                    dateFormat: "H:i:ss",
+                    dateFormat: "H:i:s",
                     time_24hr: true,
                     confirmText: "OK",
                     enableSeconds: true
@@ -72,7 +72,7 @@ function QCTimes() {
     }
 
     return (
-        <Content header={'Qc_rate'} header_sub={'Qc_rate'}>
+        <Content header={'จัดการระดับ QC'} header_sub={'รายการ'}>
             <div className={'row'}>
                 <div className={'col-md-6'}>
                         <div className={'card'}>

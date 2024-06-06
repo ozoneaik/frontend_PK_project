@@ -63,7 +63,7 @@ function UserManage() {
 
 
     return (
-        <Content header={'user manage'} header_sub={'user_manage'}>
+        <Content header={'จัดการผู้ใช้งาน'} header_sub={'รายการ'}>
             <div className={'row'}>
                 <div className={'col-md-12'}>
                     <div className={'card'}>
