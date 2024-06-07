@@ -89,8 +89,8 @@ function UserManage() {
                                     <tbody>
                                     {users.length > 0 ? users.map((user, index) => (
                                         <tr key={index}
-                                            className={`${currentUser.authcode === user.authcode ? 'bg-info' : ''}`}>
-                                            <td>{user.authcode}</td>
+                                            className={``}>
+                                            <td className={`${currentUser.authcode === user.authcode ? 'bg-secondary' : ''}`}>{user.authcode}</td>
                                             <td>{user.emp_role}</td>
                                             <td>{user.name}</td>
                                             <td>

@@ -471,12 +471,6 @@ function List_qc_month() {
                                     <td>{parseFloat(data.total_received).toLocaleString()}</td>
                                     {status === '-' ? (
                                         <td>
-                                            {/*<input type="text" className={'form-control'}*/}
-                                            {/*       placeholder={'ไม่บังคับกรอก'}*/}
-                                            {/*       style={{width: 150}} id={`payremark_${index}`}*/}
-                                            {/*       defaultValue={data.payremark ? data.payremark : ''}*/}
-                                            {/*       onChange={(e) => handlePayRemarkChange(index, e.target.value)}*/}
-                                            {/*/>*/}
                                             <button type="button" className="btn btn-warning btn-sm" data-toggle="modal" data-target={`#exampleModal${index}`}>
                                                 <i className="fa-solid fa-pen-to-square"></i>
                                             </button>

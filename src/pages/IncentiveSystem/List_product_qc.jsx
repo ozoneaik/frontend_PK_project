@@ -1,5 +1,5 @@
 import Content from "../../layouts/Content.jsx";
-import $ from 'jquery';
+// import $ from 'jquery';
 import 'datatables.net';
 import 'datatables.net-bs4';
 import 'datatables.net-bs4/css/dataTables.bootstrap4.min.css';

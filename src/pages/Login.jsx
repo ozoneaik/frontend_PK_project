@@ -4,6 +4,7 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import LoginImage from "../assets/dist/img/Login.webp";
 import {AlertError} from "../Dialogs/alertNotQuestions.js";
+import '../assets/dist/css/login.css'
 
 function Login() {
 
@@ -32,7 +33,7 @@ function Login() {
             })
             .catch((error) => {
                 if (error.response) {
-                    AlertError('เกิดข้อผิดพลาด','ชื่อผู้ใช้หรือรหัสผ่านผิด')
+                    AlertError('เกิดข้อผิดพลาด',error.response.data.message)
                     const finalErrors = Object.values(error.response.data.errors).reduce(
                         (accum, next) => [...accum, ...next],
                         []
@@ -56,7 +57,7 @@ function Login() {
 
                         <form onSubmit={onSubmit} className="mt-8 space-y-6" action="#" method="POST">
                             <div className="input-group mb-3">
-                                <input type="text" className="form-control" placeholder="username" name="email" onChange={(e) => setEmail(e.target.value)}/>
+                                <input type="text" className="form-control" placeholder="ชื่อผู้ใช้งานระบบ" name="email" onChange={(e) => setEmail(e.target.value)}/>
                                 <div className="input-group-append">
                                     <div className="input-group-text">
                                         <span className="fas fa-envelope"></span>
@@ -64,7 +65,7 @@ function Login() {
                                 </div>
                             </div>
                             <div className="input-group mb-3">
-                                <input type="password" className="form-control" placeholder="Password" name={'password'} onChange={(e) => setPassword(e.target.value)}/>
+                                <input type="password" className="form-control" placeholder="รหัสผ่าน" name={'password'} onChange={(e) => setPassword(e.target.value)}/>
                                 <div className="input-group-append">
                                     <div className="input-group-text">
                                         <span className="fas fa-lock"></span>
@@ -73,7 +74,9 @@ function Login() {
                             </div>
                             <div className="row">
                                 <div className="w-100">
-                                    <button type="submit" className="btn btn-primary btn-block">เข้าสู่ระบบ</button>
+                                    <button type="submit" className="btn btn-primary btn-block">
+                                        <i className="fa-solid fa-right-to-bracket mr-1"></i>เข้าสู่ระบบ
+                                    </button>
                                 </div>
                             </div>
                         </form>
