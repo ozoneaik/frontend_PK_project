@@ -17,7 +17,6 @@ function List_qc_month() {
     const [datas, setDatas] = useState({});
     const [data_team, setData_team] = useState({});
     const [inc_id, setInc_id] = useState();
-
     const navigate = useNavigate();
 
 
@@ -56,11 +55,14 @@ function List_qc_month() {
 
     //ฟังก์ชั่นการเพิ่มหมายเหตุ
     const handlePayRemarkChange = (index, val) => {
+        console.log(index,val)
         const updated = [...datas];
         updated[index].payremark = val;
         setDatas(updated);
         console.log(datas);
     }
+
+
 
     //ซ่อนหรือแสดง กำลังโหลด
     const showLodingAndDisable = (Bool) => {
@@ -428,11 +430,11 @@ function List_qc_month() {
                                     </td>
                                     <td>{index + 1}</td>
                                     <td>{data.empqc}</td>
-                                    <td>
+                                    <td className={'text-left'}>
                                         {data.emp_name}
                                         <br/>
                                         <span className={'text-secondary'}
-                                              style={{fontSize: 12}}>{data.payremark}</span>
+                                              style={{fontSize: 12}}>{data.payremark ? `หมายเหตุ : ${data.payremark}` : ''}</span>
                                     </td>
                                     <td>{data.empqc_count.toLocaleString()}</td>
                                     <td>{data.HM}</td>
@@ -469,12 +471,40 @@ function List_qc_month() {
                                     <td>{parseFloat(data.total_received).toLocaleString()}</td>
                                     {status === '-' ? (
                                         <td>
-                                            <input type="text" className={'form-control'}
-                                                   placeholder={'ไม่บังคับกรอก'}
-                                                   style={{width: 150}} id={`payremark_${index}`}
-                                                   defaultValue={data.payremark ? data.payremark : ''}
-                                                   onChange={(e) => handlePayRemarkChange(index, e.target.value)}
-                                            />
+                                            {/*<input type="text" className={'form-control'}*/}
+                                            {/*       placeholder={'ไม่บังคับกรอก'}*/}
+                                            {/*       style={{width: 150}} id={`payremark_${index}`}*/}
+                                            {/*       defaultValue={data.payremark ? data.payremark : ''}*/}
+                                            {/*       onChange={(e) => handlePayRemarkChange(index, e.target.value)}*/}
+                                            {/*/>*/}
+                                            <button type="button" className="btn btn-warning btn-sm" data-toggle="modal" data-target={`#exampleModal${index}`}>
+                                                <i className="fa-solid fa-pen-to-square"></i>
+                                            </button>
+                                            <div className="modal fade" id={`exampleModal${index}`} tabIndex="-1"
+                                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div className="modal-dialog">
+                                                    <div className="modal-content">
+                                                        <div className="modal-header">
+                                                            <h5 className="modal-title" id="exampleModalLabel">เพิ่มหมายเหตุ {data.emp_name}</h5>
+                                                            <button type="button" className="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div className="modal-body">
+                                                            <textarea className={'form-control'} placeholder={'เพิ่มหมายเหตุ'}
+                                                                      defaultValue={data.payremark ? data.payremark : ''}
+                                                                      onChange={(e) => handlePayRemarkChange(index, e.target.value)}
+                                                            >
+                                                            </textarea>
+                                                        </div>
+                                                        <div className="modal-footer">
+                                                            <button type="button" className="btn btn-primary" data-dismiss="modal">เสร็จสิ้น</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                         </td>
                                     ) : (
                                         <></>
