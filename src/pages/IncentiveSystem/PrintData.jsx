@@ -108,7 +108,7 @@ function PrintData() {
                             <td className={'emp_name'}>
                                 {data.emp_name}
                                 <br/>
-                                <span style={{fontSize:4}}>หมายเหตุ : {data.payremark}</span>
+                                <span style={{fontSize:4}}>{data.payremark ? `หมายเหตุ : ${data.payremark}`:""}</span>
                             </td>
                             <td>{data.empqc_count.toLocaleString()}</td>
                             <td>{data.HM}</td>
