@@ -1,0 +1,51 @@
+@media print {
+    @page {
+        size: A4 landscape;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        -webkit-print-color-adjust: exact; /* Adjust colors to look better in print */
+    }
+
+    /* Additional styles to ensure proper layout for print */
+    div {
+        page-break-inside: avoid;
+    }
+}
+
+th,td{
+    align-items: center;
+    text-align: center;
+    padding : 5px;
+    border: 1px solid black;
+}
+
+td{
+    padding-left : 1rem;
+    padding-right : 1rem;
+}
+
+/*th,tfoot{*/
+/*    background-color: #efefef;*/
+/*}*/
+.PRINT * {
+    margin-top: 1rem;
+    font-size: 14px;
+}
+
+.table-print *{
+    font-size: 12px !important;
+}
+
+.table-print span{
+    font-size: 10px !important;
+}
+.table-print .emp_name{
+    text-align: left !important;
+}
+
+
