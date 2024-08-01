@@ -13,6 +13,7 @@ import Signup from "./pages/Signup.jsx";
 import UserManage from "./pages/users/UserManage.jsx";
 import AddUser from "./pages/users/AddUser.jsx";
 import EditUser from "./pages/users/EditUser.jsx";
+import ManageDay from "./pages/IncentiveSystem/ManageDay.jsx";
 
 const routers = createBrowserRouter([
     {
@@ -27,6 +28,7 @@ const routers = createBrowserRouter([
                     {path: 'edit_product_qc/:id', element: <Edit_product_qc/>},
                 ]
             },
+            {path : 'manage_day', element: <ManageDay/>},
             {path: 'qc_time', element: <QCTimes/>},
             {path: 'calculate_grade', element: <Qc_calculate_grade/>},
             {path: 'printData/:year/:month/active', element: <PrintData/>},
