@@ -39,7 +39,10 @@ function List_qc_month() {
             })
             .catch((error) => {
                 if (error.response.status === 400) {
-                    AlertError('Eror 400', error.response.data.msg);
+                    AlertError('เกิดข้อผิดพลาด', error.response.data.msg);
+                }else if(error.response.status === 412){
+                    AlertError('เกิดข้อผิดพลาด', error.response.data.message);
+                    navigate('/incentive/manage_day');
                 } else {
                     AlertError(error.response.status, error.message);
                 }

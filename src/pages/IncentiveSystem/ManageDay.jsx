@@ -29,7 +29,7 @@ export default function ManageDay() {
 
     const onChangeWorkday = (index, value) => {
         const update = [...data];
-        update[index].workday = value;
+        update[index].workday = parseInt(value);
         setData(update);
     }
 
@@ -45,9 +45,21 @@ export default function ManageDay() {
         })
         getWorkdays()
     }
+
+
+    const onUpdate = () => {
+        axiosClient.put('incentive/workday/update', {
+            data
+        }).then(({data, status}) => {
+            AlertSuccess('สำเร็จ',data.message);
+        }).catch((error) => {
+            AlertError('เกิดข้อผิดพลาด',error.response.data.message);
+        });
+        getWorkdays()
+    }
     return (
         <Content header={'จัดการวันทำงาน'} header_sub={'ฟอร์ม'}>
-            <button onClick={() => console.log(data)}>check</button>
+            {/*<button onClick={() => console.log(data)}>check</button>*/}
             <div className={'row'}>
                 <div className={'col-lg-6 col-md-4 col-sm-12'}>
                     <div className={'card'}>
@@ -123,7 +135,7 @@ export default function ManageDay() {
                                     </div>
                                 </div>
                                 <div className={'col-12 flex-row-reverse d-flex'}>
-                                    <button className={'btn btn-primary ml-3'}>บันทึก</button>
+                                    <button className={'btn btn-primary ml-3'} onClick={()=>onUpdate()}>บันทึก</button>
                                     <button className={'btn btn-secondary'} onClick={() => getWorkdays()}>ยกเลิก
                                     </button>
                                 </div>
