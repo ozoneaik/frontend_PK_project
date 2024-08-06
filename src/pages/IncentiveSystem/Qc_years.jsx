@@ -1,15 +1,17 @@
 import Content from "../../layouts/Content.jsx";
 import '../../assets/style/table.css'
 import {useEffect, useState} from "react";
-import axiosClient from "../../axios.js";
-import Swal from "sweetalert2";
 import {Link} from "react-router-dom";
+import {AddYearApi, QCYearDataListApi, QcYearListApi} from "../../api/QcYear.js";
+import {AlertError, AlertSuccess} from "../../Dialogs/alertNotQuestions.js";
+import Spinner from "../../components/Spinner.jsx";
 
 
 function Qc_years() {
     const [listYears, setListYears] = useState([]);
     const [year, setYear] = useState(2000);
     const [dataSet, setDataSet] = useState({});
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         getListYears();
@@ -20,7 +22,7 @@ function Qc_years() {
                 theme: 'bootstrap4'
             }).on('change', function (event) {
                 setDataSet({});
-                getQc_year(event.target.value);
+                getQcDataList(event.target.value);
             });
         })
 
@@ -28,85 +30,44 @@ function Qc_years() {
 
 
     const getListYears = () => {
-        axiosClient.get('/incentive/list-year', {})
-            .then(({data}) => {
+        QcYearListApi().then(({data, status}) => {
+            if (status === 200) {
                 setListYears(data);
-                setYear(parseInt(data[0]) + 1)
-                getQc_year(data[0]);
-            }).catch((error) => {
-            console.error(error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Something went wrong',
-                text: error.message
-            })
-        })
+                setYear(parseInt(data[0]) + 1);
+                getQcDataList(data[0]);
+            } else {
+                AlertError('เกิดข้อผิดพลาด', data)
+            }
+        });
     }
 
-    const getQc_year = (year) => {
-        console.log(year)
-        axiosClient
-            .get(`/incentive/qc_year/${year}`, {})
+    const getQcDataList = (year) => {
+        setLoading(true);
+        QCYearDataListApi(year)
             .then(({data, status}) => {
-                console.log(data)
                 if (status === 200) {
-                    setDataSet(data.list)
+                    setDataSet(data.list);
                 } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Something went wrong',
-                        text: data.msg
-                    })
-
-
+                    AlertError('เกิดข้อผิดพลาด', data)
                 }
-            })
-            .catch((error) => {
-                console.error(error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Something went wrong',
-                    text: error.response.data.msg
-                })
-            });
+            }).finally(() => {
+                setLoading(false);
+            }
+        );
     }
 
     const onSubmit = (ev) => {
         ev.preventDefault();
-        axiosClient
-            .post("/incentive/add-year", {year})
-            .then(({data, status}) => {
-                if (status === 200) {
-                    Swal.fire({
-                        icon: 'success',
-                        text: data.msg
-                    });
-                    getListYears()
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Something went wrong',
-                        text: data.msg
-                    })
-                }
-
-            })
-            .catch((error) => {
-                if (error.response) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Something went wrong',
-                        text: error.response.data.message
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Something went wrong',
-                        text: 'An unexpected error occurred. Please try again later.'
-                    });
-                }
-                console.error(error);
-            });
+        AddYearApi(year).then(({data, status}) => {
+            console.log(data, status);
+            if (status === 200) {
+                AlertSuccess('สำเร็จ', data.message)
+            } else {
+                AlertError('เกิดข้อผิดพลาด', data)
+            }
+        }).finally(() => {
+            getListYears();
+        });
     };
 
     const changeColorStatus = (dataStatus) => {
@@ -124,9 +85,6 @@ function Qc_years() {
     return (
         <Content header={'QC สินค้าประจำปี'} header_sub={'รายการ'}>
             <div className={'card'}>
-                {/*<div className="card-header">*/}
-                {/*    <h3 className="card-title">Incentive System</h3>*/}
-                {/*</div>*/}
                 <div className="card-body text-center">
                     <div className={'text-center mb-3 d-flex justify-content-center'}>
                         <select
@@ -134,7 +92,7 @@ function Qc_years() {
                             className="form-control select2"
                             id="yearSelect"
                             style={{maxWidth: 200}}
-                            onChange={(event) => getQc_year(event.target.value)}>
+                            onChange={(event) => getQcDataList(event.target.value)}>
                             <option value="" disabled>Select a year</option>
                             {listYears.length > 0 ? listYears.map((year, i) => (
                                 <option key={i} value={year}>{year}</option>
@@ -164,44 +122,51 @@ function Qc_years() {
                             </thead>
                             <tbody>
                             {
-                                dataSet.length > 0 ? dataSet.map((data, index) => (
-                                    <tr key={index}>
-                                        <td>{data.yearkey}-{data.monthkey}</td>
-                                        <td>{changeColorStatus(data.status)}</td>
-                                        <td>{data.numofemp}</td>
-                                        <td>{data.workday}</td>
-                                        <td>{data.totalqcqty}</td>
-                                        <td>{data.created_at ? new Date(data.created_at).toLocaleString() : '-'}</td>
-                                        <td>
-                                            {data.confirmdate ? (
-                                                <>
-                                                    <p className={'p-0 m-0 mb-2 text-sm text-secondary'}><span
-                                                        className={'text-bold'}>HR ส่งคำขออนุมัติเมื่อ</span> {data.confirmdate ? data.confirmdate : 'กำลังดำเนินการ'}
-                                                    </p>
-                                                    <p className={'p-0 m-0 text-sm text-secondary'}><span
-                                                        className={'text-bold'}>QC อนุมัติเมื่อ</span> {data.confirmapprove ? data.confirmapprove : 'กำลังดำเนินการ'}
-                                                    </p>
-                                                </>
-                                            ) : (
-                                                <>-</>
-                                            )}
+                                !loading ? (
+                                    dataSet.length > 0 ? dataSet.map((data, index) => (
+                                        <tr key={index}>
+                                            <td>{data.yearkey}-{data.monthkey}</td>
+                                            <td>{changeColorStatus(data.status)}</td>
+                                            <td>{data.numofemp}</td>
+                                            <td>{data.workday}</td>
+                                            <td>{data.totalqcqty}</td>
+                                            <td>{data.created_at ? new Date(data.created_at).toLocaleString() : '-'}</td>
+                                            <td>
+                                                {data.confirmdate ? (
+                                                    <>
+                                                        <p className={'p-0 m-0 mb-2 text-sm text-secondary'}><span
+                                                            className={'text-bold'}>HR ส่งคำขออนุมัติเมื่อ</span> {data.confirmdate ? data.confirmdate : 'กำลังดำเนินการ'}
+                                                        </p>
+                                                        <p className={'p-0 m-0 text-sm text-secondary'}><span
+                                                            className={'text-bold'}>QC อนุมัติเมื่อ</span> {data.confirmapprove ? data.confirmapprove : 'กำลังดำเนินการ'}
+                                                        </p>
+                                                    </>
+                                                ) : (
+                                                    <>-</>
+                                                )}
 
-                                        </td>
-                                        <td>{data.confirmpaydate ? data.confirmpaydate : '-'}</td>
-                                        <td>
-                                            <Link
-                                                to={`/incentive/qc_list_month/${data.yearkey}/${data.monthkey}/${data.status !== '-' ? data.status : '-'}`}>
-                                                <i className="fa-solid fa-file-lines"></i>
-                                            </Link>
-                                        </td>
+                                            </td>
+                                            <td>{data.confirmpaydate ? data.confirmpaydate : '-'}</td>
+                                            <td>
+                                                <Link
+                                                    to={`/incentive/qc_list_month/${data.yearkey}/${data.monthkey}/${data.status !== '-' ? data.status : '-'}`}>
+                                                    <i className="fa-solid fa-file-lines"></i>
+                                                </Link>
+                                            </td>
 
-                                    </tr>
+                                        </tr>
 
-                                )) : (
+                                    )) : (
+                                        <tr>
+                                            <td colSpan="9">ไม่มีข้อมูล</td>
+                                        </tr>
+                                    )
+                                ) : (
                                     <tr>
-                                        <td colSpan="9"><span className="loader"></span></td>
+                                        <td colSpan="9"><Spinner/></td>
                                     </tr>
                                 )
+
                             }
                             </tbody>
                         </table>

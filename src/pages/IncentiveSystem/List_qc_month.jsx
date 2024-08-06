@@ -10,8 +10,6 @@ import {useStateContext} from "../../contexts/ContextProvider.jsx";
 
 
 function List_qc_month() {
-
-
     const {currentUser} = useStateContext();
     const {year, month, status} = useParams();
     const [datas, setDatas] = useState({});
@@ -580,14 +578,21 @@ function List_qc_month() {
                                     )
                                 }
 
-                                <button disabled={`${year}/${month}` -  new Date() == 1 ? true : false} onClick={() => onSubmit()} className={'btn btn-primary'} id={'BtnSubmit'}
-                                        style={{minWidth: 200, alignContent: "center"}}>
-                                    <span id={'Loading'} className="loader mr-1"
-                                          style={{height: 20, width: 20, marginBottom: -4, display: "none"}}></span>
-                                    <span>บันทึก</span>
-                                </button>
-
-
+                                {/* now 8 = 8 9 10 11 12 */}
+                                {
+                                    new Date().getMonth()+1 > month ? (
+                                        <button disabled={`${year}/${month}` - new Date() === 1} onClick={() => onSubmit()} className={'btn btn-primary'} id={'BtnSubmit'}
+                                                style={{minWidth: 200, alignContent: "center"}}>
+                                            <span id={'Loading'} className="loader mr-1"
+                                                  style={{height: 20, width: 20, marginBottom: -4, display: "none"}}>
+                                            </span>
+                                            <span className={'mr-2'}>
+                                                <i className="fa-solid fa-floppy-disk"></i>
+                                            </span>
+                                            <span>บันทึก</span>
+                                        </button>
+                                    ) : <></>
+                                }
                             </div>
                         ) : <></>
                     }

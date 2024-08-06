@@ -8,6 +8,8 @@ export const AlertSuccess = (title, text) => {
         title: title,
         text: text,
         allowOutsideClick: false,
+    }).then((result) => {
+        console.log(result);
     })
 }
 
@@ -17,6 +19,8 @@ export const AlertError = (title, text) => {
         title: title,
         text: text,
         allowOutsideClick: false,
+    }).then((result) => {
+        console.log(result);
     })
 }
 
