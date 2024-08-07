@@ -1,4 +1,5 @@
 import axiosClient from "../axios.js";
+import {ErrorApi} from "./Error_res.js";
 
 export const LoginApi = async (email, password) => {
     try {
@@ -8,10 +9,15 @@ export const LoginApi = async (email, password) => {
         });
         return { data, status };
     } catch (error) {
-        console.log('Error:', error.response ? error.response.status : 'Network Error');
-        return {
-            data: error.response ? error.response.data.message : 'เกิดข้อผิดพลาดกับ server กรุณาติดต่อผู้ดูแลระบบ',
-            status: error.response ? error.response.status : 500,
-        };
+        return ErrorApi(error);
     }
 };
+
+export const LogoutApi = async () => {
+    try {
+        const { data, status } = await axiosClient.post('/logout');
+        return { data, status };
+    }catch (error){
+        return ErrorApi(error);
+    }
+}

@@ -5,6 +5,10 @@ import {Link} from "react-router-dom";
 import {AddYearApi, QCYearDataListApi, QcYearListApi} from "../../api/QcYear.js";
 import {AlertError, AlertSuccess} from "../../Dialogs/alertNotQuestions.js";
 import Spinner from "../../components/Spinner.jsx";
+import {faFileLines, faPlus, faXmark} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCalendarDays} from "@fortawesome/free-regular-svg-icons";
+import Button from "../../components/Button.jsx";
 
 
 function Qc_years() {
@@ -102,7 +106,8 @@ function Qc_years() {
                         </select>
                         <button type="button" className="btn btn-primary ml-3" data-toggle="modal"
                                 data-target="#staticBackdrop">
-                            + เพิ่มปี
+                            <FontAwesomeIcon icon={faPlus} className={'mr-1'}/>
+                            <span>เพิ่มปี</span>
                         </button>
                     </div>
                     <div className={'table-responsive'}>
@@ -150,7 +155,7 @@ function Qc_years() {
                                             <td>
                                                 <Link
                                                     to={`/incentive/qc_list_month/${data.yearkey}/${data.monthkey}/${data.status !== '-' ? data.status : '-'}`}>
-                                                    <i className="fa-solid fa-file-lines"></i>
+                                                    <FontAwesomeIcon icon={faFileLines}/>
                                                 </Link>
                                             </td>
 
@@ -166,7 +171,6 @@ function Qc_years() {
                                         <td colSpan="9"><Spinner/></td>
                                     </tr>
                                 )
-
                             }
                             </tbody>
                         </table>
@@ -180,7 +184,10 @@ function Qc_years() {
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel">เพิ่มปี</h5>
+                            <h5 className="modal-title" id="staticBackdropLabel">
+                                <FontAwesomeIcon icon={faCalendarDays} className={'mr-1'}/>
+                                <span>เพิ่มปี</span>
+                            </h5>
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -196,8 +203,10 @@ function Qc_years() {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button type={'button'} className="btn btn-secondary" data-dismiss="modal">ปิด</button>
-                                <button type={'submit'} className="btn btn-primary">เพิ่ม</button>
+                                <Button type="button" className="btn-secondary" icon={faXmark} iconClass="mr-1"
+                                        label="ปิด" dataDismiss="modal"/>
+                                <Button type="submit" className="btn-primary" icon={faPlus} iconClass="mr-1"
+                                        label="เพิ่ม"/>
                             </div>
                         </form>
 

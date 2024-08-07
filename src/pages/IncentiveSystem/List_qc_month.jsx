@@ -7,6 +7,17 @@ import Swal from "sweetalert2";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {AlertError, AlertSuccess} from "../../Dialogs/alertNotQuestions.js";
 import {useStateContext} from "../../contexts/ContextProvider.jsx";
+import {QcLogApi} from "../../api/QcMonth.js";
+import {AlertErrorWithQuestion} from "../../Dialogs/alertWithQuestions.js";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {
+    faCalculator,
+    faCheck,
+    faFloppyDisk,
+    faPaperPlane,
+    faPenToSquare,
+    faPrint, faXmark
+} from "@fortawesome/free-solid-svg-icons";
 
 
 function List_qc_month() {
@@ -25,24 +36,24 @@ function List_qc_month() {
 
     //ฟังก์ชั่น ดึงข้อมูลมาแสดง
     const getQcLog = (year, month) => {
-        axiosClient
-            .get(`/incentive/qc_month/${year}/${month}/${status}`, {})
+        QcLogApi(year, month, status)
             .then(({data, status}) => {
-                console.log(data)
+                console.log(data,status)
                 if (status === 200) {
                     setDatas(data.amount_qc_users);
                     setData_team(data.data_teams);
                     setInc_id(data.inc_id);
-                }
-            })
-            .catch((error) => {
-                if (error.response.status === 400) {
-                    AlertError('เกิดข้อผิดพลาด', error.response.data.msg);
-                }else if(error.response.status === 412){
-                    AlertError('เกิดข้อผิดพลาด', error.response.data.message);
-                    navigate('/incentive/manage_day');
                 } else {
-                    AlertError(error.response.status, error.message);
+                    if (status === 412) {
+                        const textConfirm = 'ไปที่หน้าจัดการวันทำงาน';
+                        const textCancel = 'ย้อนกลับ'
+                        AlertErrorWithQuestion('เกิดข้อผิดพลาด', data, textConfirm, textCancel, (confirm) => {
+                            console.log(confirm)
+                            confirm ? navigate('/incentive/manage_day') : navigate('/incentive/qc_years');
+                        })
+                    } else {
+                        AlertError('เกิดข้อผิดพลาด', data);
+                    }
                 }
             });
     }
@@ -65,7 +76,7 @@ function List_qc_month() {
 
 
     //ซ่อนหรือแสดง กำลังโหลด
-    const showLodingAndDisable = (Bool) => {
+    const showLoadingAndDisable = (Bool) => {
         if (Bool) {
             document.getElementById('BtnSubmit').disabled = true;
             document.getElementById('Loading').style.display = 'inline-block';
@@ -89,7 +100,7 @@ function List_qc_month() {
 
     //ฟังก์ชั่นการกดส่ง
     const onSubmit = () => {
-        showLodingAndDisable(true)
+        showLoadingAndDisable(true)
         const NewData_team = {...data_team, 'year': year, 'month': month, 'status': 'active'}
         const updatedDatas = datas.map((data, index) => ({
             ...data,
@@ -143,12 +154,12 @@ function List_qc_month() {
                             })
 
                         }
-                        showLodingAndDisable(false);
+                        showLoadingAndDisable(false);
                     }).catch((error) => {
                         if (error.response) {
                             console.error(error.response.data.msg)
                         }
-                        showLodingAndDisable(false);
+                        showLoadingAndDisable(false);
                     })
                 } else if (status === 400) {
                     alert('hello');
@@ -171,7 +182,7 @@ function List_qc_month() {
                                 navigate('/incentive/qc_years');
                             }
                         })
-                        showLodingAndDisable(false)
+                        showLoadingAndDisable(false)
                     }
                     console.log(data, status)
                 }).catch((error) => {
@@ -180,7 +191,7 @@ function List_qc_month() {
                     } else {
                         AlertError('เกิดข้อผิดพลาด', 'An unexpected error occurred. Please try again later.')
                     }
-                    showLodingAndDisable(false)
+                    showLoadingAndDisable(false)
                 })
             }
         })
@@ -307,7 +318,7 @@ function List_qc_month() {
                                         ) : (
                                             <button onClick={handleCalculate}
                                                     className={`text-end btn btn-warning mr-3 ${currentUser.emp_role !== 'QC' ? '' : 'disabled'}`}>
-                                                <i className="fa-solid fa-calculator mr-2"></i>
+                                                <FontAwesomeIcon icon={faCalculator} className={'mr-2'}/>
                                                 <span>คำนวณ</span>
                                             </button>
                                         )
@@ -317,7 +328,7 @@ function List_qc_month() {
                                 <>
                                     <Link to={`/incentive/qc_list_month/${year}/${month}/-`} onClick={RedirectToEdit}
                                           className={`text-end btn btn-primary mr-3 ${currentUser.emp_role === 'QC' || data_team.status !== 'active' ? 'disabled' : ''}`}>
-                                        <i className="fa-solid fa-pen-to-square mr-1"></i>
+                                        <FontAwesomeIcon icon={faPenToSquare} className={'mr-1'}/>
                                         <span>แก้ไข</span>
                                     </Link>
 
@@ -327,14 +338,14 @@ function List_qc_month() {
                                                 data_team.status === 'approve' ? (
                                                     <button onClick={onConfirmPayDate}
                                                             className={'text-end btn mr-3 text-white bg-info'}>
-                                                        <i className="fa-solid fa-paper-plane mr-1"></i>
+                                                        <FontAwesomeIcon icon={faPaperPlane} className={'mr-1'}/>
                                                         <span>ยืนยันการจ่าย</span>
                                                     </button>
                                                 ) : (
                                                     data_team.status === 'active' && (
                                                         <button onClick={onApproveQC}
                                                                 className={'text-end btn mr-3 text-white bg-info'}>
-                                                            <i className="fa-solid fa-paper-plane mr-1"></i>
+                                                            <FontAwesomeIcon icon={faPaperPlane} className={'mr-1'}/>
                                                             <span>ส่งอนุมัติ</span>
                                                         </button>
                                                     )
@@ -346,7 +357,7 @@ function List_qc_month() {
                                         data_team.status === 'wait' && (
                                             <button onClick={onApproveHR}
                                                     className={'text-end btn mr-3 text-white bg-info'}>
-                                                <i className="fa-solid fa-paper-plane mr-1"></i>
+                                                <FontAwesomeIcon icon={faPaperPlane} className={'mr-1'}/>
                                                 <span>อนุมัติ</span>
                                             </button>
                                         )
@@ -355,7 +366,7 @@ function List_qc_month() {
                             )
                     }
                     <button onClick={() => PrintData()} className={'text-end btn btn-success'}>
-                        <i className="fa-solid fa-print mr-1"></i>
+                        <FontAwesomeIcon icon={faPrint} className={'mr-1'}/>
                         <span>พิมพ์</span>
                     </button>
                 </>
@@ -478,7 +489,7 @@ function List_qc_month() {
                                         <td>
                                             <button type="button" className="btn btn-warning btn-sm" data-toggle="modal"
                                                     data-target={`#exampleModal${index}`}>
-                                                <i className="fa-solid fa-pen-to-square"></i>
+                                                <FontAwesomeIcon icon={faPenToSquare}/>
                                             </button>
                                             <div className="modal fade" id={`exampleModal${index}`} tabIndex="-1"
                                                  aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -502,7 +513,9 @@ function List_qc_month() {
                                                         </div>
                                                         <div className="modal-footer">
                                                             <button type="button" className="btn btn-primary"
-                                                                    data-dismiss="modal">เสร็จสิ้น
+                                                                    data-dismiss="modal">
+                                                                <FontAwesomeIcon icon={faCheck} className={'mr-1'}/>
+                                                                <span>เสร็จสิ้น</span>
                                                             </button>
                                                         </div>
                                                     </div>
@@ -571,8 +584,10 @@ function List_qc_month() {
                                 {
                                     data_team.status === 'active' && (
                                         <Link to={`/incentive/qc_list_month/${year}/${month}/active`}
-                                              className={'btn btn-secondary mr-3'} style={{minWidth: 200, alignContent: "center"}}
+                                              className={'btn btn-secondary mr-3'}
+                                              style={{minWidth: 200, alignContent: "center"}}
                                         >
+                                            <FontAwesomeIcon icon={faXmark} className={'mr-1'} />
                                             <span>ยกเลิก</span>
                                         </Link>
                                     )
@@ -580,15 +595,15 @@ function List_qc_month() {
 
                                 {/* now 8 = 8 9 10 11 12 */}
                                 {
-                                    new Date().getMonth()+1 > month ? (
-                                        <button disabled={`${year}/${month}` - new Date() === 1} onClick={() => onSubmit()} className={'btn btn-primary'} id={'BtnSubmit'}
+                                    new Date().getMonth() + 1 > month ? (
+                                        <button disabled={`${year}/${month}` - new Date() === 1}
+                                                onClick={() => onSubmit()} className={'btn btn-primary'}
+                                                id={'BtnSubmit'}
                                                 style={{minWidth: 200, alignContent: "center"}}>
                                             <span id={'Loading'} className="loader mr-1"
                                                   style={{height: 20, width: 20, marginBottom: -4, display: "none"}}>
                                             </span>
-                                            <span className={'mr-2'}>
-                                                <i className="fa-solid fa-floppy-disk"></i>
-                                            </span>
+                                            <FontAwesomeIcon icon={faFloppyDisk} className={'mr-2'}/>
                                             <span>บันทึก</span>
                                         </button>
                                     ) : <></>

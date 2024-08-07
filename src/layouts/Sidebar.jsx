@@ -2,6 +2,9 @@ import {Link, useLocation} from "react-router-dom";
 import Logo from "../assets/dist/img/background.jpeg"
 import UserImage from "../assets/dist/img/user2-160x160.jpg"
 import {useStateContext} from "../contexts/ContextProvider.jsx";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faDollarSign, faHandHoldingDollar} from "@fortawesome/free-solid-svg-icons";
+import {faCircle} from "@fortawesome/free-regular-svg-icons";
 
 function Sidebar() {
 
@@ -33,14 +36,14 @@ function Sidebar() {
                         <li className={`nav-item ${location.pathname.startsWith('/incentive') ? 'menu-open' : ''}`}>
                             <a href="#"
                                className={`nav-link ${location.pathname.startsWith('/incentive') ? 'active' : ''}`}>
-                                <i className="nav-icon fa-solid fa-hand-holding-dollar"></i>
+                                <FontAwesomeIcon icon={faHandHoldingDollar} className={'nav-icon'}/>
                                 <p>Incentive System<i className="right fas fa-angle-left"></i></p>
                             </a>
                             <ul className="nav nav-treeview">
                                 <li className="nav-item">
                                     <Link to={'/incentive/qc_years'}
                                           className={`nav-link ${location.pathname === '/incentive/qc_years' || location.pathname.startsWith('/incentive/qc_list_month') ? 'active' : ''}`}>
-                                        <i className="far fa-circle nav-icon"></i>
+                                        <FontAwesomeIcon icon={faCircle} className={'nav-icon'}/>
                                         <p>Incentive QC</p>
                                     </Link>
                                 </li>
@@ -49,7 +52,7 @@ function Sidebar() {
                                         <li className={'nav-item'}>
                                             <Link to={'/incentive/products/list_product_qc'}
                                                   className={`nav-link ${location.pathname.startsWith('/incentive/products') ? 'active' : ''}`}>
-                                                <i className="far fa-circle nav-icon"></i>
+                                                <FontAwesomeIcon icon={faCircle} className={'nav-icon'}/>
                                                 <p>ข้อมูลสินค้า QC</p>
                                             </Link>
                                         </li>
@@ -59,27 +62,27 @@ function Sidebar() {
                                 <li className={'nav-item'}>
                                     <Link to={'/incentive/manage_day'}
                                           className={`nav-link ${location.pathname.startsWith('/incentive/manage_day') ? 'active' : ''}`}>
-                                        <i className={'far fa-circle nav-icon'}></i>
+                                        <FontAwesomeIcon icon={faCircle} className={'nav-icon'}/>
                                         <p>จัดการวันทำงาน</p>
                                     </Link>
                                 </li>
                                 <li className={'nav-item'}>
                                     <Link to={'/incentive/qc_time'}
                                           className={`nav-link ${location.pathname.startsWith('/incentive/qc_time') ? 'active' : ''}`}>
-                                        <i className="far fa-circle nav-icon"></i>
+                                        <FontAwesomeIcon icon={faCircle} className={'nav-icon'}/>
                                         <p>ข้อมูลระดับการ QC</p>
                                     </Link>
                                 </li>
                                 <li className={'nav-item'}>
                                     <Link to={'/incentive/calculate_grade'}
                                           className={`nav-link ${location.pathname.startsWith('/incentive/calculate_grade') ? 'active' : ''}`}>
-                                        <i className="far fa-circle nav-icon"></i>
+                                        <FontAwesomeIcon icon={faCircle} className={'nav-icon'}/>
                                         <p>ข้อมูลเกณฑ์คำนวณ</p>
                                     </Link>
                                 </li>
                                 <li className={'nav-item'}>
                                     <Link to={'/incentive/usermanage/user-list'} className={`nav-link ${location.pathname.startsWith('/incentive/usermanage') ? 'active' : ''}`}>
-                                        <i className={'far fa-circle nav-icon'}></i>
+                                        <FontAwesomeIcon icon={faCircle} className={'nav-icon'}/>
                                         <p>ข้อมูลผู้ใช้งาน</p>
                                     </Link>
                                 </li>
@@ -88,14 +91,14 @@ function Sidebar() {
                         <li className={`nav-item ${location.pathname.startsWith('/Promotion_Gold') ? 'menu-open' : ''}`}>
                             <a href="#"
                                className={`nav-link ${location.pathname.startsWith('/Promotion_Gold') ? 'active' : ''}`}>
-                                <i className="nav-icon fa-solid fa-sack-dollar"></i>
+                                <FontAwesomeIcon icon={faDollarSign} className={'nav-icon'}/>
                                 <p>Promotion Gold<i className="right fas fa-angle-left"></i></p>
                             </a>
                             <ul className="nav nav-treeview">
                                 <li className="nav-item">
                                     <Link to={'#'}
                                           className={`nav-link ${location.pathname === '/Promotion_Gold' || location.pathname.startsWith('/incentive/qc_list_month') ? 'active' : ''}`}>
-                                        <i className="far fa-circle nav-icon"></i>
+                                        <FontAwesomeIcon icon={faCircle} className={'nav-icon'}/>
                                         <p>QC สินค้า ประจำปี</p>
                                     </Link>
                                 </li>

@@ -7,7 +7,7 @@ export default function ManageDay() {
 
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState([]);
-    const [addYear, setAddYear] = useState(2000);
+    const [addYear, setAddYear] = useState(2024);
     const [addMonth, setAddMonth] = useState(1);
     const [addWorkDay, setAddWorkDay] = useState(1);
 

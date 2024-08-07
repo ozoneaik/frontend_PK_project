@@ -1,5 +1,7 @@
-import axiosClient from "../axios.js";
 import {useStateContext} from "../contexts/ContextProvider.jsx";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faBars, faSignOut} from "@fortawesome/free-solid-svg-icons";
+import {LogoutApi} from "../api/Auth.js";
 
 function Navbar() {
     const {setCurrentUser, setUserToken} = useStateContext();
@@ -7,10 +9,12 @@ function Navbar() {
 
     const logout = (ev) => {
         ev.preventDefault();
-        axiosClient.post("/logout").then((res) => {
-            setCurrentUser({});
-            setUserToken(null);
-        });
+        LogoutApi()
+            .then((data, status) => {
+                console.log(data, status);
+                setCurrentUser({});
+                setUserToken(null);
+            });
     };
 
 
@@ -18,7 +22,9 @@ function Navbar() {
         <nav className="main-header navbar navbar-expand navbar-light navbar-light">
             <ul className="navbar-nav">
                 <li className="nav-item">
-                    <a className="nav-link" data-widget="pushmenu" href="#" role="button"><i className="fas fa-bars"></i></a>
+                    <a className="nav-link" data-widget="pushmenu" href="#" role="button">
+                        <FontAwesomeIcon icon={faBars}/>
+                    </a>
                 </li>
                 <li className="nav-item d-none d-sm-inline-block">
                     <span className="nav-link text-bold text-dark">Pumpkin Corporation Company Limited | Bangkok</span>
@@ -29,7 +35,7 @@ function Navbar() {
                     <a className="nav-link" href="#" role="button">
                         <button className={'btn btn-sm btn-danger'} onClick={(e) => logout(e)}>
                             ออกจากระบบ
-                            <i className="fa-solid fa-sign-out ml-2"></i>
+                            <FontAwesomeIcon icon={faSignOut} className={'ml-2'}/>
                         </button>
                     </a>
                 </li>

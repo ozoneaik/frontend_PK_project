@@ -1,19 +1,27 @@
 import {useStateContext} from "../contexts/ContextProvider.jsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import LoginImage from "../assets/dist/img/Login.webp";
 import {AlertError} from "../Dialogs/alertNotQuestions.js";
 import '../assets/dist/css/login.css'
 import {LoginApi} from "../api/Auth.js";
 import Spinner from "../components/Spinner.jsx";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEnvelope, faLock, faRightToBracket} from "@fortawesome/free-solid-svg-icons";
 
 function Login() {
 
     const navigate = useNavigate();
-    const {setCurrentUser, setUserToken} = useStateContext();
+    const {userToken,setCurrentUser, setUserToken} = useStateContext();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (userToken){
+            navigate('/incentive/qc_years')
+        }
+    }, [navigate, userToken]);
 
     const onSubmit = (ev) => {
         ev.preventDefault();
@@ -49,7 +57,7 @@ function Login() {
                                        onChange={(e) => setEmail(e.target.value)}/>
                                 <div className="input-group-append">
                                     <div className="input-group-text">
-                                        <span className="fas fa-envelope"></span>
+                                        <FontAwesomeIcon icon={faEnvelope} />
                                     </div>
                                 </div>
                             </div>
@@ -58,7 +66,7 @@ function Login() {
                                        onChange={(e) => setPassword(e.target.value)}/>
                                 <div className="input-group-append">
                                     <div className="input-group-text">
-                                        <span className="fas fa-lock"></span>
+                                        <FontAwesomeIcon icon={faLock} />
                                     </div>
                                 </div>
                             </div>
@@ -71,13 +79,11 @@ function Login() {
                                     ) : (
                                         <>
                                             <button type="submit" className="btn btn-primary btn-block">
-                                                <i className="fa-solid fa-right-to-bracket mr-1"></i>
+                                                <FontAwesomeIcon icon={faRightToBracket} className={'mr-1'}/>
                                                 <span>เข้าสู่ระบบ</span>
                                             </button>
                                         </>
                                     )}
-
-
                                 </div>
                             </div>
                         </form>
