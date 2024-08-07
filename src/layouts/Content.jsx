@@ -6,21 +6,25 @@ import {useEffect} from "react";
 import axiosClient from "../axios.js";
 
 // eslint-disable-next-line react/prop-types
-function Content({children,header,header_sub}) {
-    const {userToken, setCurrentUser} = useStateContext();
-    if (!userToken){
-        return <Navigate to="/login" />;
+function Content({children, header, header_sub}) {
+    const {userToken, setCurrentUser, setUserToken} = useStateContext();
+    if (!userToken) {
+        return <Navigate to="/login"/>;
     }
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
         axiosClient.get('/me')
-            .then(({ data }) => {
+            .then(({data}) => {
                 setCurrentUser(data)
-            })
+            }).catch(() => {
+                setCurrentUser({});
+                setUserToken(null);
+            }
+        )
     }, [setCurrentUser, userToken])
 
-    
+
     return (
         <>
             <Navbar/>
