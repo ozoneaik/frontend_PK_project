@@ -7,8 +7,12 @@ import Swal from "sweetalert2";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {AlertError, AlertSuccess} from "../../Dialogs/alertNotQuestions.js";
 import {useStateContext} from "../../contexts/ContextProvider.jsx";
-import {QcLogApi} from "../../api/QcMonth.js";
-import {AlertErrorWithQuestion} from "../../Dialogs/alertWithQuestions.js";
+import {checkSavedApi, QcLogApi, StoreQcMonthApi, UpdateQcMonthApi} from "../../api/QcMonth.js";
+import {
+    AlertErrorWithQuestion,
+    AlertInfoWithQuestion,
+    AlertSuccessWithQuestion
+} from "../../Dialogs/alertWithQuestions.js";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
     faCalculator,
@@ -16,8 +20,10 @@ import {
     faFloppyDisk,
     faPaperPlane,
     faPenToSquare,
-    faPrint, faXmark
+    faPrint,
+    faXmark
 } from "@fortawesome/free-solid-svg-icons";
+import Spinner from "../../components/Spinner.jsx";
 
 
 function List_qc_month() {
@@ -27,6 +33,8 @@ function List_qc_month() {
     const [data_team, setData_team] = useState({});
     const [inc_id, setInc_id] = useState();
     const navigate = useNavigate();
+
+    const [loading, setLoading] = useState(false);
 
 
     //ดึงข้อมูลมาจาก .30 จากฟังก์ชั่น getQcLog()
@@ -38,7 +46,7 @@ function List_qc_month() {
     const getQcLog = (year, month) => {
         QcLogApi(year, month, status)
             .then(({data, status}) => {
-                console.log(data,status)
+                console.log(data, status)
                 if (status === 200) {
                     setDatas(data.amount_qc_users);
                     setData_team(data.data_teams);
@@ -47,10 +55,11 @@ function List_qc_month() {
                     if (status === 412) {
                         const textConfirm = 'ไปที่หน้าจัดการวันทำงาน';
                         const textCancel = 'ย้อนกลับ'
-                        AlertErrorWithQuestion('เกิดข้อผิดพลาด', data, textConfirm, textCancel, (confirm) => {
-                            console.log(confirm)
-                            confirm ? navigate('/incentive/manage_day') : navigate('/incentive/qc_years');
-                        })
+                        AlertErrorWithQuestion({
+                            title: 'เกิดข้อผิดพลาด', text: data, textConfirm, textCancel, onPassed: (confirm) => {
+                                confirm ? navigate('/incentive/manage_day') : navigate('/incentive/qc_years');
+                            }
+                        });
                     } else {
                         AlertError('เกิดข้อผิดพลาด', data);
                     }
@@ -74,129 +83,75 @@ function List_qc_month() {
         console.log(datas);
     }
 
-
-    //ซ่อนหรือแสดง กำลังโหลด
-    const showLoadingAndDisable = (Bool) => {
-        if (Bool) {
-            document.getElementById('BtnSubmit').disabled = true;
-            document.getElementById('Loading').style.display = 'inline-block';
-        } else {
-            document.getElementById('BtnSubmit').disabled = false;
-            document.getElementById('Loading').style.display = 'none';
-        }
-    }
-
     //ฟังก์ชั่นเปลี่ยนไปแก้ไขข้อมูล
     const RedirectToEdit = () => {
-        navigate(`qc_list_month/${year}/${month}/-`, {replace: true})
+        navigate(`/qc_list_month/${year}/${month}/-`)
     }
 
     //ฟังก์ชั่นพิมพ์
     const PrintData = () => {
-        // navigate(`/incentive/printData/${year}/${month}/active`, '_blank');
         window.open(`/incentive/printData/${year}/${month}/active`, '_blank');
-
     }
 
     //ฟังก์ชั่นการกดส่ง
     const onSubmit = () => {
-        showLoadingAndDisable(true)
+        setLoading(true)
         const NewData_team = {...data_team, 'year': year, 'month': month, 'status': 'active'}
         const updatedDatas = datas.map((data, index) => ({
             ...data,
             paystatus: document.getElementById(`checkbox_${index}`).checked ? 'yes' : 'no',
         }));
-
-        axiosClient.get(`/incentive/checkIncHd/${year}/${month}`, {})
-            .then(({data, status}) => {
+        checkSavedApi(year, month)
+            .then(({data, status}) => { // เช็คว่าเคยบันทึกแล้วหรือไม่
+                console.log('response >>', data, status);
                 if (status === 200) {
-                    Swal.fire({
-                        icon: 'info',
-                        title: `เคยบันทึกข้อมูล ${year}/${month} แล้ว`,
-                        text: data.msg,
-                        confirmButtonText: 'ตกลง',
-                        showCancelButton: true,
-                        cancelButtonText: 'ยกเลิก',
-                        allowOutsideClick: false,
-
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-
-                            // อัพเดทข้อมูลที่นี่
-                            console.log('อัพเดทข้อมูลที่นี่', inc_id);
-                            axiosClient.post(`/incentive/qc_month/update`, {
-                                inc_id,
-                                datas: updatedDatas,
-                                data_team
-                            }).then(({data, status}) => {
-
-                                if (status === 200) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'อัพเดทข้อมูลสำเร็จ',
-                                        text: data.msg,
-                                        confirmButtonText: 'ตกลง',
-                                        allowOutsideClick: false,
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            navigate('/incentive/qc_years');
-                                        }
-                                    })
-                                }
-                            }).catch((error) => {
-                                if (error.response.status === 400) {
-                                    AlertError('เกิดข้อผิดพลาด', error.response.data.msg);
-                                } else {
-                                    AlertError('เกิดข้อผิดพลาด', `${error.response.status} ${error.response.data.msg}`);
-                                }
-
-                                console.log(error.response.status)
-                            })
-
-                        }
-                        showLoadingAndDisable(false);
-                    }).catch((error) => {
-                        if (error.response) {
-                            console.error(error.response.data.msg)
-                        }
-                        showLoadingAndDisable(false);
-                    })
-                } else if (status === 400) {
-                    alert('hello');
-                }
-                console.log(data);
-            }).catch((error) => {
-            if (error.response.status === 400) {
-                axiosClient.post('/incentive/qc_month/store', {
-                    datas: updatedDatas,
-                    NewData_team
-                }).then(({data, status}) => {
-                    if (status === 200) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: data.msg,
-                            confirmButtonText: "ตกลง",
-                            allowOutsideClick: false
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                navigate('/incentive/qc_years');
+                    console.log(status);
+                    AlertInfoWithQuestion({
+                        title: `เคยบันทึกข้อมูล ${year}/${month} แล้ว`, text: data.message, onPassed: (confirm) => {
+                            if (confirm) { //อัพเดทข้อมูลถ้ากด ตกลง
+                                updateQcMonth(inc_id, updatedDatas, data_team);
                             }
-                        })
-                        showLoadingAndDisable(false)
+                        }
+                    });
+                } else if (status === 400) {
+                    storeQcMonth(updatedDatas, NewData_team);
+                } else {
+                    AlertError('เกิดข้อผิดพลาด', data);
+                    setLoading(false);
+                }
+            });
+    }
+
+    // ฟังก์ชั่นอัพเดทข้อมูล
+    const updateQcMonth = (inc_id, updatedDatas, data_team) => {
+        UpdateQcMonthApi(inc_id, updatedDatas, data_team).then(({data, status}) => {
+            if (status === 200) {
+                AlertSuccessWithQuestion({
+                    title: 'อัพเดทข้อมูลสำเร็จ', text: data.message, onPassed: (confirm) => {
+                        confirm ? navigate('/incentive/qc_years') : navigate('/incentive/qc_years');
                     }
-                    console.log(data, status)
-                }).catch((error) => {
-                    if (error.response) {
-                        AlertError('เกิดข้อผิดพลาด', error.response.data.msg)
-                    } else {
-                        AlertError('เกิดข้อผิดพลาด', 'An unexpected error occurred. Please try again later.')
-                    }
-                    showLoadingAndDisable(false)
-                })
+                });
+            } else {
+                AlertError('เกิดข้อผิดพลาด', data);
+                setLoading(false);
             }
         })
+    }
 
-
+    // ฟังก์ชั่นสร้างข้อมูล
+    const storeQcMonth = (datas, NewData_team) => {
+        StoreQcMonthApi(datas, NewData_team).then(({data, status}) => {
+            if (status === 200) {
+                AlertSuccessWithQuestion({
+                    title: 'สำเร็จ', text: data.message, onPassed: (confirm) => {
+                        confirm ? navigate('/incentive/qc_years') : navigate('/incentive/qc_years');
+                    }
+                });
+            } else {
+                AlertError('เกิดข้อผิดพลาด', data);
+                setLoading(false);
+            }
+        })
     }
 
     //ฟังก์ชั่นการคำนวนแล้วดึงข้อมูลจาก .30
@@ -310,21 +265,17 @@ function List_qc_month() {
                 <>
                     {
                         status === '-' || data_team.status === 'complete' ?
-                            (
-                                <>
-                                    {
-                                        data_team.status === 'complete' ? (
-                                            <></>
-                                        ) : (
-                                            <button onClick={handleCalculate}
-                                                    className={`text-end btn btn-warning mr-3 ${currentUser.emp_role !== 'QC' ? '' : 'disabled'}`}>
-                                                <FontAwesomeIcon icon={faCalculator} className={'mr-2'}/>
-                                                <span>คำนวณ</span>
-                                            </button>
-                                        )
-                                    }
-                                </>
-                            ) : (
+                            (<>
+                                {
+                                    data_team.status !== 'complete' && (
+                                        <button onClick={handleCalculate} disabled={loading}
+                                                className={`text-end btn btn-warning mr-3 ${currentUser.emp_role !== 'QC' ? '' : 'disabled'}`}>
+                                            <FontAwesomeIcon icon={faCalculator} className={'mr-2'}/>
+                                            <span>คำนวณ</span>
+                                        </button>
+                                    )
+                                }
+                            </>) : (
                                 <>
                                     <Link to={`/incentive/qc_list_month/${year}/${month}/-`} onClick={RedirectToEdit}
                                           className={`text-end btn btn-primary mr-3 ${currentUser.emp_role === 'QC' || data_team.status !== 'active' ? 'disabled' : ''}`}>
@@ -336,14 +287,14 @@ function List_qc_month() {
                                         <>
                                             {
                                                 data_team.status === 'approve' ? (
-                                                    <button onClick={onConfirmPayDate}
+                                                    <button onClick={onConfirmPayDate} disabled={loading}
                                                             className={'text-end btn mr-3 text-white bg-info'}>
                                                         <FontAwesomeIcon icon={faPaperPlane} className={'mr-1'}/>
                                                         <span>ยืนยันการจ่าย</span>
                                                     </button>
                                                 ) : (
                                                     data_team.status === 'active' && (
-                                                        <button onClick={onApproveQC}
+                                                        <button onClick={onApproveQC} disabled={loading}
                                                                 className={'text-end btn mr-3 text-white bg-info'}>
                                                             <FontAwesomeIcon icon={faPaperPlane} className={'mr-1'}/>
                                                             <span>ส่งอนุมัติ</span>
@@ -355,7 +306,7 @@ function List_qc_month() {
 
                                     ) : (
                                         data_team.status === 'wait' && (
-                                            <button onClick={onApproveHR}
+                                            <button onClick={onApproveHR} disabled={loading}
                                                     className={'text-end btn mr-3 text-white bg-info'}>
                                                 <FontAwesomeIcon icon={faPaperPlane} className={'mr-1'}/>
                                                 <span>อนุมัติ</span>
@@ -365,7 +316,7 @@ function List_qc_month() {
                                 </>
                             )
                     }
-                    <button onClick={() => PrintData()} className={'text-end btn btn-success'}>
+                    <button onClick={() => PrintData()} className={'text-end btn btn-success'} disabled={loading}>
                         <FontAwesomeIcon icon={faPrint} className={'mr-1'}/>
                         <span>พิมพ์</span>
                     </button>
@@ -521,7 +472,6 @@ function List_qc_month() {
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </td>
                                     ) : (
                                         <></>
@@ -559,7 +509,6 @@ function List_qc_month() {
                                                     <span
                                                         className={'px-3 py-1 text-sm rounded-pill bg-danger'}>ไม่ผ่าน</span>
                                     }
-
                                 </td>
                                 <td>{parseFloat(data_team.totalVeryEasy).toLocaleString()}</td>
                                 <td>{parseFloat(data_team.totalEasy).toLocaleString()}</td>
@@ -572,7 +521,6 @@ function List_qc_month() {
                                 {status === '-' ? (
                                     <td>หมายเหตุ</td>
                                 ) : <></>}
-
                             </tr>
                             </tfoot>
                         </table>
@@ -585,26 +533,25 @@ function List_qc_month() {
                                     data_team.status === 'active' && (
                                         <Link to={`/incentive/qc_list_month/${year}/${month}/active`}
                                               className={'btn btn-secondary mr-3'}
-                                              style={{minWidth: 200, alignContent: "center"}}
                                         >
-                                            <FontAwesomeIcon icon={faXmark} className={'mr-1'} />
+                                            <FontAwesomeIcon icon={faXmark} className={'mr-1'}/>
                                             <span>ยกเลิก</span>
                                         </Link>
                                     )
                                 }
-
                                 {/* now 8 = 8 9 10 11 12 */}
                                 {
                                     new Date().getMonth() + 1 > month ? (
-                                        <button disabled={`${year}/${month}` - new Date() === 1}
-                                                onClick={() => onSubmit()} className={'btn btn-primary'}
-                                                id={'BtnSubmit'}
-                                                style={{minWidth: 200, alignContent: "center"}}>
-                                            <span id={'Loading'} className="loader mr-1"
-                                                  style={{height: 20, width: 20, marginBottom: -4, display: "none"}}>
-                                            </span>
-                                            <FontAwesomeIcon icon={faFloppyDisk} className={'mr-2'}/>
-                                            <span>บันทึก</span>
+                                        <button onClick={() => onSubmit()} className={'btn btn-primary'}
+                                                id={'BtnSubmit'}>
+                                            {!loading ? (
+                                                <>
+                                                    <FontAwesomeIcon icon={faFloppyDisk} className={'mr-2'}/>
+                                                    <span>บันทึก</span>
+                                                </>
+                                            ) : (
+                                                <Spinner/>
+                                            )}
                                         </button>
                                     ) : <></>
                                 }
@@ -616,5 +563,4 @@ function List_qc_month() {
         </Content>
     );
 }
-
 export default List_qc_month;

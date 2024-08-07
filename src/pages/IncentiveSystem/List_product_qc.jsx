@@ -1,9 +1,10 @@
 import Content from "../../layouts/Content.jsx";
-// import $ from 'jquery';
 import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import axiosClient from "../../axios.js";
 import Swal from "sweetalert2";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faPenToSquare, faPlus} from "@fortawesome/free-solid-svg-icons";
 
 function List_product_qc() {
 
@@ -19,16 +20,6 @@ function List_product_qc() {
                 console.log(data);
                 if (status === 200) {
                     setProducts(data.products);
-                    // $(document).ready(function () {
-                    //     $('#myTable').DataTable({
-                    //         paging: true,
-                    //         searching: true,
-                    //         ordering: true,
-                    //         columnDefs: [
-                    //             {className: "dt-center", targets: "_all"}
-                    //         ]
-                    //     });
-                    // });
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -54,8 +45,10 @@ function List_product_qc() {
             <div className={'card'}>
                 <div className="card-body">
                     <div className={'d-flex justify-content-end mb-3'}>
-                        <Link to={'/incentive/products/add_product_qc'} className={'btn btn-primary'}> +
-                            เพิ่มสินค้า</Link>
+                        <Link to={'/incentive/products/add_product_qc'} className={'btn btn-primary'}>
+                            <FontAwesomeIcon icon={faPlus} className={'mr-1'}/>
+                            <span>เพิ่มสินค้า</span>
+                        </Link>
                     </div>
                     <div className={'table-responsive'}>
                         <table className={'table table-bordered'} id={'myTable'}>
@@ -104,7 +97,7 @@ function List_product_qc() {
                                     <td>QC</td>
                                     <td>
                                         <Link to={`/incentive/products/edit_product_qc/${product.id}`}>
-                                            <i className="fa-solid fa-pen-to-square"></i>
+                                            <FontAwesomeIcon icon={faPenToSquare}/>
                                         </Link></td>
                                 </tr>
                             )) : (
