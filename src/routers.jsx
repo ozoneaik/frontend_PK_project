@@ -14,6 +14,7 @@ import UserManage from "./pages/users/UserManage.jsx";
 import AddUser from "./pages/users/AddUser.jsx";
 import EditUser from "./pages/users/EditUser.jsx";
 import ManageDay from "./pages/IncentiveSystem/ManageDay.jsx";
+import Test from "./pages/IncentiveSystem/Test.jsx";
 
 const routers = createBrowserRouter([
     {
@@ -44,6 +45,7 @@ const routers = createBrowserRouter([
     {path: '/', element: <Qc_years/>},
     {path: '/login', element: <Login/>},
     {path: '/signup', element: <Signup/>},
+    {path: '/test', element: <Test/>},
     {path: '*', element: <NotFound/>}
 ]);
 

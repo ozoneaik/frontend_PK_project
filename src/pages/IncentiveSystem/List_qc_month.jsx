@@ -2,12 +2,17 @@ import Content from "../../layouts/Content.jsx";
 import '../../assets/style/toggle.css'
 import '../../assets/style/table.css'
 import {useEffect, useState} from "react";
-import axiosClient from "../../axios.js";
-import Swal from "sweetalert2";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {AlertError, AlertSuccess} from "../../Dialogs/alertNotQuestions.js";
 import {useStateContext} from "../../contexts/ContextProvider.jsx";
-import {checkSavedApi, QcLogApi, StoreQcMonthApi, UpdateQcMonthApi} from "../../api/QcMonth.js";
+import {
+    ApproveAPi,
+    checkSavedApi,
+    ConfirmPayDate,
+    QcLogApi,
+    StoreQcMonthApi,
+    UpdateQcMonthApi
+} from "../../api/QcMonth.js";
 import {
     AlertErrorWithQuestion,
     AlertInfoWithQuestion,
@@ -33,9 +38,7 @@ function List_qc_month() {
     const [data_team, setData_team] = useState({});
     const [inc_id, setInc_id] = useState();
     const navigate = useNavigate();
-
     const [loading, setLoading] = useState(false);
-
 
     //ดึงข้อมูลมาจาก .30 จากฟังก์ชั่น getQcLog()
     useEffect(() => {
@@ -85,7 +88,7 @@ function List_qc_month() {
 
     //ฟังก์ชั่นเปลี่ยนไปแก้ไขข้อมูล
     const RedirectToEdit = () => {
-        navigate(`/qc_list_month/${year}/${month}/-`)
+        navigate(`/incentive/qc_list_month/${year}/${month}/-`)
     }
 
     //ฟังก์ชั่นพิมพ์
@@ -156,106 +159,78 @@ function List_qc_month() {
 
     //ฟังก์ชั่นการคำนวนแล้วดึงข้อมูลจาก .30
     const handleCalculate = () => {
-        axiosClient
-            .get(`/incentive/qc_month/${year}/${month}/-`, {})
-            .then(({data, status}) => {
-                console.log(data)
-                if (status === 200) {
-                    AlertSuccess('สำเร็จ', 'คำนวณสำเร็จ')
-                    setDatas(data.amount_qc_users);
-                    setData_team(data.data_teams);
-                }
-            })
-            .catch((error) => {
-                if (error.response.status === 400) {
-                    AlertError('Error 400', error.response.data.msg);
-                } else {
-                    AlertError(error.response.status, error.message);
-                }
-            });
+        setLoading(true);
+        QcLogApi(year, month, '-').then(({data, status}) => {
+            if (status === 200) {
+                setDatas(data.amount_qc_users);
+                setData_team(data.data_teams);
+                AlertSuccess('คำนวณสำเร็จ', '');
+                setLoading(false);
+            } else {
+                AlertError('เกิดข้อผิดพลาด', data);
+                setLoading(false);
+            }
+        });
     }
 
     //ฟังก์ชั่น approve ของ QC
     const onApproveQC = () => {
-        axiosClient.post(`/incentive/qc_month/qc/update`, {
-            approve: 'approved',
-            inc_id: inc_id
-        }).then(({data, status}) => {
-            console.log('approved by QC', data.msg, data.status)
+        setLoading(true);
+        ApproveAPi(inc_id, 'approved', 'qc').then(({data, status}) => {
             if (status === 200) {
-                Swal.fire({
-                    icon: 'success',
-                    text: data.msg,
-                    confirmButtonText: 'ตกลง',
-                    allowOutsideClick: false
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        navigate('/incentive/qc_years');
+                AlertSuccessWithQuestion({
+                    title: 'อนุมัติสำเร็จ',
+                    text : data.message,
+                    textCancel: 'ปิด',
+                    onPassed: (confirm) => {
+                        confirm ? navigate('/incentive/qc_years') : navigate('/incentive/qc_years');
                     }
                 })
-            }
-        }).catch((error) => {
-            if (error.response.status === 400) {
-                AlertError(`เกิดข้อผิดพลาด ${error.response.status}`, error.response.data.msg)
             } else {
-                AlertError(`เกิดข้อผิดพลาด ${error.response.status}`, error.message);
+                AlertError('เกิดข้อผิดพลาด', data);
+                setLoading(false);
             }
-        })
+        });
     }
 
-    //ฟังก์ชั่น approve ของ HR
+    //ฟังก์ชั่นส่งอนุมัติ ของ HR
     const onApproveHR = () => {
-        axiosClient.post(`/incentive/qc_month/hr/update`, {
-            approve: 'approved',
-            inc_id: inc_id
-        }).then(({data, status}) => {
-            console.log('approved by QC', data.msg, data.status)
+        setLoading(true);
+        ApproveAPi(inc_id, 'approved', 'hr').then(({data, status}) => {
             if (status === 200) {
-                Swal.fire({
-                    icon: 'success',
-                    text: data.msg,
-                    confirmButtonText: 'ตกลง',
-                    allowOutsideClick: false
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        navigate('/incentive/qc_years');
+                AlertSuccessWithQuestion({
+                    title: 'ส่งอนุมัติสำเร็จ',
+                    text : data.message,
+                    textCancel: 'ปิด',
+                    onPassed: (confirm) => {
+                        confirm ? navigate('/incentive/qc_years') : navigate('/incentive/qc_years');
                     }
                 })
-            }
-        }).catch((error) => {
-            if (error.response.status === 400) {
-                AlertError(`เกิดข้อผิดพลาด ${error.response.status}`, error.response.data.msg)
             } else {
-                AlertError(`เกิดข้อผิดพลาด ${error.response.status}`, error.message);
+                AlertError('เกิดข้อผิดพลาด', data);
+                setLoading(false);
             }
-        })
+        });
     }
 
     //ฟังก์ชั่น ยืนยันการจ่าย ของ HR
     const onConfirmPayDate = () => {
-        axiosClient.post(`/incentive/qc_month/hr/confirmpaydate`, {
-            approve: 'approved',
-            inc_id: inc_id
-        }).then(({data, status}) => {
-            console.log('approved by QC', data.msg, data.status)
+        setLoading(true);
+        ConfirmPayDate(inc_id, 'approved', 'hr').then(({data, status}) => {
             if (status === 200) {
-                Swal.fire({
-                    icon: 'success',
-                    confirmButtonText: 'ตกลง',
-                    allowOutsideClick: false
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        navigate('/incentive/qc_years');
+                AlertSuccessWithQuestion({
+                    title: 'ส่งอนุมัติสำเร็จ',
+                    text : data.message,
+                    textCancel: 'ปิด',
+                    onPassed: (confirm) => {
+                        confirm ? navigate('/incentive/qc_years') : navigate('/incentive/qc_years');
                     }
                 })
-            }
-        }).catch((error) => {
-            if (error.response.status === 400) {
-                AlertError(`เกิดข้อผิดพลาด ${error.response.status}`, error.response.data.msg)
             } else {
-                AlertError(`เกิดข้อผิดพลาด ${error.response.status}`, error.message);
+                AlertError('เกิดข้อผิดพลาด', data);
+                setLoading(false);
             }
-        })
+        });
     }
 
 
@@ -277,11 +252,13 @@ function List_qc_month() {
                                 }
                             </>) : (
                                 <>
-                                    <Link to={`/incentive/qc_list_month/${year}/${month}/-`} onClick={RedirectToEdit}
-                                          className={`text-end btn btn-primary mr-3 ${currentUser.emp_role === 'QC' || data_team.status !== 'active' ? 'disabled' : ''}`}>
+                                    <button onClick={RedirectToEdit}
+                                            disabled={loading || currentUser.emp_role === 'QC' || data_team.status !== 'active'}
+                                            className="text-end btn btn-primary mr-3">
                                         <FontAwesomeIcon icon={faPenToSquare} className={'mr-1'}/>
                                         <span>แก้ไข</span>
-                                    </Link>
+                                    </button>
+
 
                                     {currentUser.emp_role === 'HR' ? (
                                         <>
@@ -294,7 +271,7 @@ function List_qc_month() {
                                                     </button>
                                                 ) : (
                                                     data_team.status === 'active' && (
-                                                        <button onClick={onApproveQC} disabled={loading}
+                                                        <button onClick={onApproveHR} disabled={loading}
                                                                 className={'text-end btn mr-3 text-white bg-info'}>
                                                             <FontAwesomeIcon icon={faPaperPlane} className={'mr-1'}/>
                                                             <span>ส่งอนุมัติ</span>
@@ -306,7 +283,7 @@ function List_qc_month() {
 
                                     ) : (
                                         data_team.status === 'wait' && (
-                                            <button onClick={onApproveHR} disabled={loading}
+                                            <button onClick={onApproveQC} disabled={loading}
                                                     className={'text-end btn mr-3 text-white bg-info'}>
                                                 <FontAwesomeIcon icon={faPaperPlane} className={'mr-1'}/>
                                                 <span>อนุมัติ</span>
@@ -539,7 +516,6 @@ function List_qc_month() {
                                         </Link>
                                     )
                                 }
-                                {/* now 8 = 8 9 10 11 12 */}
                                 {
                                     new Date().getMonth() + 1 > month ? (
                                         <button onClick={() => onSubmit()} className={'btn btn-primary'}

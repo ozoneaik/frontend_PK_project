@@ -1,6 +1,6 @@
 import Content from "../../layouts/Content.jsx";
 import {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import axiosClient from "../../axios.js";
 import Swal from "sweetalert2";
 
@@ -13,6 +13,8 @@ function Edit_product_qc() {
     const [pname, setPname] = useState("");
     const [levelid, setLevelid] = useState("");
     const [timeperpcs, setTimeperpcs] = useState("");
+    const [updateby, setUpdateby] = useState('');
+    const [createby, setCreateby] = useState('');
     const [createdate, setCreatedate] = useState();
     const [updatedate, setUpdatedate] = useState();
     const [product, setProduct] = useState({});
@@ -21,7 +23,7 @@ function Edit_product_qc() {
         getProducts();
     }, []);
 
-    const getProducts = () => {
+    const a = () => {
         axiosClient
             .get(`/product/edit/${params.id}`)
             .then(({data}) => {
@@ -32,6 +34,8 @@ function Edit_product_qc() {
                 setPname(product.pname);
                 setLevelid(product.levelid);
                 setTimeperpcs(product.timeperpcs);
+                setUpdateby(product.updateby)
+                setCreateby(product.createby);
                 setCreatedate(product.createdate);
                 setUpdatedate(product.updatedate);
             })
@@ -89,7 +93,12 @@ function Edit_product_qc() {
                                     />
                                 </div>
                                 <div className={'form-group'}>
-                                    <label htmlFor="product_level">ระดับความยาก * </label>
+                                    <label htmlFor="product_level">
+                                        ระดับความยาก*
+                                        &nbsp;
+                                        <span className={'text-sm text-secondary'} style={{fontWeight: 'normal'}}>( ไม่มีผลกกับเดือนที่คำนวณข้อมูลไปแล้ว )</span>
+
+                                    </label>
                                     <select onChange={(e) => setLevelid(e.target.value)} name="product_level" id="product_level" className={'form-control select2'}>
                                         <option value="L001" selected={levelid === 'L001'}>Very Easy</option>
                                         <option value="L002" selected={levelid === 'L002'}>Easy</option>
@@ -135,17 +144,18 @@ function Edit_product_qc() {
                                     <label htmlFor="">ชื่อผู้สร้าง</label>
                                     <input type="text" readOnly={true} className={'form-control border-0 bg-light'}
                                            id={'product_code'}
-                                           value={'นายโรเบริต สายควัน'} name={'product_code'}/>
+                                           value={createby} name={'product_code'}/>
                                 </div>
                                 <div className={'form-group'}>
                                     <label htmlFor="">ชื่อผู้อัพเดท</label>
                                     <input type="text" readOnly={true} className={'form-control border-0 bg-light'}
                                            id={'product_code'}
-                                           value={'นายโรเบริต สายควัน'} name={'product_code'}/>
+                                           value={updateby} name={'product_code'}/>
                                 </div>
                             </div>
                         </div>
                         <div className={'d-flex justify-content-center w-100'}>
+                            <Link to={'/incentive/products/list_product_qc'}  className={'btn btn-secondary mr-3'}>ยกเลิก</Link>
                             <button className={'btn btn-primary'} type={'submit'}>บันทึก</button>
                         </div>
                     </form>

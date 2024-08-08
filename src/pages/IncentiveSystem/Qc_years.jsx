@@ -111,7 +111,7 @@ function Qc_years() {
                         </button>
                     </div>
                     <div className={'table-responsive'}>
-                        <table className={'table table-bordered'}>
+                        <table className={'table table-bordered table-striped'}>
                             <thead>
                             <tr>
                                 <th>เดือน</th>
@@ -132,9 +132,9 @@ function Qc_years() {
                                         <tr key={index}>
                                             <td>{data.yearkey}-{data.monthkey}</td>
                                             <td>{changeColorStatus(data.status)}</td>
-                                            <td>{data.numofemp}</td>
-                                            <td>{data.workday}</td>
-                                            <td>{data.totalqcqty}</td>
+                                            <td>{data.numofemp || '-'}</td>
+                                            <td>{data.workday || '-'}</td>
+                                            <td>{data.totalqcqty ? parseInt(data.totalqcqty).toLocaleString() : '-'}</td>
                                             <td>{data.created_at ? new Date(data.created_at).toLocaleString() : '-'}</td>
                                             <td>
                                                 {data.confirmdate ? (

@@ -36,7 +36,7 @@ export const AlertInfoWithQuestion = ({title, text, textConfirm = 'ตกลง'
     })
 }
 
-export const AlertSuccessWithQuestion = ({title, text, textConfirm = 'ตกลง', textCancel = 'ยกเลิก', onPassed}) => {
+export const AlertSuccessWithQuestion = ({title, text= '', textConfirm = 'ตกลง', textCancel = 'ยกเลิก', onPassed}) => {
     Swal.fire({
         icon: "success",
         title,
