@@ -69,30 +69,32 @@ const List_product_qc = () => {
                         <div className="d-flex">
                             <input
                                 type="text"
-                                className="form-control mr-2 w-100"
+                                className="form-control mr-2"
                                 placeholder="ค้นหาข้อมูล"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
+                                style={{minWidth: '100%'}}
                             />
                             <select
-                                className="form-control mr-2 w-50"
+                                className="form-control mr-2 w-100"
                                 value={qcLevelFilter}
                                 onChange={(e) => setQcLevelFilter(e.target.value)}
+                                style={{minWidth: '50%'}}
                             >
                                 <option value="">ระดับ QC ทั้งหมด</option>
                                 {Object.entries(levelLabels).map(([key, value]) => (
                                     <option key={key} value={key}>{value}</option>
                                 ))}
                             </select>
-                            <select
-                                className="form-control w-50"
-                                value={qcStatusFilter}
-                                onChange={(e) => setQcStatusFilter(e.target.value)}
-                            >
-                                <option value="">สถานะ QC ทั้งหมด</option>
-                                <option value="QC">QC</option>
-                                <option value="No QC">No QC</option>
-                            </select>
+                            {/*<select*/}
+                            {/*    className="form-control w-50"*/}
+                            {/*    value={qcStatusFilter}*/}
+                            {/*    onChange={(e) => setQcStatusFilter(e.target.value)}*/}
+                            {/*>*/}
+                            {/*    <option value="">สถานะ QC ทั้งหมด</option>*/}
+                            {/*    <option value="QC">QC</option>*/}
+                            {/*    <option value="No QC">No QC</option>*/}
+                            {/*</select>*/}
                         </div>
                         <div>
                             <ExcelExport data={filteredProducts} filename="ข้อมูลสินค้า.xlsx"/>
@@ -107,13 +109,13 @@ const List_product_qc = () => {
                             <thead>
                             <tr>
                                 <th>No</th>
-                                <th>สถานะ</th>
+                                {/*<th>สถานะ</th>*/}
                                 <th>รหัสสินค้า</th>
                                 <th>ชื่อสินค้า</th>
                                 <th>หน่วย</th>
                                 <th>เวลา QC มาตรฐาน</th>
                                 <th>ระดับ QC</th>
-                                <th>สถานะ QC</th>
+                                {/*<th>สถานะ QC</th>*/}
                                 <th>#</th>
                             </tr>
                             </thead>
@@ -128,7 +130,7 @@ const List_product_qc = () => {
                                 filteredProducts.map((product, index) => (
                                     <tr key={index}>
                                         <td>{product.id}</td>
-                                        <td><span className="px-3 py-1 text-sm rounded-pill bg-primary">Active</span></td>
+                                        {/*<td><span className="px-3 py-1 text-sm rounded-pill bg-primary">Active</span></td>*/}
                                         <td>{product.pid}</td>
                                         <td className="text-left">{product.pname}</td>
                                         <td>เครื่อง</td>
@@ -138,7 +140,7 @@ const List_product_qc = () => {
                                                 {levelLabels[product.levelid] || 'No QC'}
                                             </span>
                                         </td>
-                                        <td>{product.qc_status || 'QC'}</td>
+                                        {/*<td>{product.qc_status || 'QC'}</td>*/}
                                         <td>
                                             <Link to={`/incentive/products/edit_product_qc/${product.id}`}>
                                                 <FontAwesomeIcon icon={faPenToSquare}/>
@@ -155,13 +157,13 @@ const List_product_qc = () => {
                             <tfoot>
                             <tr>
                                 <th>No</th>
-                                <th>สถานะ</th>
+                                {/*<th>สถานะ</th>*/}
                                 <th>รหัสสินค้า</th>
                                 <th>ชื่อสินค้า</th>
                                 <th>หน่วย</th>
                                 <th>เวลา QC มาตรฐาน</th>
                                 <th>ระดับ QC</th>
-                                <th>สถานะ QC</th>
+                                {/*<th>สถานะ QC</th>*/}
                                 <th>#</th>
                             </tr>
                             </tfoot>

@@ -1,145 +1,217 @@
 import Content from "../../layouts/Content.jsx";
 import {useEffect, useState} from "react";
-import axiosClient from "../../axios.js";
 import {AlertError, AlertSuccess} from "../../Dialogs/alertNotQuestions.js";
+import {StoreDayApi, WorkdayListApi} from "../../api/ManageDay.js";
+import Spinner from "../../components/Spinner.jsx";
+import {faPenToSquare, faPlus} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {AddYearApi, QcYearListApi} from "../../api/QcYear.js";
 
 export default function ManageDay() {
 
     const [loading, setLoading] = useState(true);
-    const [data, setData] = useState([]);
-    const [addYear, setAddYear] = useState(2024);
-    const [addMonth, setAddMonth] = useState(1);
-    const [addWorkDay, setAddWorkDay] = useState(1);
+    const [days, setDays] = useState([]);//แสดงรายการจำนวนวัน
+    const [addYear, setAddYear] = useState(2024);//ปีที่ต้องการสร้างหรืออัพเดท
+    const [addMonth, setAddMonth] = useState(0);//เดือนที่ต้องการสร้างหรืออัพเดท
+    const [addDay, setAddDay] = useState(0);//วันที่ต้องการสร้างหรืออัพเดท
+    const [listYears, setListYears] = useState([]);//แสดงปี
+
+    const [insertYear, setInsertYear] = useState(2023);
 
     useEffect(() => {
-        getWorkdays();
+        getYears();
+        let d = new Date();
+        let year = d.getFullYear();
+        setAddYear(year)
+        getWorkdays(year);
     }, [])
 
-
-    const getWorkdays = () => {
-        axiosClient.get('incentive/workday/list')
-            .then(({data, status}) => {
-                console.log(data,status);
-                setData(data.workdays);
-                setLoading(false);
-            }).catch((error) => {
-            console.log(error);
-        });
-    }
-
-    const onChangeWorkday = (index, value) => {
-        const update = [...data];
-        update[index].workday = parseInt(value);
-        setData(update);
-    }
-
-    const addWorkday = () => {
-        axiosClient.post('incentive/workday/store', {
-            wo_year : addYear,
-            wo_month : addMonth,
-            workday : addWorkDay
-        }).then(({data, status}) => {
-            AlertSuccess('สำเร็จ',data.message);
-        }).catch((error) => {
-            AlertError('เกิดข้อผิดพลาด',error.response.data.message);
+    const getYears = () => {
+        QcYearListApi().then(({data, status}) => {
+            console.log(data)
+            if (status === 200) {
+                setListYears(data.length > 0 ? data : []);
+            }
         })
-        getWorkdays()
     }
 
-
-    const onUpdate = () => {
-        axiosClient.put('incentive/workday/update', {
-            data
-        }).then(({data, status}) => {
-            AlertSuccess('สำเร็จ',data.message);
-        }).catch((error) => {
-            AlertError('เกิดข้อผิดพลาด',error.response.data.message);
+    const getWorkdays = (year) => {
+        setLoading(true);
+        WorkdayListApi(year).then(({data, status}) => {
+            console.log(data, status)
+            if (status === 200) {
+                setDays(data.workdays);
+                setLoading(false);
+            } else {
+                AlertError('เกิดข้อผิดพลาด', data);
+                setLoading(false);
+            }
         });
-        getWorkdays()
+    }
+
+    const EditDay = (wo_month, workday) => {
+        console.log(addYear, wo_month, workday);
+        setAddMonth(wo_month);
+        setAddDay(workday)
+    }
+
+    const onSelect = (val) => {
+        setAddYear(val);
+        getWorkdays(val);
+    }
+
+    const onSubmit = (workday,wo_month,wo_year)=> {
+        StoreDayApi(wo_year,wo_month,workday).then(({data,status}) => {
+            if (status === 200){
+                AlertSuccess('สำเร็จ',data.message);
+                getWorkdays();
+            }else{
+                AlertError('เกิดข้อผิดพลาด', data);
+                getWorkdays();
+            }
+        });
+    }
+
+    const InsertYear = () => {
+        AddYearApi(insertYear).then(({data,status}) => {
+            if (status === 200){
+                AlertSuccess('สำเร็จ',data.message);
+                getYears();
+            }else{
+                AlertError('เกิดข้อผิดพลาด', data);
+                getYears();
+            }
+        });
     }
     return (
-        <Content header={'จัดการวันทำงาน'} header_sub={'ฟอร์ม'}>
-            {/*<button onClick={() => console.log(data)}>check</button>*/}
+        <Content header={'ข้อมูลจำนวนวันทำงาน'} header_sub={'รายการ'}>
             <div className={'row'}>
-                <div className={'col-lg-6 col-md-4 col-sm-12'}>
+                <div className={'col-12'}>
                     <div className={'card'}>
                         <div className={'card-body'}>
                             <div className={'row'}>
-                                <div className={'col-12'}>
-                                    <div className={'form-group'}>
-                                        <label htmlFor="">ปี</label>
-                                        <input value={addYear} onChange={(e) => setAddYear(e.target.value)} min={2000}
-                                               type="number" className={'form-control'}/>
-                                    </div>
-                                    <div className={'form-group'}>
-                                        <label htmlFor="">เดือน</label>
-                                        <input value={addMonth} onChange={(e) => setAddMonth(e.target.value)}
-                                               type="number" className={'form-control'}/>
-                                    </div>
-                                    <div className={'form-group'}>
-                                        <label htmlFor="">จำนวนวันทำงาน</label>
-                                        <input value={addWorkDay} onChange={(e) => setAddWorkDay(e.target.value)}
-                                               type="number" className={'form-control'}/>
+                                <div className={'col-12 mb-3'}>
+                                    <div className={'d-flex justify-content-center'}>
+                                        <select name="" id="" className={'form-control w-25 mr-3'}
+                                                onChange={(e) => onSelect(e.target.value)}>
+                                            {
+                                                listYears.length > 0 ? (
+                                                    listYears.map((year, index) => (
+                                                        <option value={year} key={index}>{year}</option>
+                                                    ))
+                                                ) : (
+                                                    <option value={addYear}>{addYear}</option>
+                                                )
+                                            }
+                                        </select>
+                                        <button
+                                            type="button" className="btn btn-primary btn-sm"
+                                            data-toggle="modal" data-target="#test">
+                                            <FontAwesomeIcon icon={faPlus} className={'mr-1'}/>
+                                            <span>เพิ่มปี</span>
+                                        </button>
                                     </div>
                                 </div>
-                                <div className={'col-12'}>
-                                    <button onClick={() => addWorkday()}
-                                            className={'btn btn-primary w-100'}>+ เพิ่ม
-                                    </button>
+                                <div className={'col-12 table-responsive'}>
+                                    <table className={'table table-bordered mb-0'}>
+                                        <thead>
+                                        <tr>
+                                            <th>เดือน</th>
+                                            <th>จำนวนวัน</th>
+                                            <th>วันที่-เวลา สร้าง</th>
+                                            <th>ชื่อผู้สร้าง</th>
+                                            <th>วันที่-เวลา อัพเดท</th>
+                                            <th>ชื่อผู้อัพเดท</th>
+                                            <th>#</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {!loading ? (
+                                            days.map((day, index) => (
+                                                <tr key={index}>
+                                                    <td>{day.wo_month}</td>
+                                                    <td>{day.workday}</td>
+                                                    <td>{day.created_at !== '-' ? new Date(day.created_at).toLocaleString() : '-'}</td>
+                                                    <td>{day.created_by}</td>
+                                                    <td>{day.updated_at !== '-' ? new Date(day.updated_at).toLocaleString() : '-'}</td>
+                                                    <td>{day.updated_by}</td>
+                                                    <td>
+                                                        <button
+                                                            onClick={() => EditDay(day.wo_month, day.workday === '-' ? 0 : day.workday)}
+                                                            type="button" className="btn btn-primary btn-sm"
+                                                            data-toggle="modal" data-target="#staticBackdrop">
+                                                            <FontAwesomeIcon icon={faPenToSquare}/>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td colSpan={7}>
+                                                    <Spinner/>
+                                                </td>
+                                            </tr>
+                                        )}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className={'col-lg-6 col-md-8 col-sm-12'}>
-                    <div className={'card'}>
-                        <div className={'card-body'}>
-                            <div className={'row'}>
-                                <div className={'col-12'}>
-                                    <div className={'table-responsive'}>
-                                        <table className={'table table-hover table-bordered'}>
-                                            <thead>
-                                            <tr>
-                                                <th>ปี-เดือน</th>
-                                                <th>จำนวนวันที่ต้องการแก้ไข</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            {
-                                                loading ? (
-                                                    <tr>
-                                                        <td colSpan={3}>loading</td>
-                                                    </tr>
-                                                ) : (
-                                                    data.length > 0 ? (
-                                                        data.map((item, index) => (
-                                                            <tr key={index}>
-                                                                <td>{item.wo_year}-{item.wo_month}</td>
-                                                                <td>
-                                                                    <input type="number" className={'form-control'}
-                                                                           value={item.workday}
-                                                                           onChange={(e) => onChangeWorkday(index, e.target.value)}
-                                                                    />
-                                                                </td>
-                                                            </tr>
-                                                        ))
-                                                    ) : (
-                                                        <tr>
-                                                            <td colSpan={3}>no data</td>
-                                                        </tr>
-                                                    )
-                                                )
-                                            }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div className={'col-12 flex-row-reverse d-flex'}>
-                                    <button className={'btn btn-primary ml-3'} onClick={()=>onUpdate()}>บันทึก</button>
-                                    <button className={'btn btn-secondary'} onClick={() => getWorkdays()}>ยกเลิก
-                                    </button>
-                                </div>
+            </div>
+            <div className="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabIndex="-1"
+                 aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title"
+                                id="staticBackdropLabel">แก้ไขจำนวนวันของปี {addYear} เดือน {addMonth}</h5>
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            <div className={'form-group'}>
+                                <label htmlFor="">จำนวนวัน</label>
+                                <input type="number" value={addDay} className={'form-control'}
+                                       onChange={(e) => setAddDay(parseInt(e.target.value))}
+                                />
                             </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">ปิด</button>
+                            <button onClick={() => onSubmit(addDay, addMonth, addYear)} type="button"
+                                    className="btn btn-primary">บันทึก
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="modal fade" id="test" data-backdrop="static" data-keyboard="false" tabIndex="-1"
+                 aria-labelledby="testLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title"
+                                id="staticBackdropLabel">เพิ่มปี</h5>
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            <div className={'form-group'}>
+                                <input type="number" value={insertYear} className={'form-control'}
+                                       onChange={(e) => setInsertYear(parseInt(e.target.value))}
+                                />
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">ปิด</button>
+                            <button onClick={() => InsertYear()} type="button"
+                                    className="btn btn-primary">บันทึก
+                            </button>
                         </div>
                     </div>
                 </div>

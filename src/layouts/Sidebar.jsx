@@ -63,7 +63,7 @@ function Sidebar() {
                                     <Link to={'/incentive/manage_day'}
                                           className={`nav-link ${location.pathname.startsWith('/incentive/manage_day') ? 'active' : ''}`}>
                                         <FontAwesomeIcon icon={faCircle} className={'nav-icon'}/>
-                                        <p>จัดการวันทำงาน</p>
+                                        <p>ข้อมูลจำนวนวันทำงาน</p>
                                     </Link>
                                 </li>
                                 <li className={'nav-item'}>
