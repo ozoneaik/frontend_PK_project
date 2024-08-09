@@ -1,11 +1,12 @@
-import './App.css'
+import {useEffect} from "react";
+import {useNavigate} from "react-router-dom";
 
 function App() {
-  return (
-    <>
-      {import.meta.env.VITE_APP}
-    </>
-  )
+    const navigate = useNavigate();
+    useEffect(() => {
+        navigate('/incentive/qc_years');
+    }, [navigate]);
+    return (<></>)
 }
 
-export default App
+export default App;

@@ -30,10 +30,10 @@ export const UpdateQcMonthApi = async (inc_id, datas, data_team) => {
     }
 }
 
-export const StoreQcMonthApi = async (datas, NewData_team) => {
+export const StoreQcMonthApi = async (datas, NewData_team,confirm) => {
     try {
         const {data, status} = await axiosClient.post('/incentive/qc_month/store', {
-            datas, NewData_team
+            datas, NewData_team,confirm
         });
         return {data, status};
     } catch (error) {

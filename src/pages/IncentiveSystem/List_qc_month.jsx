@@ -29,6 +29,7 @@ import {
     faXmark
 } from "@fortawesome/free-solid-svg-icons";
 import Spinner from "../../components/Spinner.jsx";
+import {ProductsError} from "../../components/ProductsError.jsx";
 
 
 function List_qc_month() {
@@ -39,6 +40,8 @@ function List_qc_month() {
     const [inc_id, setInc_id] = useState();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [isConfirmed, setIsConfirmed] = useState(false);
+    const [showProductErr,setShowProductErr] = useState(false);
 
     //ดึงข้อมูลมาจาก .30 จากฟังก์ชั่น getQcLog()
     useEffect(() => {
@@ -125,6 +128,7 @@ function List_qc_month() {
             });
     }
 
+
     // ฟังก์ชั่นอัพเดทข้อมูล
     const updateQcMonth = (inc_id, updatedDatas, data_team) => {
         UpdateQcMonthApi(inc_id, updatedDatas, data_team).then(({data, status}) => {
@@ -143,18 +147,29 @@ function List_qc_month() {
 
     // ฟังก์ชั่นสร้างข้อมูล
     const storeQcMonth = (datas, NewData_team) => {
-        StoreQcMonthApi(datas, NewData_team).then(({data, status}) => {
+        StoreQcMonthApi(datas, NewData_team,isConfirmed).then(({data, status}) => {
             if (status === 200) {
                 AlertSuccessWithQuestion({
                     title: 'สำเร็จ', text: data.message, onPassed: (confirm) => {
                         confirm ? navigate('/incentive/qc_years') : navigate('/incentive/qc_years');
                     }
                 });
+                setLoading(false);
+                setShowProductErr(false);
             } else {
                 AlertError('เกิดข้อผิดพลาด', data);
                 setLoading(false);
+                setShowProductErr(true);
+                showListErr();
             }
         })
+        setIsConfirmed(true);
+    }
+
+    const showListErr = () => {
+        return (
+            <ProductsError year={year} month={month}/>
+        )
     }
 
     //ฟังก์ชั่นการคำนวนแล้วดึงข้อมูลจาก .30
@@ -232,6 +247,8 @@ function List_qc_month() {
             }
         });
     }
+
+
 
 
     return (
@@ -502,6 +519,9 @@ function List_qc_month() {
                             </tfoot>
                         </table>
                     </div>
+                    {
+                        showProductErr && showListErr()
+                    }
                     {
                         status === '-' && currentUser.emp_role === 'HR' ? (
 
