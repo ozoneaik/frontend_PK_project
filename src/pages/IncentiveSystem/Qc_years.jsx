@@ -47,8 +47,10 @@ function Qc_years() {
 
     const getQcDataList = (year) => {
         setLoading(true);
+
         QCYearDataListApi(year)
             .then(({data, status}) => {
+                console.log(data,status)
                 if (status === 200) {
                     setDataSet(data.list);
                 } else {

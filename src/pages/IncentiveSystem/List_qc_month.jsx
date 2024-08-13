@@ -28,8 +28,8 @@ import {
     faPrint,
     faXmark
 } from "@fortawesome/free-solid-svg-icons";
-import Spinner from "../../components/Spinner.jsx";
 import {ProductsError} from "../../components/ProductsError.jsx";
+import Spinner from "../../components/Spinner.jsx";
 
 
 function List_qc_month() {
@@ -260,7 +260,12 @@ function List_qc_month() {
                             </>) : (
                                 <>
                                     <button onClick={RedirectToEdit}
-                                            disabled={loading || currentUser.emp_role === 'QC' || data_team.status !== 'active'}
+                                        // disabled={loading || currentUser.emp_role === 'QC' || data_team.status !== 'active'}
+                                            disabled={
+                                                loading ||
+                                                (data_team.status !== 'wait') &&
+                                                (currentUser.emp_role === 'QC' || data_team.status !== 'active')
+                                            }
                                             className="text-end btn btn-primary mr-3">
                                         <FontAwesomeIcon icon={faPenToSquare} className={'mr-1'}/>
                                         <span>แก้ไข</span>
@@ -300,7 +305,8 @@ function List_qc_month() {
                                 </>
                             )
                     }
-                    <button onClick={() => PrintData()} className={'text-end btn btn-success'} disabled={loading || status === '-'}>
+                    <button onClick={() => PrintData()} className={'text-end btn btn-success'}
+                            disabled={loading || status === '-'}>
                         <FontAwesomeIcon icon={faPrint} className={'mr-1'}/>
                         <span>พิมพ์</span>
                     </button>
@@ -515,15 +521,15 @@ function List_qc_month() {
                                 productNotFound.length > 0 ? (
                                     ProductsError({productNotFound: productNotFound})
                                 ) : <></>
-                                ) : <></>
+                            ) : <></>
                         }
                     </div>
                     {
-                        status === '-' && currentUser.emp_role === 'HR' ? (
-
+                        // && currentUser.emp_role === 'HR'
+                        status === '-' ? (
                             <div className={'d-flex justify-content-center mt-3'}>
                                 {
-                                    data_team.status === 'active' && (
+                                    (data_team.status === 'active' || data_team.status === 'wait') && (
                                         <Link to={`/incentive/qc_list_month/${year}/${month}/active`}
                                               className={'btn btn-secondary mr-3'}
                                         >
@@ -534,17 +540,33 @@ function List_qc_month() {
                                 }
                                 {
                                     new Date().getMonth() + 1 > month ? (
-                                        <button onClick={() => onSubmit()} className={'btn btn-primary'}
-                                                id={'BtnSubmit'}>
-                                            {!loading ? (
-                                                <>
-                                                    <FontAwesomeIcon icon={faFloppyDisk} className={'mr-2'}/>
-                                                    <span>บันทึก</span>
-                                                </>
-                                            ) : (
-                                                <Spinner/>
-                                            )}
-                                        </button>
+                                        currentUser.emp_role === 'HR' ? (
+                                            < button onClick={() => onSubmit()} className={'btn btn-primary'}
+                                                     id={'BtnSubmit'}>
+                                                {!loading ? (
+                                                    <>
+                                                        <FontAwesomeIcon icon={faFloppyDisk} className={'mr-2'}/>
+                                                        <span>บันทึก</span>
+                                                    </>
+                                                ) : (
+                                                    <Spinner/>
+                                                )}
+                                            </button>
+                                        ) : currentUser.emp_role === 'QC' && status === '-' && data_team.status === 'wait' ?
+                                            <>
+                                                < button onClick={() => onSubmit()} className={'btn btn-primary'}
+                                                         id={'BtnSubmit'}>
+                                                    {!loading ? (
+                                                        <>
+                                                            <FontAwesomeIcon icon={faFloppyDisk} className={'mr-2'}/>
+                                                            <span>บันทึก</span>
+                                                        </>
+                                                    ) : (
+                                                        <Spinner/>
+                                                    )}
+                                                </button>
+                                            </>
+                                            : <></>
                                     ) : <></>
                                 }
                             </div>
@@ -553,7 +575,8 @@ function List_qc_month() {
                 </div>
             </div>
         </Content>
-    );
+    )
+        ;
 }
 
 export default List_qc_month;

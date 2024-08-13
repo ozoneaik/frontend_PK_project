@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import axiosClient from "../../axios.js";
 import {AlertError} from "../../Dialogs/alertNotQuestions.js";
 import '../../assets/style/print.css'; // Import the CSS file
@@ -10,8 +10,6 @@ function PrintData() {
     const [datas, setDatas] = useState(null);
     const [data_team, setData_team] = useState(null);
     const [createbycodeName, setCreatebycodeName] = useState("");
-
-    const navigate = useNavigate();
 
     useEffect(() => {
         axiosClient
