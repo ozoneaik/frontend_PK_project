@@ -2,7 +2,7 @@ import Swal from "sweetalert2";
 
 export const AlertErrorWithQuestion = (
     {
-        title = 'สำเร็จ',
+        title = 'เกิดข้อผิดพลาด',
         text = '',
         textConfirm = 'ตกลง',
         textCancel = 'ยกเลิก',

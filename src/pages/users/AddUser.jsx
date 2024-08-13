@@ -66,6 +66,7 @@ function AddUser() {
                                                 <option value="" disabled={true} selected={true}>เลือก...</option>
                                                 <option value="QC">ตรวจทาน (QC)</option>
                                                 <option value="HR">เอชอาร์ (HR)</option>
+                                                <option value="IT">พนักงาน information technology (IT)</option>
                                             </select>
                                         </div>
                                         <div className={'from-group'}>

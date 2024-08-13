@@ -3,33 +3,49 @@ import {useStateContext} from "../../contexts/ContextProvider.jsx";
 import {useEffect, useState} from "react";
 import axiosClient from "../../axios.js";
 import Swal from "sweetalert2";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {AlertError, AlertSuccess} from "../../Dialogs/alertNotQuestions.js";
+import {AlertErrorWithQuestion} from "../../Dialogs/alertWithQuestions.js";
+import {LogoutApi} from "../../api/Auth.js";
+import {UserListApi} from "../../api/User.js";
 
 function UserManage() {
 
-    const {currentUser} = useStateContext();
+    const {currentUser,setCurrentUser,setUserToken} = useStateContext();
     const [users, setUsers] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        getUserList()
+        if (currentUser.emp_role !== "IT"){
+            AlertErrorWithQuestion({
+                text : 'ไม่สิทธิ์เข้าถึงหน้านี้',
+                textConfirm : 'กลับไปหน้าหลัก',
+                textCancel : 'ออกจะระบบ',
+                onPassed : (confirm) => {
+                    if (confirm) {
+                        navigate('/');
+                    }else{
+                        LogoutApi()
+                            .then((data, status) => {
+                                console.log(data, status);
+                                setCurrentUser({});
+                                setUserToken(null);
+                            });
+                    }
+                }
+            })
+        }
+        getUserList();
     }, []);
 
 
     const getUserList =()=>{
-        axiosClient.get(`/incentive/user-list`, {})
-            .then(({data, status}) => {
-                console.log(data);
-                if (status === 200) {
-                    setUsers(data.users);
-                }
-            }).catch((error) => {
-            if (error.response && error.response.status === 400) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Something went wrong',
-                    text: error.response.data.message
-                });
+        UserListApi().then(({data,status}) => {
+            console.log(data,status)
+            if (status === 200) {
+                setUsers(data.users);
+            }else{
+                AlertError('เกิดข้อผิดพลาด', data);
             }
         })
     }
