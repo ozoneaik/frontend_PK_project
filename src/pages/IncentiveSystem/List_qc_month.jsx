@@ -300,7 +300,7 @@ function List_qc_month() {
                                 </>
                             )
                     }
-                    <button onClick={() => PrintData()} className={'text-end btn btn-success'} disabled={loading}>
+                    <button onClick={() => PrintData()} className={'text-end btn btn-success'} disabled={loading || status === '-'}>
                         <FontAwesomeIcon icon={faPrint} className={'mr-1'}/>
                         <span>พิมพ์</span>
                     </button>

@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import axiosClient from "../../axios.js";
 import {AlertError} from "../../Dialogs/alertNotQuestions.js";
 import '../../assets/style/print.css'; // Import the CSS file
@@ -11,6 +11,8 @@ function PrintData() {
     const [data_team, setData_team] = useState(null);
     const [createbycodeName, setCreatebycodeName] = useState("");
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         axiosClient
             .get(`/incentive/qc_month/${year}/${month}/active`, {})
@@ -21,8 +23,9 @@ function PrintData() {
                     setData_team(data.data_teams);
                     axiosClient.get(`/user/${data.data_teams.createbycode}`)
                         .then(({data, status}) => {
-                            console.log(data)
                             setCreatebycodeName(data.username)
+                            window.addEventListener('afterprint', afterPrint);
+                            setTimeout(() => window.print(), 500);
                         }).catch((error) => {
                             console.log(error)
                     })
@@ -30,8 +33,7 @@ function PrintData() {
                     const afterPrint = () => {
                         closeTab();
                     };
-                    window.addEventListener('afterprint', afterPrint);
-                    setTimeout(() => window.print(), 500);
+
 
                 }
             })
