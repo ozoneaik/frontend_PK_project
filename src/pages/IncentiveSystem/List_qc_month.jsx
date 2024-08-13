@@ -41,7 +41,7 @@ function List_qc_month() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [isConfirmed, setIsConfirmed] = useState(false);
-    const [showProductErr,setShowProductErr] = useState(false);
+    const [productNotFound, setProductNotFound] = useState([]);
 
     //ดึงข้อมูลมาจาก .30 จากฟังก์ชั่น getQcLog()
     useEffect(() => {
@@ -57,6 +57,7 @@ function List_qc_month() {
                     setDatas(data.amount_qc_users);
                     setData_team(data.data_teams);
                     setInc_id(data.inc_id);
+                    setProductNotFound(data.productNotFound);
                 } else {
                     if (status === 412) {
                         const textConfirm = 'ไปที่หน้าจัดการวันทำงาน';
@@ -147,7 +148,7 @@ function List_qc_month() {
 
     // ฟังก์ชั่นสร้างข้อมูล
     const storeQcMonth = (datas, NewData_team) => {
-        StoreQcMonthApi(datas, NewData_team,isConfirmed).then(({data, status}) => {
+        StoreQcMonthApi(datas, NewData_team, isConfirmed).then(({data, status}) => {
             if (status === 200) {
                 AlertSuccessWithQuestion({
                     title: 'สำเร็จ', text: data.message, onPassed: (confirm) => {
@@ -155,21 +156,12 @@ function List_qc_month() {
                     }
                 });
                 setLoading(false);
-                setShowProductErr(false);
             } else {
                 AlertError('เกิดข้อผิดพลาด', data);
                 setLoading(false);
-                setShowProductErr(true);
-                showListErr();
             }
         })
         setIsConfirmed(true);
-    }
-
-    const showListErr = () => {
-        return (
-            <ProductsError year={year} month={month}/>
-        )
     }
 
     //ฟังก์ชั่นการคำนวนแล้วดึงข้อมูลจาก .30
@@ -195,7 +187,7 @@ function List_qc_month() {
             if (status === 200) {
                 AlertSuccessWithQuestion({
                     title: 'อนุมัติสำเร็จ',
-                    text : data.message,
+                    text: data.message,
                     textCancel: 'ปิด',
                     onPassed: (confirm) => {
                         confirm ? navigate('/incentive/qc_years') : navigate('/incentive/qc_years');
@@ -215,7 +207,7 @@ function List_qc_month() {
             if (status === 200) {
                 AlertSuccessWithQuestion({
                     title: 'ส่งอนุมัติสำเร็จ',
-                    text : data.message,
+                    text: data.message,
                     textCancel: 'ปิด',
                     onPassed: (confirm) => {
                         confirm ? navigate('/incentive/qc_years') : navigate('/incentive/qc_years');
@@ -235,7 +227,7 @@ function List_qc_month() {
             if (status === 200) {
                 AlertSuccessWithQuestion({
                     title: 'ส่งอนุมัติสำเร็จ',
-                    text : data.message,
+                    text: data.message,
                     textCancel: 'ปิด',
                     onPassed: (confirm) => {
                         confirm ? navigate('/incentive/qc_years') : navigate('/incentive/qc_years');
@@ -247,8 +239,6 @@ function List_qc_month() {
             }
         });
     }
-
-
 
 
     return (
@@ -519,9 +509,13 @@ function List_qc_month() {
                             </tfoot>
                         </table>
                     </div>
-                    {
-                        showProductErr && showListErr()
-                    }
+                    <div>
+                        {
+                            productNotFound.length > 0 && (
+                                ProductsError({productNotFound: productNotFound})
+                            )
+                        }
+                    </div>
                     {
                         status === '-' && currentUser.emp_role === 'HR' ? (
 
@@ -559,4 +553,5 @@ function List_qc_month() {
         </Content>
     );
 }
+
 export default List_qc_month;
