@@ -57,7 +57,7 @@ function List_qc_month() {
                     setDatas(data.amount_qc_users);
                     setData_team(data.data_teams);
                     setInc_id(data.inc_id);
-                    setProductNotFound(data.productNotFound);
+                    setProductNotFound(data.productNotFound ? data.productNotFound : null);
                 } else {
                     if (status === 412) {
                         const textConfirm = 'ไปที่หน้าจัดการวันทำงาน';
@@ -511,9 +511,11 @@ function List_qc_month() {
                     </div>
                     <div>
                         {
-                            productNotFound.length > 0 && (
-                                ProductsError({productNotFound: productNotFound})
-                            )
+                            productNotFound ? (
+                                productNotFound.length > 0 ? (
+                                    ProductsError({productNotFound: productNotFound})
+                                ) : <></>
+                                ) : <></>
                         }
                     </div>
                     {
