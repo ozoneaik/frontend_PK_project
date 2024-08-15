@@ -23,7 +23,7 @@ function Edit_product_qc() {
         getProducts();
     }, []);
 
-    const a = () => {
+    const getProducts = () => {
         axiosClient
             .get(`/product/edit/${params.id}`)
             .then(({data}) => {
