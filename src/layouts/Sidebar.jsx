@@ -47,17 +47,13 @@ function Sidebar() {
                                         <p>Incentive QC</p>
                                     </Link>
                                 </li>
-                                {
-                                    currentUser.emp_role === 'QC' && (
-                                        <li className={'nav-item'}>
-                                            <Link to={'/incentive/products/list_product_qc'}
-                                                  className={`nav-link ${location.pathname.startsWith('/incentive/products') ? 'active' : ''}`}>
-                                                <FontAwesomeIcon icon={faCircle} className={'nav-icon'}/>
-                                                <p>ข้อมูลสินค้า QC</p>
-                                            </Link>
-                                        </li>
-                                    )
-                                }
+                                <li className={'nav-item'}>
+                                    <Link to={'/incentive/products/list_product_qc'}
+                                          className={`nav-link ${location.pathname.startsWith('/incentive/products') ? 'active' : ''}`}>
+                                        <FontAwesomeIcon icon={faCircle} className={'nav-icon'}/>
+                                        <p>ข้อมูลสินค้า QC</p>
+                                    </Link>
+                                </li>
 
                                 <li className={'nav-item'}>
                                     <Link to={'/incentive/manage_day'}
@@ -80,12 +76,15 @@ function Sidebar() {
                                         <p>ข้อมูลเกณฑ์คำนวณ</p>
                                     </Link>
                                 </li>
-                                <li className={'nav-item'}>
-                                    <Link to={'/incentive/usermanage/user-list'} className={`nav-link ${location.pathname.startsWith('/incentive/usermanage') ? 'active' : ''}`}>
-                                        <FontAwesomeIcon icon={faCircle} className={'nav-icon'}/>
-                                        <p>ข้อมูลผู้ใช้งาน</p>
-                                    </Link>
-                                </li>
+                                {currentUser.emp_role === 'IT' && (
+                                    <li className={'nav-item'}>
+                                        <Link to={'/incentive/usermanage/user-list'}
+                                              className={`nav-link ${location.pathname.startsWith('/incentive/usermanage') ? 'active' : ''}`}>
+                                            <FontAwesomeIcon icon={faCircle} className={'nav-icon'}/>
+                                            <p>ข้อมูลผู้ใช้งาน</p>
+                                        </Link>
+                                    </li>
+                                )}
                             </ul>
                         </li>
                         <li className={`nav-item ${location.pathname.startsWith('/Promotion_Gold') ? 'menu-open' : ''}`}>

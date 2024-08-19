@@ -251,7 +251,7 @@ function List_qc_month() {
                                 {
                                     data_team.status !== 'complete' && (
                                         <button onClick={handleCalculate} disabled={loading}
-                                                className={`text-end btn btn-warning mr-3 ${currentUser.emp_role !== 'QC' ? '' : 'disabled'}`}>
+                                                className={`text-end btn btn-warning mr-3 ${currentUser.emp_role !== 'HR' ? '' : 'disabled'}`}>
                                             <FontAwesomeIcon icon={faCalculator} className={'mr-2'}/>
                                             <span>คำนวณ</span>
                                         </button>
@@ -260,11 +260,10 @@ function List_qc_month() {
                             </>) : (
                                 <>
                                     <button onClick={RedirectToEdit}
-                                        // disabled={loading || currentUser.emp_role === 'QC' || data_team.status !== 'active'}
                                             disabled={
                                                 loading ||
                                                 (data_team.status !== 'wait') &&
-                                                (currentUser.emp_role === 'QC' || data_team.status !== 'active')
+                                                (currentUser.emp_role === 'HR' || data_team.status !== 'active')
                                             }
                                             className="text-end btn btn-primary mr-3">
                                         <FontAwesomeIcon icon={faPenToSquare} className={'mr-1'}/>
@@ -272,7 +271,7 @@ function List_qc_month() {
                                     </button>
 
 
-                                    {currentUser.emp_role === 'HR' ? (
+                                    {currentUser.emp_role === 'QC' ? (
                                         <>
                                             {
                                                 data_team.status === 'approve' ? (
@@ -540,7 +539,7 @@ function List_qc_month() {
                                 }
                                 {
                                     new Date().getMonth() + 1 > month ? (
-                                        currentUser.emp_role === 'HR' ? (
+                                        currentUser.emp_role === 'QC' ? (
                                             < button onClick={() => onSubmit()} className={'btn btn-primary'}
                                                      id={'BtnSubmit'}>
                                                 {!loading ? (
@@ -552,7 +551,7 @@ function List_qc_month() {
                                                     <Spinner/>
                                                 )}
                                             </button>
-                                        ) : currentUser.emp_role === 'QC' && status === '-' && data_team.status === 'wait' ?
+                                        ) : currentUser.emp_role === 'HR' && status === '-' && data_team.status === 'wait' ?
                                             <>
                                                 < button onClick={() => onSubmit()} className={'btn btn-primary'}
                                                          id={'BtnSubmit'}>

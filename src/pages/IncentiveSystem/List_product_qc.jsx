@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -98,7 +98,7 @@ const List_product_qc = () => {
                         </div>
                         <div>
                             <ExcelExport data={filteredProducts} filename="ข้อมูลสินค้า.xlsx"/>
-                            <Link to="/incentive/products/add_product_qc" className="btn btn-primary ml-2">
+                            <Link to={"/incentive/products/add_product_qc"}className="btn btn-primary ml-2">
                                 <FontAwesomeIcon icon={faPlus} className="mr-1"/>
                                 เพิ่มสินค้า
                             </Link>

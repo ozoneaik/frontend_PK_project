@@ -1,5 +1,5 @@
 import Content from "../../layouts/Content.jsx";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {AlertError, AlertSuccess} from "../../Dialogs/alertNotQuestions.js";
 import {StoreDayApi, WorkdayListApi} from "../../api/ManageDay.js";
 import Spinner from "../../components/Spinner.jsx";
@@ -65,6 +65,9 @@ export default function ManageDay() {
             if (status === 200){
                 AlertSuccess('สำเร็จ',data.message);
                 getWorkdays();
+                document.getElementById('staticBackdrop').classList.remove('show');
+                document.body.classList.remove('modal-open');
+                document.getElementsByClassName('modal-backdrop')[0].remove();
             }else{
                 AlertError('เกิดข้อผิดพลาด', data);
                 getWorkdays();
@@ -160,7 +163,7 @@ export default function ManageDay() {
                     </div>
                 </div>
             </div>
-            <div className="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabIndex="-1"
+            <div className="modal fade" id="staticBackdrop"  data-keyboard="false" tabIndex="-1"
                  aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">

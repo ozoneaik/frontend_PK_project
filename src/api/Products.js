@@ -9,3 +9,11 @@ export const ProductsApi = async () => {
         return ErrorApi(error);
     }
 }
+export const ProductUpdateApi = async (id,product) => {
+    try{
+        const {data,status} = await axiosClient.post(`/product/update/${id}`,product);
+        return {data,status};
+    }catch (error){
+        return ErrorApi(error);
+    }
+}
