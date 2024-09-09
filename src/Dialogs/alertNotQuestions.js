@@ -24,7 +24,7 @@ export const AlertError = (title, text) => {
     })
 }
 
-export const AlertSuccessNavigate = (title, text, navigate, navigateUri) => {
+export const AlertSuccessNavigate = ({title ='', text = '', onPassed}) => {
     Swal.fire({
         icon: "success",
         title: title,
@@ -32,7 +32,9 @@ export const AlertSuccessNavigate = (title, text, navigate, navigateUri) => {
         allowOutsideClick: false,
     }).then((result) => {
         if (result.isConfirmed) {
-            navigate(navigateUri);
+            onPassed(true);
+        }else{
+            onPassed(false);
         }
     })
 }

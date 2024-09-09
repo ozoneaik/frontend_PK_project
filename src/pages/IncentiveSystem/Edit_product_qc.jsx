@@ -1,11 +1,10 @@
 import Content from "../../layouts/Content.jsx";
 import {useEffect, useState} from "react";
-import {Link, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import axiosClient from "../../axios.js";
 import Swal from "sweetalert2";
 import {ProductUpdateApi} from "../../api/Products.js";
-import {AlertSuccess} from "../../Dialogs/alertNotQuestions.js";
-import flatpickr from "flatpickr";
+import {AlertSuccessNavigate} from "../../Dialogs/alertNotQuestions.js";
 
 function Edit_product_qc() {
     const params = useParams();
@@ -18,6 +17,7 @@ function Edit_product_qc() {
     const [createby, setCreateby] = useState('');
     const [createdate, setCreatedate] = useState();
     const [updatedate, setUpdatedate] = useState();
+    const navigate = useNavigate();
 
     useEffect(() => {
         getProducts();
@@ -57,7 +57,13 @@ function Edit_product_qc() {
         try {
             const {data, status} = await ProductUpdateApi(params.id, product);
             if (status === 200) {
-                AlertSuccess(data.message, '');
+                AlertSuccessNavigate({
+                    text: data.message, onPassed: (confirm) => {
+                        if (confirm) {
+                            navigate('/incentive/products/list_product_qc')
+                        }
+                    }
+                });
             }
         } catch (error) {
             console.log(error);
