@@ -46,8 +46,8 @@ const List_product_qc = () => {
         L001: 'Very Easy',
         L002: 'Easy',
         L003: 'Middle',
-        L004: 'Very Hard',
-        L005: 'Hard'
+        L004: 'Hard',
+        L005: 'Very Hard'
     };
 
     const getLevelClass = (levelId) => {
