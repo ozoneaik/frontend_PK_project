@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import NoPreview from '../../assets/dist/img/NoPreview.png'
 import {AlertError} from "../../Dialogs/alertNotQuestions.js";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 
 function Add_product_qc() {
@@ -19,6 +20,8 @@ function Add_product_qc() {
     const [tokenProduct, setTokenProduct] = useState('');
 
     const [p_image, setP_image] = useState(NoPreview);
+
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -65,6 +68,10 @@ function Add_product_qc() {
                     Swal.fire({
                         icon: 'success',
                         text: data.message // นำข้อความผิดพลาดจาก API มาแสดงในข้อความ
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            navigate('/incentive/products/list_product_qc')
+                        }
                     });
                 }
             })
