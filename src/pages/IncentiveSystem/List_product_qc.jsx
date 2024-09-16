@@ -52,10 +52,10 @@ const List_product_qc = () => {
 
     const getLevelClass = (levelId) => {
         const classes = {
-            L001: 'bg-primary',
-            L002: 'bg-primary',
-            L003: 'bg-warning',
-            L004: 'bg-danger',
+            L001: 'bg-success',
+            L002: 'bg-info',
+            L003: 'bg-primary',
+            L004: 'bg-warning',
             L005: 'bg-danger'
         };
         return classes[levelId] || 'bg-secondary';
