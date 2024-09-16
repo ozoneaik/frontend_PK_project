@@ -270,27 +270,24 @@ function List_qc_month() {
                                         <span>แก้ไข</span>
                                     </button>
 
+                                    {
+                                        data_team.status === 'approve' && (
+                                            <button onClick={onConfirmPayDate} disabled={loading}
+                                                    className={'text-end btn mr-3 text-white bg-info'}>
+                                                <FontAwesomeIcon icon={faPaperPlane} className={'mr-1'}/>
+                                                <span>ยืนยันการจ่าย</span>
+                                            </button>
+                                        )
+                                    }
 
                                     {currentUser.emp_role === 'QC' ? (
-                                        <>
-                                            {
-                                                data_team.status === 'approve' ? (
-                                                    <button onClick={onConfirmPayDate} disabled={loading}
-                                                            className={'text-end btn mr-3 text-white bg-info'}>
-                                                        <FontAwesomeIcon icon={faPaperPlane} className={'mr-1'}/>
-                                                        <span>ยืนยันการจ่าย</span>
-                                                    </button>
-                                                ) : (
-                                                    data_team.status === 'active' && (
-                                                        <button onClick={onApproveHR} disabled={loading}
-                                                                className={'text-end btn mr-3 text-white bg-info'}>
-                                                            <FontAwesomeIcon icon={faPaperPlane} className={'mr-1'}/>
-                                                            <span>ส่งอนุมัติ</span>
-                                                        </button>
-                                                    )
-                                                )
-                                            }
-                                        </>
+                                        data_team.status === 'active' && (
+                                            <button onClick={onApproveHR} disabled={loading}
+                                                    className={'text-end btn mr-3 text-white bg-info'}>
+                                                <FontAwesomeIcon icon={faPaperPlane} className={'mr-1'}/>
+                                                <span>ส่งอนุมัติ</span>
+                                            </button>
+                                        )
 
                                     ) : (
                                         data_team.status === 'wait' && (

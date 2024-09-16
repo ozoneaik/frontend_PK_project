@@ -177,15 +177,15 @@ function PrintData() {
                 <div className={'d-flex justify-content-between mt-3'}>
                     <div style={{border: 'solid 1px black',padding: 30}} className={'text-center'}>
                         <span className={'text-bold'}>ลงมือชื่อ</span>
-                        <span>..................{data_team.confirmapprovebycode}..................</span>
+                        <span>..................{data_team.updatebycode}..................</span>
                         <br/>
-                        <p className={'text-bold mb-0 mt-2'}>( ผู้จัดทำ (HR) )</p>
+                        <p className={'text-bold mb-0 mt-2'}>( หัวหน้าแผนก (QC) )</p>
                     </div>
                     <div style={{border: 'solid 1px black',padding: 30}} className={'text-center'}>
                         <span className={'text-bold'}>ลงมือชื่อ</span>
-                        <span>..................{data_team.confirmpaydatebycode}..................</span>
+                        <span>..................{data_team.confirmapprovebycode}..................</span>
                         <br/>
-                        <p className={'text-tbold mb-0 mt-2'}>( หัวหน้าแผนก (QC) )</p>
+                        <p className={'text-bold mb-0 mt-2'}>( ผู้จัดทำ (HR) )</p>
                     </div>
 
                 </div>
