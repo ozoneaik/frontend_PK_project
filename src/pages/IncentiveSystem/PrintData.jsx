@@ -17,6 +17,7 @@ function PrintData() {
             .then(({data, status}) => {
                 console.log(data)
                 if (status === 200) {
+                    console.log(data)
                     setDatas(data.amount_qc_users);
                     setData_team(data.data_teams);
                     axiosClient.get(`/user/${data.data_teams.createbycode}`)
