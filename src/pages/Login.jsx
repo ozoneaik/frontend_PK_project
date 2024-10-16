@@ -25,20 +25,21 @@ function Login() {
 
     const onSubmit = (ev) => {
         ev.preventDefault();
-        setLoading(true);
-        LoginApi(email, password)
-            .then(({data, status}) => {
-                if (status === 200) {
-                    setCurrentUser(data.user);
-                    setUserToken(data.token);
-                    navigate('/incentive/qc_years')
-                } else {
-                    AlertError('เกิดข้อผิดพลาด', data)
-                }
-            }).finally(() => {
-                setLoading(false);
-            }
-        );
+        AlertError('เกิดข้อผิดพลาด', 'ขณะนี้กำลังปิดปรับปรุงระบบ ขออภัยครับ')
+        // setLoading(true);
+        // LoginApi(email, password)
+        //     .then(({data, status}) => {
+        //         if (status === 200) {
+        //             setCurrentUser(data.user);
+        //             setUserToken(data.token);
+        //             navigate('/incentive/qc_years')
+        //         } else {
+        //             AlertError('เกิดข้อผิดพลาด', data)
+        //         }
+        //     }).finally(() => {
+        //         setLoading(false);
+        //     }
+        // );
     };
 
 
