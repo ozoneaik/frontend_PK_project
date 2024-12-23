@@ -88,7 +88,7 @@ function UserManage() {
                                 <div className={'col-md-12 d-flex justify-content-end'}>
                                     <Link to={'/incentive/usermanage/add-user'} className={'btn btn-primary'}>
                                         <i className="fa-solid fa-user-plus mr-2"></i>
-                                        <span>เพิ่มผู้ใชงาน</span>
+                                        <span>เพิ่มผู้ใช้งาน</span>
                                     </Link>
                                 </div>
                             </div>

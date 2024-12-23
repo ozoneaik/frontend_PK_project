@@ -20,6 +20,7 @@ const List_product_qc = () => {
         setIsLoading(true);
         ProductsApi().then(({ data, status }) => {
             if (status === 200) {
+				console.log(data.products);
                 setProducts(data.products);
                 setFilteredProducts(data.products);
             } else {
