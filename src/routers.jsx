@@ -16,6 +16,7 @@ import EditUser from "./pages/users/EditUser.jsx";
 import ManageDay from "./pages/IncentiveSystem/ManageDay.jsx";
 import Test from "./pages/IncentiveSystem/Test.jsx";
 import App from "./App.jsx";
+import Report from "./pages/IncentiveSystem/Report.jsx";
 
 const routers = createBrowserRouter([
     {
@@ -41,6 +42,7 @@ const routers = createBrowserRouter([
                     {path: 'edit-user/:id', element: <EditUser/>},
                 ]
             },
+            {path : 'report', element : <Report/>}
         ],
     },
     {path: '/', element: <App/>},

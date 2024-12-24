@@ -4,7 +4,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faDownload} from "@fortawesome/free-solid-svg-icons";
 
 // eslint-disable-next-line react/prop-types
-const ExportToExcel = ({ data, filename }) => {
+const ExportToExcel = ({ data, filename,...props }) => {
     const handleExport = () => {
         // สร้างเวิร์กบุ๊คใหม่
         const wb = XLSX.utils.book_new();
@@ -19,7 +19,7 @@ const ExportToExcel = ({ data, filename }) => {
     };
 
     return (
-        <button className={'btn btn-info mr-2'} onClick={handleExport}>
+        <button {...props} className={'btn btn-info mr-2'} onClick={handleExport}>
                 <FontAwesomeIcon icon={faDownload} className={'mr-1'}/>
                 <span>ส่งออก Excel</span>
         </button>
