@@ -545,7 +545,7 @@ function List_qc_month() {
                                     )
                                 }
                                 {
-                                    new Date().getMonth() + 1 > month ? (
+                                    new Date().getMonth() + 1 != month ? (
                                         currentUser.emp_role === 'QC' ? (
                                             < button onClick={() => onSubmit()} className={'btn btn-primary'}
                                                 id={'BtnSubmit'}>
