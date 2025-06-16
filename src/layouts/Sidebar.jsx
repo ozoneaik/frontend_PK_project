@@ -12,6 +12,14 @@ function Sidebar() {
     const { currentUser } = useStateContext();
     const location = useLocation();
 
+    console.log(currentUser);
+    
+
+
+    
+
+
+
     return (
         // sidebar-dark-primary
         <aside className={'main-sidebar elevation-4 sidebar-dark-orange'} style={{ backgroundColor: "#252525" }}>
@@ -56,13 +64,18 @@ function Sidebar() {
                                     </Link>
                                 </li>
 
-                                <li className={'nav-item'}>
-                                    <Link to={'/incentive/manage_day'}
-                                        className={`nav-link ${location.pathname.startsWith('/incentive/manage_day') ? 'active' : ''}`}>
-                                        <FontAwesomeIcon icon={faCircle} className={'nav-icon'} />
-                                        <p>ข้อมูลจำนวนวันทำงาน</p>
-                                    </Link>
-                                </li>
+                                {
+                                    (currentUser.emp_role !== 'QC') && (
+                                        <li className={'nav-item'}>
+                                            <Link to={'/incentive/manage_day'}
+                                                className={`nav-link ${location.pathname.startsWith('/incentive/manage_day') ? 'active' : ''}`}>
+                                                <FontAwesomeIcon icon={faCircle} className={'nav-icon'} />
+                                                <p>ข้อมูลจำนวนวันทำงาน</p>
+                                            </Link>
+                                        </li>
+                                    )
+
+                                }
                                 <li className={'nav-item'}>
                                     <Link to={'/incentive/qc_time'}
                                         className={`nav-link ${location.pathname.startsWith('/incentive/qc_time') ? 'active' : ''}`}>
