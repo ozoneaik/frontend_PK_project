@@ -283,7 +283,7 @@ function List_qc_month() {
                                             disabled={
                                                 loading ||
                                                 (data_team.status !== 'wait') &&
-                                                (currentUser.emp_role === 'QC' || data_team.status !== 'active')
+                                                (currentUser.emp_role === 'HR' || data_team.status !== 'active')
                                             }
                                             className="text-end btn btn-primary mr-3">
                                         <FontAwesomeIcon icon={faPenToSquare} className={'mr-1'}/>
@@ -291,7 +291,7 @@ function List_qc_month() {
                                     </button>
 
                                     {
-                                        data_team.status === 'approve' && (
+                                        (data_team.status === 'approve' && currentUser.emp_role === 'HR') && (
                                             <button onClick={onConfirmPayDate} disabled={loading}
                                                     className={'text-end btn mr-3 text-white bg-info'}>
                                                 <FontAwesomeIcon icon={faPaperPlane} className={'mr-1'}/>
