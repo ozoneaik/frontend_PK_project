@@ -12,14 +12,6 @@ function Sidebar() {
     const { currentUser } = useStateContext();
     const location = useLocation();
 
-    console.log(currentUser);
-    
-
-
-    
-
-
-
     return (
         // sidebar-dark-primary
         <aside className={'main-sidebar elevation-4 sidebar-dark-orange'} style={{ backgroundColor: "#252525" }}>

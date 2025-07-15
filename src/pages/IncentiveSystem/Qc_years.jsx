@@ -142,10 +142,10 @@ function Qc_years() {
                                                 {data.confirmdate ? (
                                                     <>
                                                         <p className={'p-0 m-0 mb-2 text-sm text-secondary'}><span
-                                                            className={'text-bold'}>HR ส่งคำขออนุมัติเมื่อ</span> {data.confirmdate ? data.confirmdate : 'กำลังดำเนินการ'}
+                                                            className={'text-bold'}>QC ส่งคำขออนุมัติเมื่อ</span> {data.confirmdate ? data.confirmdate : 'กำลังดำเนินการ'}
                                                         </p>
                                                         <p className={'p-0 m-0 text-sm text-secondary'}><span
-                                                            className={'text-bold'}>QC อนุมัติเมื่อ</span> {data.confirmapprove ? data.confirmapprove : 'กำลังดำเนินการ'}
+                                                            className={'text-bold'}>HR อนุมัติเมื่อ</span> {data.confirmapprove ? data.confirmapprove : 'กำลังดำเนินการ'}
                                                         </p>
                                                     </>
                                                 ) : (
